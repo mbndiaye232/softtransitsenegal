@@ -1,0 +1,61 @@
+# Blueprint Render — Soft Transit Gabon (backend Express + PostgreSQL)
+# Déploiement : dashboard Render → New → Blueprint → connecter ce dépôt.
+# Les variables marquées `sync: false` sont à saisir manuellement dans le
+# dashboard Render après la création (Environment → Add Environment Variable).
+
+databases:
+  - name: softtransitgabon-db
+    databaseName: softtransitgabon
+    user: softtransitgabon
+    region: frankfurt
+    plan: starter # le plan gratuit expire après 30 jours ; à ajuster si besoin
+
+services:
+  - type: web
+    name: softtransitgabon-backend
+    runtime: node
+    plan: free
+    region: frankfurt
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: softtransitgabon-db
+          property: connectionString
+
+      # Secrets applicatifs — à générer et saisir manuellement
+      - key: JWT_SECRET
+        sync: false
+      - key: JWT_EXPIRES_IN
+        value: 7d
+      - key: DOCUMENT_ENCRYPTION_KEY
+        sync: false
+
+      # Emails (SMTP OVH — mêmes valeurs que le .env local)
+      - key: SMTP_HOST
+        value: SSL0.OVH.NET
+      - key: SMTP_PORT
+        value: 587
+      - key: SMTP_USER
+        sync: false
+      - key: SMTP_PASS
+        sync: false
+
+      # URL du frontend Cloudflare Pages — pour les liens dans les emails et le CORS
+      - key: FRONTEND_URL
+        sync: false
+
+      # Cloudflare R2 — stockage des logos, cachets et documents
+      - key: CLOUDFLARE_R2_ACCOUNT_ID
+        sync: false
+      - key: CLOUDFLARE_R2_ACCESS_KEY_ID
+        sync: false
+      - key: CLOUDFLARE_R2_SECRET_ACCESS_KEY
+        sync: false
+      - key: CLOUDFLARE_R2_BUCKET_NAME
+        value: softtransitgabon-documents

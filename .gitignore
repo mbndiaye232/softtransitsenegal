@@ -1,0 +1,77 @@
+# ─── Node modules ────────────────────────────────────────────────────────────
+node_modules/
+**/node_modules/
+
+# ─── Environment variables (SECRETS — ne jamais committer) ───────────────────
+.env
+.env.*
+!.env.example
+
+# ─── Build outputs ────────────────────────────────────────────────────────────
+dist/
+build/
+.vite/
+**/dist/
+**/.vite/
+
+# ─── Logs ─────────────────────────────────────────────────────────────────────
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ─── OS files ─────────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ─── Editor ───────────────────────────────────────────────────────────────────
+.vscode/settings.json
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# ─── Package locks (optionnel — on les garde pour reproductibilité) ───────────
+# package-lock.json
+# yarn.lock
+
+# ─── Uploads & fichiers temporaires ──────────────────────────────────────────
+backend/uploads/
+*.tmp
+*.bak
+
+# ─── Claude Code ──────────────────────────────────────────────────────────────
+.claude/
+
+# ─── Scripts de debug (non nécessaires en prod) ───────────────────────────────
+backend/add_rubriques_permission.js
+backend/advanced_verify.js
+backend/check_tarifs.js
+backend/debug_structur.js
+
+# ─── Scripts utilitaires racine ───────────────────────────────────────────────
+get_schemas.js
+get_user.js
+list_tables.js
+
+# ─── Dumps & sauvegardes SQL (M3 — jamais committer un dump de base) ─────────
+# Ancré à la racine uniquement : ne touche pas backend/migrations/*.sql
+/*.sql
+
+# ─── Playwright (tests e2e) ───────────────────────────────────────────────────
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/e2e/.auth/
+
+# ─── Sauvegardes de base et cache Cloudflare ──────────────────────────────────
+backups/
+*.dump
+.wrangler/
+backend/certs/
+backend/generate_token.js
+backend/*.env
