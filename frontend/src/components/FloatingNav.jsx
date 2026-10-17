@@ -16,7 +16,7 @@ export default function FloatingNav() {
     }, [location.pathname]);
 
     // Do not render on auth pages or if not logged in
-    const authRoutes = ['/login', '/register', '/forgot-password', '/reset-password'];
+    const authRoutes = ['/login', '/forgot-password', '/reset-password'];
     if (!user || authRoutes.includes(location.pathname)) {
         return null;
     }

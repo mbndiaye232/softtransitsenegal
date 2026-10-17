@@ -3,7 +3,6 @@ import { AuthProvider, useAuth } from './context/AuthContext'
 import FloatingNav from './components/FloatingNav'
 import AssistantWidget from './components/AssistantWidget'
 import Login from './pages/Login'
-import Register from './pages/Register'
 import Dashboard from './pages/Dashboard'
 import CompanySettings from './pages/CompanySettings'
 import ForgotPassword from './pages/ForgotPassword'
@@ -73,7 +72,7 @@ function AppRoutes() {
         <Routes>
             {/* Public */}
             <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
+            <Route path="/register" element={<Navigate to="/login" replace />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/reset-password" element={<ResetPassword />} />
 

@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test'
-import { openNav } from './helpers'
+import { openNav, apiAnon } from './helpers'
 
 test.use({ storageState: { cookies: [], origins: [] } })
 
@@ -40,6 +40,29 @@ test.describe('Authentification', () => {
         expect(await page.evaluate(() => localStorage.getItem('token'))).toBeNull()
         await page.goto('/clients')
         await expect(page).toHaveURL(/\/login/)
+    })
+
+    test("la page de connexion est celle d'une application mono-structure (ni SaaS, ni inscription)", async ({ page }) => {
+        await page.goto('/login')
+        const texte = await page.locator('body').innerText()
+        expect(texte).not.toMatch(/saas|multi-?locataire|demander un accès|nouveau sur la plateforme/i)
+        expect(texte).toContain('Soft Transit Gabon')
+        await expect(page.getByRole('link', { name: /demander un accès/i })).toHaveCount(0)
+    })
+
+    test("l'ancienne adresse /register renvoie vers la connexion", async ({ page }) => {
+        await page.goto('/register')
+        await expect(page).toHaveURL(/\/login/)
+    })
+
+    test("l'inscription publique d'une société n'existe plus côté serveur", async () => {
+        const anon = await apiAnon()
+        const r = await anon.post('auth/register', {
+            data: { companyName: 'E2E Société pirate', companyEmail: 'pirate@e2e.test', adminName: 'Pirate',
+                adminEmail: 'pirate-admin@e2e.test', adminLogin: 'pirate_e2e', adminPassword: 'Aa1-Pirate-2026' },
+        })
+        expect(r.status()).toBe(404)
+        await anon.dispose()
     })
 
     test('la page « mot de passe oublié » répond sans révéler si l\'adresse existe', async ({ page }) => {

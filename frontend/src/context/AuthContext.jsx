@@ -86,16 +86,6 @@ export const AuthProvider = ({ children }) => {
         return response.data
     }
 
-    const register = async (data) => {
-        const response = await authAPI.register(data)
-        const { token, user } = response.data
-        localStorage.setItem('token', token)
-        localStorage.setItem('user', JSON.stringify(user))
-        setUser(user)
-        await Promise.all([loadPermissions(), loadReferenceCurrency()])
-        return response.data
-    }
-
     const logout = () => {
         localStorage.removeItem('token')
         localStorage.removeItem('user')
@@ -108,7 +98,6 @@ export const AuthProvider = ({ children }) => {
         user,
         loading,
         login,
-        register,
         logout,
         userPermissions,
         fullAccess,

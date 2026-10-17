@@ -171,7 +171,6 @@ export default function Login() {
                 }
 
                 .register-footer { margin-top: 2rem; text-align: center; font-size: 0.9375rem; color: #64748b; font-weight: 500; }
-                .register-link { color: #4f46e5; font-weight: 700; text-decoration: none; margin-left: 0.25rem; }
             `}</style>
 
             <div className="login-visual">
@@ -180,15 +179,15 @@ export default function Login() {
 
                 <div className="visual-content">
                     <div className="logo-area" style={{ margin: '0 0 2rem 0', background: 'rgba(255,255,255,0.15)', backdropFilter: 'blur(12px)', padding: '1rem', borderRadius: '1rem' }}>
-                        <img src={logoSST} alt="Soft Services Technologiques" style={{ width: '120px', height: '120px', objectFit: 'contain' }} />
+                        <img src={logoSST} alt="Soft Transit Gabon" style={{ width: '120px', height: '120px', objectFit: 'contain' }} />
                     </div>
                     <h2>Moins de paperasse, plus de transit.</h2>
-                    <p>La plateforme SaaS dédiée aux transitaires pour gérer vos dossiers, déclarations douanières et cotations en temps réel.</p>
+                    <p>Gérez vos dossiers de transit, vos déclarations douanières et vos cotations en temps réel.</p>
 
                     <div className="feature-list">
                         <div className="feature-item">
                             <div className="feature-icon"><ShieldCheck size={20} /></div>
-                            <span className="feature-text">Sécurité Multi-locataire Certifiée</span>
+                            <span className="feature-text">Accès sécurisé, droits par utilisateur</span>
                         </div>
                         <div className="feature-item">
                             <div className="feature-icon"><Activity size={20} /></div>
@@ -202,7 +201,7 @@ export default function Login() {
                 </div>
 
                 <div style={{ position: 'absolute', bottom: '3rem', left: '4rem', fontSize: '0.8125rem', opacity: 0.6, fontWeight: 500 }}>
-                    © 2026 Soft Transit. Tous droits réservés.
+                    © 2026 Soft Transit Gabon. Tous droits réservés.
                 </div>
             </div>
 
@@ -273,8 +272,7 @@ export default function Login() {
                     </form>
 
                     <div className="register-footer">
-                        Nouveau sur la plateforme ?
-                        <Link to="/register" className="register-link">Demander un accès</Link>
+                        Besoin d'un accès ? Contactez votre administrateur.
                     </div>
                 </div>
             </div>
