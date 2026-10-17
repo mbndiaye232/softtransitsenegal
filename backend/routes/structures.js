@@ -165,6 +165,9 @@ router.put('/me',
 
         } catch (error) {
             console.error('Update company error:', error);
+            if (error.code === '22001') {
+                return res.status(400).json({ error: 'Une valeur saisie est trop longue pour son champ (téléphone, sigle, adresse…).' });
+            }
             res.status(500).json({ error: 'Failed to update company details' });
         } finally {
             connection.release();
