@@ -157,7 +157,7 @@ export default function CompanySettings() {
             setSuccess('Configuration de la société mise à jour avec succès')
             window.scrollTo({ top: 0, behavior: 'smooth' })
         } catch (err) {
-            setError('Erreur lors de la mise à jour des paramètres')
+            setError(err.response?.data?.error || 'Erreur lors de la mise à jour des paramètres')
             console.error(err)
         } finally {
             setSaving(false)
