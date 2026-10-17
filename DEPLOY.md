@@ -10,82 +10,82 @@ Claude peut s'en charger si vous lui donnez les informations demandées.
 
 ## 1. Bucket Cloudflare R2
 
-1. Dashboard Cloudflare → **R2 Object Storage** → **Create bucket**
-   → nom : `softtransitgabon-documents`.
-2. **Manage API tokens** → **Create API token** → permissions
-   *Object Read & Write*, limité à ce bucket.
-3. Noter les 3 valeurs affichées (elles ne sont montrées qu'une fois) :
-   - **Account ID**
+1. Dashboard Cloudflare → **R2 Object Storage** → **Create bucket** (nom actuel : `r2softtransitgabon`).
+2. Page d'accueil **R2 Object Storage** → **API → Manage** → **Create Account API token**
+   → permission **Object Read & Write**, limité à ce bucket.
+3. Noter les valeurs affichées (elles ne sont montrées qu'une fois) :
+   - **Account ID** (aussi dans l'adresse du dashboard, après `dash.cloudflare.com/`)
    - **Access Key ID**
    - **Secret Access Key**
 
-## 2. Backend + base de données (Render)
+## 2. Base de données et backend (Render)
 
-1. Dashboard Render → **New** → **Blueprint** → connecter le dépôt GitHub
-   `mbndiaye232/softtransitgabon`. Render lit `render.yaml` à la racine et crée :
-   - la base `softtransitgabon-db` (PostgreSQL),
-   - le service `softtransitgabon-backend` (Express).
-2. Une fois créé, ouvrir **softtransitgabon-backend → Environment** et renseigner
-   les variables marquées `sync: false` dans `render.yaml` :
-   - `JWT_SECRET` : générer une valeur aléatoire, ex. `openssl rand -hex 32`
-   - `DOCUMENT_ENCRYPTION_KEY` : même méthode, 32 octets hexadécimaux
-   - `SMTP_USER`, `SMTP_PASS` : identifiants de la boîte `softtransit@sst.best`
+1. **Base PostgreSQL** : New → PostgreSQL. Noter l'*Internal Database URL* (pour le backend)
+   et l'*External Database URL* (pour la migration). Région : la même que le backend.
+2. **Service web** : New → Web Service → dépôt `mbndiaye232/softtransitgabon`, branche `main`.
+   - Language : **Node** (pas Docker)
+   - **Root Directory : `backend`** · Build : `npm install` · Start : `npm start`
+   - Health Check Path : `/api/health`
+3. **Environment** du service (« Add from .env » possible) :
+   - `NODE_ENV=production`, `JWT_EXPIRES_IN=7d`
+   - `DATABASE_URL` : *Internal Database URL* de la base
+   - `JWT_SECRET`, `DOCUMENT_ENCRYPTION_KEY` : 64 caractères hexadécimaux aléatoires
+     (`node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"`)
+   - `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`
    - `CLOUDFLARE_R2_ACCOUNT_ID`, `CLOUDFLARE_R2_ACCESS_KEY_ID`,
-     `CLOUDFLARE_R2_SECRET_ACCESS_KEY` : valeurs de l'étape 1
-   - `FRONTEND_URL` : à renseigner après l'étape 3
-3. Noter l'URL du service, du type `https://softtransitgabon-backend.onrender.com`.
+     `CLOUDFLARE_R2_SECRET_ACCESS_KEY`, `CLOUDFLARE_R2_BUCKET_NAME`
+   - `FRONTEND_URL` : adresse du frontend (étape 4)
+   Après avoir ajouté ou modifié des variables, cliquer sur **Save, rebuild, and deploy**.
+4. Vérifier `https://<service>.onrender.com/api/health` → `{"status":"ok", ...}`.
 
-## 3. Frontend (Cloudflare Pages)
+## 3. Frontend (Cloudflare Workers)
 
-1. Dashboard Cloudflare → **Workers & Pages** → **Create** → **Pages**
-   → **Connect to Git** → dépôt `mbndiaye232/softtransitgabon`.
+1. Dashboard Cloudflare → **Workers & Pages** → **Create** → importer le dépôt
+   `mbndiaye232/softtransitgabon`.
 2. Paramètres de build :
-   - Framework preset : **Vite**
+   - Nom du projet : **`softtransitgabon`** (identique au `name` de `frontend/wrangler.jsonc`)
+   - **Root directory : `frontend`**
    - Build command : `npm run build`
-   - Build output directory : `dist`
-   - Root directory : `frontend`
-3. **Environment variables** (Production) :
-   - `VITE_API_URL` = `https://softtransitgabon-backend.onrender.com/api`
-     (URL notée à l'étape 2)
-4. **Save and Deploy**. Noter l'URL obtenue, du type
-   `https://softtransitgabon.pages.dev`.
+   - Deploy command : `npx wrangler deploy`
+3. **Build variables** (section Build, pas Runtime) :
+   - `VITE_API_URL` = `https://<service>.onrender.com/api` (lu à la compilation :
+     relancer un build après toute modification)
+4. L'adresse obtenue ressemble à `https://softtransitgabon.<compte>.workers.dev`.
+   `frontend/wrangler.jsonc` renvoie toutes les routes vers `index.html`
+   (`single-page-application`), ce qui permet de recharger une page comme `/dossiers`.
 
 ## 4. Boucler CORS
 
-Retourner sur Render → `softtransitgabon-backend` → Environment → renseigner
-`FRONTEND_URL` avec l'URL Cloudflare Pages de l'étape 3, puis redéployer le
-service (Manual Deploy → Deploy latest commit) pour que le backend accepte
-les requêtes du frontend en ligne.
+Sur Render, renseigner `FRONTEND_URL` avec l'adresse du frontend (étape 3) ; le service
+redémarre et accepte alors les requêtes du site en ligne.
 
 ## 5. Migrer les données (base locale → Render)
 
-La base locale contient déjà le référentiel douanier importé et la structure
-Soft Services Technologiques. Pour la transférer sur Render :
+Ne migrer que la structure, les référentiels (TEC, régimes, devises, rubriques, pays…)
+et un compte administrateur, pas les dossiers ou clients de test :
 
-1. Dashboard Render → `softtransitgabon-db` → **Connect** → copier
-   *External Database URL*.
-2. Donner cette URL à Claude (dans le chat, ou dans un fichier `.env` non
-   commité) : il exécute l'export de la base locale et sa restauration sur
-   Render, puis vérifie les comptages de lignes des tables principales.
-
-   Commandes équivalentes si vous préférez les lancer vous-même :
+1. Cloner la base locale vers une copie de travail, y supprimer les données métier
+   (`TRUNCATE … RESTART IDENTITY CASCADE` sur clients, dossiers, factures, comptes mail,
+   audit, etc.) et ne garder qu'un compte dans `agents`.
+2. Render → base → **Networking → Inbound IP Rules** : autoriser temporairement
+   `0.0.0.0/0` (à retirer ensuite) pour accepter la connexion depuis le poste.
+3. Exporter la copie puis restaurer sur Render en une transaction :
    ```bash
-   pg_dump --no-owner --no-privileges -h localhost -p 5433 -U postgres softtransit > export.sql
-   psql "<EXTERNAL_DATABASE_URL>" -f export.sql
+   pg_dump --no-owner --no-privileges -h localhost -p 5433 -U postgres <copie> > export.sql
+   PGPORT=5432 PGSSLMODE=require psql "<EXTERNAL_DATABASE_URL>" -1 -v ON_ERROR_STOP=1 -f export.sql
    ```
+   Piège : si la variable d'environnement `PGPORT` du poste vaut 5433 (base locale), elle
+   remplace le port absent de l'URL Render : forcer `PGPORT=5432` comme ci-dessus.
+4. Comparer le nombre de lignes de chaque table entre la copie et Render.
 
-## 6. Migrer les fichiers déjà uploadés (facultatif)
+## 6. Fichiers (logo, cachets, documents)
 
-Peu de fichiers existent en local (`backend/uploads/`) : le logo, 3 cachets,
-quelques documents de test. Deux options :
-- **Simple** : une fois en ligne, re-téléverser le logo et les cachets depuis
-  la page Société — ils partiront directement vers R2.
-- **Automatique** : donner à Claude les 3 clés R2 de l'étape 1 (localement,
-  via `.env`), il copie `backend/uploads/` vers le bucket.
+Les fichiers de `backend/uploads/` ne sont pas migrés (ils venaient de la RDC) :
+re-téléverser le logo et les cachets depuis la page Société, ils partent directement vers R2.
 
 ## 7. Vérification
 
-- `https://softtransitgabon-backend.onrender.com/api/health` → doit répondre
-  `{"status":"ok", ...}`.
-- Ouvrir l'URL Cloudflare Pages, se connecter, vérifier qu'un dossier existant
-  s'affiche et que le logo de la société apparaît sur un PDF généré.
+- `https://<service>.onrender.com/api/health` → `{"status":"ok", ...}`.
+- Ouvrir l'adresse du frontend, se connecter, recharger une page profonde (par exemple
+  `/dossiers`) : elle doit s'afficher et non renvoyer une 404.
+- Après avoir téléversé le logo, générer un PDF et vérifier qu'il apparaît.
