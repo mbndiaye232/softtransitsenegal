@@ -25,7 +25,9 @@ api.interceptors.request.use(
 api.interceptors.response.use(
     (response) => response,
     (error) => {
-        if (error.response?.status === 401) {
+        // Un 401 sur la connexion elle-même = mauvais identifiants : on reste sur la page pour afficher le message
+        const estConnexion = error.config?.url?.includes('/auth/login')
+        if (error.response?.status === 401 && !estConnexion) {
             localStorage.removeItem('token')
             localStorage.removeItem('user')
             window.location.href = '/login'

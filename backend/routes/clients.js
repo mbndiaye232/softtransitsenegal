@@ -371,8 +371,6 @@ router.delete('/:id', checkPermission('CLIENTS', 'can_delete'), async (req, res)
     try {
         const clientId = req.params.id;
 
-        await connection.beginTransaction();
-
         // Check if client has associated dossiers
         const [dossiers] = await connection.query(
             'SELECT IDDossiers FROM dossiers WHERE IDCLIENTS = ? LIMIT 1',
@@ -385,12 +383,31 @@ router.delete('/:id', checkPermission('CLIENTS', 'can_delete'), async (req, res)
             });
         }
 
+        const [mouvements] = await connection.query(
+            `SELECT 1 FROM mouvementscomptesclients m
+             JOIN comptesclients c ON c.IDComptesClients = m.IDComptesClients
+             WHERE c.IDCLIENTS = ? LIMIT 1`,
+            [clientId]
+        );
+
+        if (mouvements.length > 0) {
+            return res.status(400).json({
+                error: 'Impossible de supprimer ce client car son compte contient des mouvements.'
+            });
+        }
+
+        await connection.beginTransaction();
+
+        // Le compte client est créé avec le client : on le retire avec lui (il est sans mouvement)
+        await connection.query('DELETE FROM comptesclients WHERE IDCLIENTS = ?', [clientId]);
+
         const [result] = await connection.query(
             'DELETE FROM clients WHERE IDCLIENTS = ?',
             [clientId]
         );
 
         if (result.affectedRows === 0) {
+            await connection.rollback();
             return res.status(404).json({ error: 'Client introuvable' });
         }
 
@@ -410,6 +427,9 @@ router.delete('/:id', checkPermission('CLIENTS', 'can_delete'), async (req, res)
     } catch (error) {
         await connection.rollback();
         console.error('Error deleting client:', error);
+        if (error.code === 'ER_ROW_IS_REFERENCED_2') {
+            return res.status(400).json({ error: 'Impossible de supprimer ce client : il est encore référencé (relances, commissions).' });
+        }
         res.status(500).json({ error: 'Erreur lors de la suppression' });
     } finally {
         connection.release();
