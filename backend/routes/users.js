@@ -114,30 +114,41 @@ router.put('/:id/permissions', checkPermission('AGENTS', 'can_edit'), async (req
         if (violation) {
             return res.status(403).json({ error: violation });
         }
-        if (String(req.params.id) === String(req.user.id) && req.user.role === 'USER') {
+        const isAdminRole = req.user.role === 'ADMIN' || req.user.role === 'SUPER_ADMIN';
+        if (String(req.params.id) === String(req.user.id) && !isAdminRole) {
             return res.status(403).json({ error: 'Vous ne pouvez pas modifier vos propres permissions' });
         }
 
-        // Un agent non administrateur ne peut accorder que les droits qu'il détient lui-même
-        if (req.user.role === 'USER') {
-            const [mine] = await connection.query(
-                'SELECT permission_id, can_view, can_create, can_edit, can_delete FROM agent_permissions WHERE agent_id = ?',
-                [req.user.id]
-            );
+        // Un agent non administrateur ne peut ni accorder ni retirer un droit qu'il ne détient pas lui-même :
+        // pour ces droits, la valeur actuelle de la cible est conservée.
+        let toApply = permissions;
+        if (!isAdminRole) {
+            const cols = 'permission_id, can_view, can_create, can_edit, can_delete';
+            const [mine] = await connection.query(`SELECT ${cols} FROM agent_permissions WHERE agent_id = ?`, [req.user.id]);
+            const [current] = await connection.query(`SELECT ${cols} FROM agent_permissions WHERE agent_id = ?`, [req.params.id]);
             const held = new Map(mine.map(m => [String(m.permission_id), m]));
+            const existing = new Map(current.map(c => [String(c.permission_id), c]));
+            toApply = [];
             for (const perm of permissions) {
                 const h = held.get(String(perm.permission_id));
+                const cur = existing.get(String(perm.permission_id));
+                const next = { permission_id: perm.permission_id };
                 for (const flag of ['can_view', 'can_create', 'can_edit', 'can_delete']) {
-                    if (perm[flag] && !(h && h[flag] === 1)) {
+                    if (h && h[flag] === 1) {
+                        next[flag] = perm[flag] ? 1 : 0;
+                    } else if (perm[flag]) {
                         return res.status(403).json({ error: 'Vous ne pouvez accorder que les droits que vous détenez' });
+                    } else {
+                        next[flag] = cur ? cur[flag] : 0;
                     }
                 }
+                toApply.push(next);
             }
         }
 
         await connection.beginTransaction();
 
-        for (const perm of permissions) {
+        for (const perm of toApply) {
             await connection.query(
                 `INSERT INTO agent_permissions (agent_id, permission_id, can_view, can_create, can_edit, can_delete)
                  VALUES (?, ?, ?, ?, ?, ?)
