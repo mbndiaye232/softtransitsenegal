@@ -118,6 +118,23 @@ router.put('/:id/permissions', checkPermission('AGENTS', 'can_edit'), async (req
             return res.status(403).json({ error: 'Vous ne pouvez pas modifier vos propres permissions' });
         }
 
+        // Un agent non administrateur ne peut accorder que les droits qu'il détient lui-même
+        if (req.user.role === 'USER') {
+            const [mine] = await connection.query(
+                'SELECT permission_id, can_view, can_create, can_edit, can_delete FROM agent_permissions WHERE agent_id = ?',
+                [req.user.id]
+            );
+            const held = new Map(mine.map(m => [String(m.permission_id), m]));
+            for (const perm of permissions) {
+                const h = held.get(String(perm.permission_id));
+                for (const flag of ['can_view', 'can_create', 'can_edit', 'can_delete']) {
+                    if (perm[flag] && !(h && h[flag] === 1)) {
+                        return res.status(403).json({ error: 'Vous ne pouvez accorder que les droits que vous détenez' });
+                    }
+                }
+            }
+        }
+
         await connection.beginTransaction();
 
         for (const perm of permissions) {
