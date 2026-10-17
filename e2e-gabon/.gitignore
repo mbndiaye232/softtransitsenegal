@@ -1,0 +1,5 @@
+.env
+.auth/
+node_modules/
+report/
+test-results/

@@ -22,7 +22,7 @@ router.get('/modes', async (req, res) => {
  * POST /api/reglements/modes
  * Create a new payment method
  */
-router.post('/modes', async (req, res) => {
+router.post('/modes', checkPermission('PARAMETRES_GENERAUX', 'can_edit'), async (req, res) => {
     try {
         const { libelle } = req.body;
         if (!libelle) return res.status(400).json({ error: 'Libelle is required' });
@@ -39,7 +39,7 @@ router.post('/modes', async (req, res) => {
  * PUT /api/reglements/modes/:id
  * Update a payment method
  */
-router.put('/modes/:id', async (req, res) => {
+router.put('/modes/:id', checkPermission('PARAMETRES_GENERAUX', 'can_edit'), async (req, res) => {
     try {
         const { libelle } = req.body;
         await pool.query('UPDATE modesreglements SET libelle = ? WHERE IDModesReglements = ?', [libelle, req.params.id]);
@@ -54,7 +54,7 @@ router.put('/modes/:id', async (req, res) => {
  * DELETE /api/reglements/modes/:id
  * Delete a payment method
  */
-router.delete('/modes/:id', async (req, res) => {
+router.delete('/modes/:id', checkPermission('PARAMETRES_GENERAUX', 'can_edit'), async (req, res) => {
     try {
         await pool.query('DELETE FROM modesreglements WHERE IDModesReglements = ?', [req.params.id]);
         res.json({ message: 'Mode deleted' });
