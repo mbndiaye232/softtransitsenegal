@@ -5,7 +5,7 @@ const path = require('path');
 class InvoicePDFGenerator {
     constructor(pool) {
         this.pool = pool;
-        this.refSymbol = 'FC'; // repli ; écrasé par la devise de référence réelle dans fetchInvoiceData
+        this.refSymbol = 'F XAF'; // repli ; écrasé par la devise de référence réelle dans fetchInvoiceData
     }
 
     async generatePDF(invoiceId) {

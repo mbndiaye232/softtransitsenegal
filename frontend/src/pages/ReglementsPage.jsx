@@ -144,7 +144,7 @@ export default function ReglementsPage() {
             const response = await reglementsAPI.processPayment(data);
 
             if (response.data.remainingAmount > 0) {
-                showMessage(`Règlement effectué. Un trop-perçu de ${response.data.remainingAmount.toLocaleString()} FC a été crédité au compte du client.`, 'success');
+                showMessage(`Règlement effectué. Un trop-perçu de ${response.data.remainingAmount.toLocaleString()} ${getReferenceSymbol()} a été crédité au compte du client.`, 'success');
             } else {
                 showMessage('Règlement traité avec succès', 'success');
             }

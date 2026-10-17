@@ -38,7 +38,7 @@ export const AuthProvider = ({ children }) => {
         }
     }, [])
 
-    /* ── Charger la devise de référence courante (affichage "FC" dynamique) ── */
+    /* ── Charger la devise de référence courante (symbole affiché dynamique) ── */
     const loadReferenceCurrency = useCallback(async () => {
         try {
             const r = await devisesAPI.getAll()

@@ -5,7 +5,7 @@ const path = require('path');
 class RelevePDFGenerator {
     constructor(pool) {
         this.pool = pool;
-        this.refSymbol = 'FC'; // repli ; écrasé par la devise de référence réelle dans fetchReleveData
+        this.refSymbol = 'F XAF'; // repli ; écrasé par la devise de référence réelle dans fetchReleveData
     }
 
     async generatePDF(params) {
@@ -288,7 +288,7 @@ class RelevePDFGenerator {
             let infoY = rowY + 80;
             doc.rect(marginX, infoY, usableWidth, 25).fill('#fffbeb').stroke('#fde68a');
             doc.fillColor('#b45309').font('Helvetica-Oblique').fontSize(8);
-            const gsinfo = `Information : Le reliquat global s'élève à ${new Intl.NumberFormat('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(gmoMontantreliquatEuros).replace(/\s/g, ' ')} EUR. (Taux: 1 Euro = ${tauxEUR} FC).`;
+            const gsinfo = `Information : Le reliquat global s'élève à ${new Intl.NumberFormat('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(gmoMontantreliquatEuros).replace(/\s/g, ' ')} EUR. (Taux: 1 Euro = ${tauxEUR} ${this.refSymbol}).`;
             doc.text(gsinfo, marginX + 10, infoY + 8);
         }
 

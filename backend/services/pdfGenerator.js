@@ -15,7 +15,7 @@ const A3_HEIGHT = 841.89;
 class NoteDetailPDFGenerator {
     constructor(pool) {
         this.pool = pool;
-        this.refSymbol = 'FC'; // repli ; écrasé par la devise de référence réelle dans fetchNoteData
+        this.refSymbol = 'F XAF'; // repli ; écrasé par la devise de référence réelle dans fetchNoteData
     }
 
     /**
@@ -272,7 +272,7 @@ class NoteDetailPDFGenerator {
             }
         });
 
-        // The header label "Assurances: X FC" must show the FC-converted total,
+        // The header label "Assurances: X" must show the total converted to the reference currency,
         // not the devise total. We prefer the sum of ASSURANCESCFA across articles
         // (which is what's displayed in the matrix as "Assurances"). Fall back to
         // MontantAssurancesTotalDevise only if no per-article converted values exist.
@@ -358,7 +358,7 @@ class NoteDetailPDFGenerator {
             { key: 'Provenance', label: 'Provenance' },
             { key: 'FOB', label: 'Valeur FOB devises', format: 'number' },
             { key: 'DeviseFOB', label: 'Devise FOB', fromSymbol: 'SymboleFOB' },
-            { key: 'FOBCFA', label: 'Valeur FOB en UM', format: 'number' }, // UM = Unité Monétaire = Franc Congolais
+            { key: 'FOBCFA', label: 'Valeur FOB en UM', format: 'number' }, // UM = Unité Monétaire = devise de référence
             { key: 'FRETCFA', label: 'Valeur Fret en UM', format: 'number' },
             { key: 'ASSURANCESCFA', label: 'Assurances', format: 'number' },
             { key: 'CommissionFournisseur', label: 'Commission en UM', format: 'number' },

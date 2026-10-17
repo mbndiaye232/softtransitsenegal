@@ -241,7 +241,7 @@ Dans l'attente de votre règlement, nous vous prions d'agréer, Madame, Monsieur
 
                             {/* Amount */}
                             <div style={{ textAlign: 'right', minWidth: 120 }}>
-                                <div style={{ fontWeight: 800, fontSize: '14px', color: '#0f172a' }}>{fmt(f.MontantTTCFacture, 0)} FC</div>
+                                <div style={{ fontWeight: 800, fontSize: '14px', color: '#0f172a' }}>{fmt(f.MontantTTCFacture, 0)} {getReferenceSymbol()}</div>
                                 <div style={{ fontSize: '11px', color: '#94a3b8' }}>TTC</div>
                             </div>
 

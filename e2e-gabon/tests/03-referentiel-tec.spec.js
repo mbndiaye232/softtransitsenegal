@@ -58,4 +58,21 @@ test.describe('Référentiel douanier du Gabon (TEC)', () => {
         await page.getByPlaceholder(/Code ou libellé/i).fill('IM4000')
         await expect(page.getByText('Mise à la consommation directe, Régime Commun (RC)')).toBeVisible()
     })
+
+    test("l'icône œil affiche une bulle avec le régime et le code additionnel au survol", async ({ page }) => {
+        await page.goto('/regimes-declaration')
+        await page.getByPlaceholder(/Code ou libellé/i).fill('IM4000')
+        const ligne = page.locator('tr', { hasText: 'Mise à la consommation directe, Régime Commun (RC)' })
+        const oeil = ligne.getByRole('button', { name: /régime et le code additionnel/i })
+        await expect(page.getByRole('tooltip')).toHaveCount(0)
+
+        await oeil.hover()
+        const bulle = page.getByRole('tooltip')
+        await expect(bulle).toBeVisible()
+        await expect(bulle).toContainText('Régime : IM4')
+        await expect(bulle).toContainText('Code additionnel : Avec taxes + code add= 000')
+
+        await page.mouse.move(5, 5)
+        await expect(bulle).toHaveCount(0)
+    })
 })

@@ -370,7 +370,7 @@ export default function CompanySettings() {
                                         </div>
                                         <div className="input-group col-6">
                                             <label className="input-label">Capital Social (Devise incluse)</label>
-                                            <input name="Capital" className="premium-input" value={formData.Capital} onChange={handleChange} placeholder="Ex: 10 000 000 FC" />
+                                            <input name="Capital" className="premium-input" value={formData.Capital} onChange={handleChange} placeholder="Ex: 10 000 000 F XAF" />
                                         </div>
                                         <div className="input-group col-12">
                                             <label className="input-label">Activités Principales</label>

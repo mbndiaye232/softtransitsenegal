@@ -5,7 +5,7 @@
  */
 const pool = require('../config/database');
 
-const FALLBACK = { IDDevises: null, libelle: 'Franc Congolais', Symbole: 'FC' };
+const FALLBACK = { IDDevises: null, libelle: 'Franc CFA', Symbole: 'F XAF' };
 
 /**
  * @returns {{IDDevises: number, libelle: string, Symbole: string}}

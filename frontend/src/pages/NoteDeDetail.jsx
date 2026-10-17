@@ -337,7 +337,7 @@ export default function NoteDeDetail() {
 
     const handleConvertToFCFA = async () => {
         if (!selectedNote) { showMessage('Sélectionnez une note','warning'); return; }
-        try { await notesAPI.convertToFCFA(selectedNote.IDNotesDeDetails); showMessage('Conversion en FC effectuée','success'); loadArticles(selectedNote.IDNotesDeDetails); }
+        try { await notesAPI.convertToFCFA(selectedNote.IDNotesDeDetails); showMessage(`Conversion en ${getReferenceSymbol()} effectuée`,'success'); loadArticles(selectedNote.IDNotesDeDetails); }
         catch(e) { showMessage('Erreur conversion','error'); }
     };
 
@@ -648,7 +648,7 @@ export default function NoteDeDetail() {
                                 <ArrowRightLeft size={13}/> Répartir
                             </button>
                             <button onClick={handleConvertToFCFA} style={{padding:'9px',borderRadius:8,border:`1px solid ${COLORS.repartition.border}`,background:COLORS.repartition.light,color:COLORS.repartition.text,fontWeight:700,fontSize:12,cursor:'pointer',display:'flex',alignItems:'center',justifyContent:'center',gap:5}}>
-                                <Coins size={13}/> En FC
+                                <Coins size={13}/> En {getReferenceSymbol()}
                             </button>
                         </div>
                     </div>
