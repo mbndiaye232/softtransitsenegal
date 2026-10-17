@@ -3,7 +3,7 @@
 const express = require('express');
 const router = express.Router();
 const pool = require('../config/database');
-const { authMiddleware, tenantMiddleware } = require('../middleware/auth');
+const { authMiddleware, tenantMiddleware, checkPermission } = require('../middleware/auth');
 
 router.use(authMiddleware);
 router.use(tenantMiddleware);
@@ -11,9 +11,10 @@ router.use(tenantMiddleware);
 // ─────────────────────────────────────────────────────────────────────────────
 // POST /api/devis  — Créer un nouveau devis
 // ─────────────────────────────────────────────────────────────────────────────
-router.post('/', async (req, res) => {
+router.post('/', checkPermission('COTATIONS', 'can_create'), async (req, res) => {
     const connection = await pool.getConnection();
-    const { idDossier, rubriques, idAgent, observations } = req.body;
+    const { idDossier, rubriques, observations } = req.body;
+    const idAgent = req.user.id;
 
     try {
         await connection.beginTransaction();
@@ -116,7 +117,7 @@ router.post('/', async (req, res) => {
 // ─────────────────────────────────────────────────────────────────────────────
 // GET /api/devis/dossier/:dossierId  — Lister les devis d'un dossier
 // ─────────────────────────────────────────────────────────────────────────────
-router.get('/dossier/:dossierId', async (req, res) => {
+router.get('/dossier/:dossierId', checkPermission('COTATIONS', 'can_view'), async (req, res) => {
     try {
         const [rows] = await pool.query(
             `SELECT c.*, a.NomAgent as AgentName
@@ -136,7 +137,7 @@ router.get('/dossier/:dossierId', async (req, res) => {
 // ─────────────────────────────────────────────────────────────────────────────
 // GET /api/devis/:id  — Détails d'un devis + ses rubriques
 // ─────────────────────────────────────────────────────────────────────────────
-router.get('/:id', async (req, res) => {
+router.get('/:id', checkPermission('COTATIONS', 'can_view'), async (req, res) => {
     try {
         const [[devis]] = await pool.query(
             `SELECT c.*, a.NomAgent as AgentName,
@@ -167,7 +168,7 @@ router.get('/:id', async (req, res) => {
 // ─────────────────────────────────────────────────────────────────────────────
 // PATCH /api/devis/:id/accepter  — Marquer le devis comme accepté / refusé
 // ─────────────────────────────────────────────────────────────────────────────
-router.patch('/:id/accepter', async (req, res) => {
+router.patch('/:id/accepter', checkPermission('COTATIONS', 'can_edit'), async (req, res) => {
     const { acceptee } = req.body; // 1=accepté, 0=non accepté, -1=refusé
     try {
         const [result] = await pool.query(
@@ -185,7 +186,7 @@ router.patch('/:id/accepter', async (req, res) => {
 // ─────────────────────────────────────────────────────────────────────────────
 // DELETE /api/devis/:id  — Supprimer un devis (uniquement si non accepté)
 // ─────────────────────────────────────────────────────────────────────────────
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', checkPermission('COTATIONS', 'can_delete'), async (req, res) => {
     const connection = await pool.getConnection();
     try {
         await connection.beginTransaction();
@@ -222,7 +223,7 @@ router.delete('/:id', async (req, res) => {
 // ─────────────────────────────────────────────────────────────────────────────
 // GET /api/devis/:id/pdf  — Générer le PDF du devis
 // ─────────────────────────────────────────────────────────────────────────────
-router.get('/:id/pdf', async (req, res) => {
+router.get('/:id/pdf', checkPermission('COTATIONS', 'can_view'), async (req, res) => {
     try {
         const DevisPDFGenerator = require('../services/DevisPDFGenerator');
         const generator = new DevisPDFGenerator(pool);
@@ -237,9 +238,10 @@ router.get('/:id/pdf', async (req, res) => {
 // ─────────────────────────────────────────────────────────────────────────────
 // POST /api/devis/:id/convertir  — Convertir un devis accepté en facture
 // ─────────────────────────────────────────────────────────────────────────────
-router.post('/:id/convertir', async (req, res) => {
+router.post('/:id/convertir', checkPermission('FACTURES', 'can_create'), async (req, res) => {
     const connection = await pool.getConnection();
-    const { rubriques, idAgent, observations } = req.body;
+    const { rubriques, observations } = req.body;
+    const idAgent = req.user.id;
 
     try {
         await connection.beginTransaction();

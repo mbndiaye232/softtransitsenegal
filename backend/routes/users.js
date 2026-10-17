@@ -9,6 +9,21 @@ const auditService = require('../services/auditService');
 router.use(authMiddleware);
 router.use(tenantMiddleware);
 
+const ROLES_VALIDES = ['USER', 'ADMIN', 'SUPER_ADMIN'];
+
+// Message d'erreur si req.user n'a pas le droit d'attribuer newRole ou de toucher un compte de rôle targetRole.
+// SUPER_ADMIN n'est attribué que par PUT /:id/super-admin ; ADMIN seulement par un ADMIN ou un SUPER_ADMIN.
+function roleViolation(req, newRole, targetRole) {
+    if (req.user.role === 'SUPER_ADMIN') return null;
+    if (newRole === 'SUPER_ADMIN' || targetRole === 'SUPER_ADMIN') {
+        return 'Opération réservée au super administrateur';
+    }
+    if (req.user.role !== 'ADMIN' && (newRole === 'ADMIN' || targetRole === 'ADMIN')) {
+        return 'Seul un administrateur peut attribuer ou modifier le rôle Administrateur';
+    }
+    return null;
+}
+
 /**
  * GET /api/users/me/permissions
  * Retourne les permissions de l'utilisateur connecté (pour le menu frontend)
@@ -83,6 +98,24 @@ router.put('/:id/permissions', checkPermission('AGENTS', 'can_edit'), async (req
 
         if (!Array.isArray(permissions)) {
             return res.status(400).json({ error: 'Permissions must be an array' });
+        }
+
+        let targetQuery = 'SELECT IDAgents, role FROM agents WHERE IDAgents = ?';
+        const targetParams = [req.params.id];
+        if (!req.user.is_provider) {
+            targetQuery += ' AND structur_id = ?';
+            targetParams.push(req.structur_id);
+        }
+        const [targets] = await connection.query(targetQuery, targetParams);
+        if (targets.length === 0) {
+            return res.status(404).json({ error: 'Utilisateur non trouvé' });
+        }
+        const violation = roleViolation(req, null, targets[0].role);
+        if (violation) {
+            return res.status(403).json({ error: violation });
+        }
+        if (String(req.params.id) === String(req.user.id) && req.user.role === 'USER') {
+            return res.status(403).json({ error: 'Vous ne pouvez pas modifier vos propres permissions' });
         }
 
         await connection.beginTransaction();
@@ -289,6 +322,15 @@ router.post('/', checkPermission('AGENTS', 'can_create'), async (req, res) => {
             return res.status(400).json({ error: passwordValidation.message });
         }
 
+        const newRole = role || 'USER';
+        if (!ROLES_VALIDES.includes(newRole)) {
+            return res.status(400).json({ error: 'Rôle invalide' });
+        }
+        const violation = roleViolation(req, newRole, null);
+        if (violation) {
+            return res.status(403).json({ error: violation });
+        }
+
         // Check if login or email already exists
         const [existing] = await pool.query(
             'SELECT IDAgents FROM agents WHERE (Login = ? OR Email = ?) AND structur_id = ?',
@@ -315,7 +357,7 @@ router.post('/', checkPermission('AGENTS', 'can_create'), async (req, res) => {
                 Email,
                 Login,
                 passwordHash,
-                role || 'USER',
+                newRole,
                 FonctionAgent || null,
                 Tel || null,
                 Cel || null,
@@ -366,7 +408,7 @@ router.put('/:id', checkPermission('AGENTS', 'can_edit'), async (req, res) => {
         } = req.body;
 
         // Check if user exists and belongs to company (unless provider)
-        let query = 'SELECT IDAgents FROM agents WHERE IDAgents = ?';
+        let query = 'SELECT IDAgents, role FROM agents WHERE IDAgents = ?';
         let params = [req.params.id];
         if (!req.user.is_provider) {
             query += ' AND structur_id = ?';
@@ -377,6 +419,18 @@ router.put('/:id', checkPermission('AGENTS', 'can_edit'), async (req, res) => {
 
         if (existing.length === 0) {
             return res.status(404).json({ error: 'Utilisateur non trouvé' });
+        }
+
+        const newRole = role || existing[0].role;
+        if (!ROLES_VALIDES.includes(newRole)) {
+            return res.status(400).json({ error: 'Rôle invalide' });
+        }
+        if (String(req.params.id) === String(req.user.id) && newRole !== req.user.role) {
+            return res.status(403).json({ error: 'Vous ne pouvez pas modifier votre propre rôle' });
+        }
+        const violation = roleViolation(req, newRole, existing[0].role);
+        if (violation) {
+            return res.status(403).json({ error: violation });
         }
 
         // Validation
@@ -419,7 +473,7 @@ router.put('/:id', checkPermission('AGENTS', 'can_edit'), async (req, res) => {
             NomAgent,
             Email,
             Login,
-            role || 'USER',
+            newRole,
             FonctionAgent || null,
             Tel || null,
             Cel || null,
@@ -470,7 +524,7 @@ router.put('/:id', checkPermission('AGENTS', 'can_edit'), async (req, res) => {
  */
 router.delete('/:id', checkPermission('AGENTS', 'can_delete'), async (req, res) => {
     try {
-        let query = 'SELECT IDAgents FROM agents WHERE IDAgents = ?';
+        let query = 'SELECT IDAgents, role FROM agents WHERE IDAgents = ?';
         let params = [req.params.id];
         if (!req.user.is_provider) {
             query += ' AND structur_id = ?';
@@ -481,6 +535,11 @@ router.delete('/:id', checkPermission('AGENTS', 'can_delete'), async (req, res) 
 
         if (existing.length === 0) {
             return res.status(404).json({ error: 'Utilisateur non trouvé' });
+        }
+
+        const violation = roleViolation(req, null, existing[0].role);
+        if (violation) {
+            return res.status(403).json({ error: violation });
         }
 
         if (parseInt(req.params.id) === req.user.id) {
@@ -512,7 +571,7 @@ router.delete('/:id', checkPermission('AGENTS', 'can_delete'), async (req, res) 
  */
 router.patch('/:id/reactivate', checkPermission('AGENTS', 'can_edit'), async (req, res) => {
     try {
-        let query = 'SELECT IDAgents, is_active FROM agents WHERE IDAgents = ?';
+        let query = 'SELECT IDAgents, is_active, role FROM agents WHERE IDAgents = ?';
         let params = [req.params.id];
         if (!req.user.is_provider) {
             query += ' AND structur_id = ?';
@@ -523,6 +582,11 @@ router.patch('/:id/reactivate', checkPermission('AGENTS', 'can_edit'), async (re
 
         if (existing.length === 0) {
             return res.status(404).json({ error: 'Utilisateur non trouvé' });
+        }
+
+        const violation = roleViolation(req, null, existing[0].role);
+        if (violation) {
+            return res.status(403).json({ error: violation });
         }
 
         if (existing[0].is_active === 1) {

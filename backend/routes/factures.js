@@ -6,6 +6,10 @@ const pool = require('../config/database');
 const { authMiddleware, tenantMiddleware, checkPermission } = require('../middleware/auth');
 const upload = require('../middleware/upload');
 const emailService = require('../services/EmailService');
+const { validateEmail } = require('../utils/auth');
+const { deleteFile } = require('../utils/storage');
+
+const escapeHtml = (v) => String(v).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 const { recomputeAndSaveDossierEtape } = require('../services/etapeService');
 
 // Apply middleware to all routes
@@ -13,9 +17,10 @@ router.use(authMiddleware);
 router.use(tenantMiddleware);
 
 // Create a new invoice
-router.post('/', async (req, res) => {
+router.post('/', checkPermission('FACTURES', 'can_create'), async (req, res) => {
     const connection = await pool.getConnection();
-    const { idDossier, rubriques, idAgent, observations } = req.body;
+    const { idDossier, rubriques, observations } = req.body;
+    const idAgent = req.user.id;
 
     try {
         await connection.beginTransaction();
@@ -154,7 +159,7 @@ router.post('/', async (req, res) => {
 });
 
 // Generate PDF for an invoice
-router.get('/:id/pdf', async (req, res) => {
+router.get('/:id/pdf', checkPermission('FACTURES', 'can_view'), async (req, res) => {
     try {
         const InvoicePDFGenerator = require('../services/InvoicePDFGenerator');
         const generator = new InvoicePDFGenerator(pool);
@@ -167,7 +172,7 @@ router.get('/:id/pdf', async (req, res) => {
 });
 
 // Get invoices for a dossier
-router.get('/dossier/:dossierId', async (req, res) => {
+router.get('/dossier/:dossierId', checkPermission('FACTURES', 'can_view'), async (req, res) => {
     try {
         const [rows] = await pool.query(
             `SELECT f.*,
@@ -206,7 +211,7 @@ router.get('/dossier/:dossierId', async (req, res) => {
 });
 
 // Get invoice details
-router.get('/:id', async (req, res) => {
+router.get('/:id', checkPermission('FACTURES', 'can_view'), async (req, res) => {
     try {
         const [invoice] = await pool.query(
             'SELECT * FROM factures WHERE IDFactures = ?',
@@ -445,10 +450,13 @@ router.delete('/justificatifs/:id', checkPermission('FACTURES', 'can_edit'), asy
         // 2. Delete from database
         await pool.query('DELETE FROM liaisonfacturejustificatifs WHERE IDLiaisonFactureJustificatif = ?', [req.params.id]);
 
-        // 3. Delete from filesystem
-        const absolutePath = path.isAbsolute(filePath) ? filePath : path.join(__dirname, '..', filePath);
-        if (fs.existsSync(absolutePath)) {
-            fs.unlinkSync(absolutePath);
+        // 3. Delete the stored file (storage.js refuse tout chemin hors du dossier uploads)
+        if (filePath) {
+            try {
+                await deleteFile(filePath);
+            } catch (e) {
+                console.error(`Fichier justificatif non supprimé (${filePath}):`, e.message);
+            }
         }
 
         res.json({ message: 'Justificatif supprimé avec succès' });
@@ -463,7 +471,7 @@ router.delete('/justificatifs/:id', checkPermission('FACTURES', 'can_edit'), asy
  * Send invoice PDF + dossier documents via Brevo HTTP API (preferred) or SMTP fallback
  * Body: { compteMailId, emailDestinataire, documentIds: [id, ...], message, objet }
  */
-router.post('/:id/send-email', checkPermission('FACTURES', 'can_view'), async (req, res) => {
+router.post('/:id/send-email', checkPermission('FACTURES', 'can_edit'), async (req, res) => {
     try {
         const invoiceId = req.params.id;
         const { compteMailId, emailDestinataire, documentIds = [], message: customMessage, objet: customObjet } = req.body;
@@ -471,13 +479,17 @@ router.post('/:id/send-email', checkPermission('FACTURES', 'can_view'), async (r
         const { downloadFile } = require('../utils/storage');
         const { decrypt } = require('../utils/encryption');
 
+        if (emailDestinataire && (!validateEmail(emailDestinataire.trim()) || /[,;]/.test(emailDestinataire))) {
+            return res.status(400).json({ error: "Adresse e-mail du destinataire invalide (une seule adresse)" });
+        }
+
         // 1. Fetch invoice + structure data
         const InvoicePDFGenerator = require('../services/InvoicePDFGenerator');
         const generator = new InvoicePDFGenerator(pool);
         const data = await generator.fetchInvoiceData(invoiceId);
         if (!data.invoice) return res.status(404).json({ error: 'Facture introuvable' });
 
-        const clientEmail = emailDestinataire || data.invoice.EmailClient;
+        const clientEmail = (emailDestinataire || data.invoice.EmailClient || '').trim();
         if (!clientEmail) return res.status(400).json({ error: "Le client n'a pas d'adresse e-mail renseignée" });
 
         const societeName = data.structure?.NomSociete || 'Soft Transit';
@@ -506,7 +518,7 @@ router.post('/:id/send-email', checkPermission('FACTURES', 'can_view'), async (r
                 <div style="background:#f8fafc;padding:32px;border:1px solid #e2e8f0;border-radius:0 0 12px 12px">
                     <p style="font-size:15px">Bonjour,</p>
                     <p>Veuillez trouver ci-joint la facture <strong>${data.invoice.NumeroFacture}</strong> relative au dossier <strong>${data.invoice.CodeDossier || ''}</strong>.</p>
-                    ${customMessage ? `<p style="background:#fff;border-left:3px solid #1e40af;padding:12px 16px;border-radius:4px">${customMessage}</p>` : ''}
+                    ${customMessage ? `<p style="background:#fff;border-left:3px solid #1e40af;padding:12px 16px;border-radius:4px">${escapeHtml(customMessage)}</p>` : ''}
                     ${documentIds.length > 0 ? `<p>Les documents associés au dossier sont également joints à cet e-mail.</p>` : ''}
                     <p style="margin-top:24px">Cordialement,<br/><strong>L'équipe ${societeName}</strong></p>
                 </div>
@@ -534,8 +546,9 @@ router.post('/:id/send-email', checkPermission('FACTURES', 'can_view'), async (r
         if (documentIds.length > 0) {
             const placeholders = documentIds.map(() => '?').join(',');
             const [docs] = await pool.query(
-                `SELECT IDDocuments, LibelleDocument, CheminDocument FROM documents WHERE IDDocuments IN (${placeholders})`,
-                documentIds
+                `SELECT IDDocuments, LibelleDocument, CheminDocument FROM documents
+                 WHERE IDDocuments IN (${placeholders}) AND IDDossiers = ?`,
+                [...documentIds, data.invoice.IDDossiers]
             );
             for (const doc of docs) {
                 try {

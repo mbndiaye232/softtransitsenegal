@@ -10,6 +10,8 @@ const {
     validatePassword
 } = require('../utils/auth');
 const { authMiddleware } = require('../middleware/auth');
+const { sendMail } = require('../services/mailer');
+const escapeHtml = (v) => String(v).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 const { loginLimiter, passwordResetLimiter, registerLimiter } = require('../middleware/rateLimit');
 
 /**
@@ -348,10 +350,22 @@ router.post('/forgot-password', passwordResetLimiter, async (req, res) => {
             [resetToken, expiresAt, user.IDAgents]
         );
 
-        // TODO: Send email with reset link
-        // For now, we'll just log it (in production, use nodemailer)
         const resetLink = `${process.env.FRONTEND_URL}/reset-password?token=${resetToken}`;
-        console.log(`Password reset link for ${user.Email}: ${resetLink}`);
+        try {
+            await sendMail({
+                to: user.Email,
+                subject: 'Réinitialisation de votre mot de passe',
+                html: `<p>Bonjour ${escapeHtml(user.NomAgent || '')},</p>` +
+                      `<p>Pour choisir un nouveau mot de passe, cliquez sur ce lien (valable 5 minutes) :</p>` +
+                      `<p><a href="${resetLink}">${resetLink}</a></p>` +
+                      `<p>Si vous n'êtes pas à l'origine de cette demande, ignorez ce message.</p>`
+            });
+        } catch (mailErr) {
+            console.error('Envoi du mail de réinitialisation impossible:', mailErr.message);
+        }
+        if (process.env.NODE_ENV === 'development') {
+            console.log(`Lien de réinitialisation (dev) pour ${user.Email}: ${resetLink}`);
+        }
 
         res.json({
             message: 'If the email exists, a reset link has been sent',
