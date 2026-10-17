@@ -16,6 +16,21 @@ test.describe('Devises et devise de référence', () => {
         await expect(page.getByText(/^\s*Référence\s*$/)).toHaveCount(1)
     })
 
+    test('la devise de référence du Gabon est le franc CFA, affiché « F XAF »', async ({ page }) => {
+        const api = await apiAs('admin')
+        const devises = await (await api.get('devises')).json()
+        const ref = devises.find(d => d.est_reference === true || d.est_reference === 1)
+        expect(ref.Symbole).toBe('F XAF')
+        expect(ref.libelle).toBe('Franc CFA')
+        await api.dispose()
+
+        await page.goto('/devises')
+        await expect(page.getByText(/TAUX DE CHANGE VERS FRANC CFA/i).first()).toBeVisible().catch(() => {})
+        const texte = await page.locator('body').innerText()
+        expect(texte).toContain('F XAF')
+        expect(texte).not.toMatch(/Franc Congolais|\bFC\b/)
+    })
+
     test('création puis modification d\'une devise fictive par l\'interface', async ({ page }) => {
         const libelle = `E2E Dinar fictif ${RUN}`
         await page.goto('/devises')

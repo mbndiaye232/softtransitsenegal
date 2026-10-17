@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import {
     FileSpreadsheet, Plus, Search, Trash2, Edit, ArrowLeft,
-    CheckCircle2, AlertCircle, Save, ShieldCheck, ClipboardList, Hash, Layers
+    CheckCircle2, AlertCircle, Save, ShieldCheck, ClipboardList, Hash, Layers, Eye
 } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { regimesAPI } from '../services/api'
@@ -21,6 +21,31 @@ function Toast({ toasts }) {
                 </div>
             ))}
         </div>
+    )
+}
+
+// Bulle en position fixe : le tableau est dans un conteneur à défilement qui rognerait une bulle absolue
+function RegimeInfo({ regime, codeAdditionnel }) {
+    const [pos, setPos] = useState(null)
+    const show = (e) => {
+        const r = e.currentTarget.getBoundingClientRect()
+        const x = Math.min(Math.max(r.left + r.width / 2, 160), window.innerWidth - 160)
+        setPos(r.top < 100 ? { x, y: r.bottom + 8, below: true } : { x, y: r.top - 8, below: false })
+    }
+    return (
+        <>
+            <button type="button" className="rd-ab" aria-label="Voir le régime et le code additionnel"
+                onMouseEnter={show} onMouseLeave={() => setPos(null)} onFocus={show} onBlur={() => setPos(null)}
+                style={{ padding:'0.375rem', borderRadius:'0.5rem', border:'none', background:'transparent', color:'#94a3b8', cursor:'help', transition:'all 0.15s' }}>
+                <Eye size={15}/>
+            </button>
+            {pos && (
+                <div role="tooltip" style={{ position:'fixed', left:pos.x, top:pos.y, transform:`translate(-50%, ${pos.below ? '0' : '-100%'})`, zIndex:300, background:'#0f172a', color:'white', padding:'0.625rem 0.875rem', borderRadius:'0.625rem', fontSize:'0.78rem', lineHeight:1.55, maxWidth:320, boxShadow:'0 10px 25px -5px rgba(0,0,0,0.3)', pointerEvents:'none' }}>
+                    <div><span style={{ opacity:0.65 }}>Régime : </span><strong>{regime || '—'}</strong></div>
+                    <div><span style={{ opacity:0.65 }}>Code additionnel : </span>{codeAdditionnel || '—'}</div>
+                </div>
+            )}
+        </>
     )
 }
 
@@ -215,6 +240,7 @@ export default function RegimesDeclarationPage() {
                                         </td>
                                         <td style={{ padding:'1rem 1.25rem', borderBottom:'1px solid #f1f5f9' }}>
                                             <div style={{ display:'flex', gap:'0.3rem', justifyContent:'flex-end' }}>
+                                                <RegimeInfo regime={r.regime} codeAdditionnel={r.code_additionnel} />
                                                 <button className="rd-ab" onClick={() => { setEditingId(r.IDRegimeDeclaration); setFormData({ CodeRegimeDeclaration:r.CodeRegimeDeclaration, LibelleRegimeDeclaration:r.LibelleRegimeDeclaration, Observations:r.Observations||'' }) }} style={{ padding:'0.375rem', borderRadius:'0.5rem', border:'none', background:'transparent', color:'#94a3b8', cursor:'pointer', transition:'all 0.15s' }}><Edit size={15}/></button>
                                                 <button className="rd-adel" onClick={() => handleDelete(r.IDRegimeDeclaration)} style={{ padding:'0.375rem', borderRadius:'0.5rem', border:'none', background:'transparent', color:'#94a3b8', cursor:'pointer', transition:'all 0.15s' }}><Trash2 size={15}/></button>
                                             </div>
