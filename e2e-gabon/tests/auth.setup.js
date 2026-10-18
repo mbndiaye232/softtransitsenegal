@@ -19,3 +19,18 @@ for (const [nom, login, password] of COMPTES) {
         await page.context().storageState({ path: `.auth/${nom}.json` })
     })
 }
+
+// Session du super administrateur (compte n° 1 de la base de test) : jeton signé avec le secret local,
+// car son mot de passe réel n'est pas connu des tests.
+setup('session super administrateur', async () => {
+    const fs = require('node:fs')
+    const backend = require('node:path').join(__dirname, '..', '..', 'backend')
+    require(require('node:path').join(backend, 'node_modules', 'dotenv')).config({ path: require('node:path').join(backend, '.env') })
+    const jwt = require(require('node:path').join(backend, 'node_modules', 'jsonwebtoken'))
+    const token = jwt.sign({ userId: 1 }, process.env.JWT_SECRET, { expiresIn: '2h' })
+    const state = { cookies: [], origins: [{ origin: 'http://localhost:5174', localStorage: [
+        { name: 'token', value: token }, { name: 'user', value: JSON.stringify({ id: 1 }) },
+    ] }] }
+    fs.mkdirSync('.auth', { recursive: true })
+    fs.writeFileSync('.auth/super.json', JSON.stringify(state))
+})

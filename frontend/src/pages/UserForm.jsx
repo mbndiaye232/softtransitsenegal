@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { usersAPI, groupesAPI } from '../services/api'
+import { useAuth } from '../context/AuthContext'
 import PermissionMatrix from '../components/PermissionMatrix'
 import {
     Save, User, Mail, Phone, Smartphone, MapPin, Briefcase,
@@ -65,6 +66,7 @@ export default function UserForm() {
     const navigate = useNavigate()
     const { id }   = useParams()
     const isEdit   = Boolean(id)
+    const { user: currentUser } = useAuth()
 
     const [loading, setLoading]               = useState(isEdit)
     const [saving, setSaving]                 = useState(false)
@@ -78,6 +80,9 @@ export default function UserForm() {
         FonctionAgent:'', Tel:'', Cel:'', adresse:'', IDGroupes:'',
         recevoir_alerte_suspension: false
     })
+
+    // Le serveur refuse de changer son propre rôle ou celui d'un super administrateur : champ verrouillé
+    const roleVerrouille = isEdit && (formData.role === 'SUPER_ADMIN' || String(id) === String(currentUser?.id))
 
     useEffect(() => {
         loadGroupes()
@@ -264,8 +269,10 @@ export default function UserForm() {
                                     value={formData.password} onChange={handleChange}/>
                             </Field>
                             <Field label="Rôle d'Accès Global" required span={4}>
-                                <select name="role" className="uf-sel" style={{ ...inp, appearance:'auto', cursor:'pointer' }} required
-                                    value={formData.role} onChange={handleChange}>
+                                <select name="role" className="uf-sel" style={{ ...inp, appearance:'auto', cursor: roleVerrouille ? 'not-allowed' : 'pointer', opacity: roleVerrouille ? 0.7 : 1 }} required
+                                    value={formData.role} onChange={handleChange} disabled={roleVerrouille}
+                                    title={roleVerrouille ? 'Le rôle de ce compte ne peut pas être modifié ici : ni votre propre rôle, ni celui d’un super administrateur' : undefined}>
+                                    {formData.role === 'SUPER_ADMIN' && <option value="SUPER_ADMIN">Super administrateur</option>}
                                     <option value="USER">Collaborateur (Droits restreints)</option>
                                     <option value="ADMIN">Administrateur (Contrôle total)</option>
                                 </select>
