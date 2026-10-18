@@ -1,7 +1,7 @@
 /**
  * Sommiers — Page principale (v2)
  *
- * Liste des sommiers (régimes suspensifs filtrés : code ^S, exclus S1x / S2x).
+ * Liste des sommiers (seuls les régimes de type Suspensif sont proposés).
  * Création avec articles figés à la déclaration + entrepôt par article.
  * Drawer : Détail / Articles / Apurements.
  */
@@ -22,11 +22,8 @@ const fmt = (d) => d ? new Date(d).toLocaleDateString('fr-FR') : '—';
 const fmtNum = (n) => n != null ? Number(n).toLocaleString('fr-FR') : '—';
 const todayStr = () => new Date().toISOString().slice(0, 10);
 
-/** Filtre régimes éligibles aux sommiers : commence par S, pas S1* ni S2*. */
-const isSommierRegime = (code) => {
-    const c = String(code || '').trim().toUpperCase();
-    return /^S/.test(c) && !/^S[12]/.test(c);
-};
+/** Régimes éligibles aux sommiers : type Suspensif (donnée de la table des régimes). */
+const isSommierRegime = (regime) => regime?.type_regime_code === 'SUSPENSIF';
 
 /** Couleur d'échéance selon jours restants (cf. spec PR A). */
 function echeanceColor(daysLeft) {
@@ -407,7 +404,7 @@ function CreateSommierModal({ onClose, onCreated, showMsg }) {
                 ]);
                 // Filtrer régimes éligibles
                 const allRegimes = Array.isArray(r.data) ? r.data : (r.data?.data || []);
-                setRegimes(allRegimes.filter(x => isSommierRegime(x.CodeRegimeDeclaration || x.code)));
+                setRegimes(allRegimes.filter(isSommierRegime));
                 setClients(Array.isArray(c.data) ? c.data : (c.data?.data || []));
                 setDossiers(Array.isArray(d.data) ? d.data : (d.data?.data || []));
                 setEntrepots(Array.isArray(e.data) ? e.data : []);
@@ -469,7 +466,7 @@ function CreateSommierModal({ onClose, onCreated, showMsg }) {
                             ))}
                         </select>
                         {regimes.length === 0 && (
-                            <small style={{ color: '#dc2626' }}>Aucun régime éligible (codes S* hors S1*/S2*)</small>
+                            <small style={{ color: '#dc2626' }}>Aucun régime suspensif disponible (voir Paramètres → Régimes de déclaration)</small>
                         )}
                     </Field>
                     <Field label="N° Déclaration * (unique global)">
