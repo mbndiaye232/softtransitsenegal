@@ -45,6 +45,13 @@ export default function FloatingNav() {
                     display: flex;
                     align-items: flex-end;
                     gap: 0.75rem;
+                    /* Le conteneur couvre une large bande même replié : il ne doit pas intercepter les clics
+                       destinés à la page (ex. boutons en bas d'une fenêtre modale) ; seuls ses boutons le font. */
+                    pointer-events: none;
+                }
+
+                .floating-nav-wrapper > * {
+                    pointer-events: auto;
                 }
 
                 .floating-nav-core {
