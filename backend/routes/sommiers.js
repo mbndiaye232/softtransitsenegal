@@ -10,8 +10,7 @@
  *
  *   GET /api/sommiers/by-entrepot/:entrepot_id  - vue articles agrégée par entrepôt
  *
- * Filtre regimes : code commence par 'S' et NOT REGEXP '^S[12]'
- *                  (inclus : S, S3*, S7*, SA* — exclus : S1*, S2*)
+ * Filtre regimes : seuls les régimes de type SUSPENSIF (regimedeclaration.type_regime_id) sont éligibles.
  */
 const express = require('express');
 const router  = express.Router();
@@ -263,14 +262,17 @@ router.post('/', checkPermission('SOMMIERS', 'can_create'), async (req, res) => 
             return res.status(400).json({ error: 'Au moins un article requis' });
         }
 
-        // Vérifier que le régime commence par S et n'est pas S1*/S2*
+        // Vérifier que le régime est de type Suspensif
         const [[reg]] = await pool.query(
-            `SELECT CodeRegimeDeclaration FROM regimedeclaration WHERE IDRegimeDeclaration = ?`,
+            `SELECT rd.CodeRegimeDeclaration, tr.code AS type_code
+             FROM regimedeclaration rd
+             LEFT JOIN type_regime tr ON tr.id = rd.type_regime_id
+             WHERE rd.IDRegimeDeclaration = ?`,
             [IDRegimeDeclaration]
         );
         if (!reg) return res.status(400).json({ error: 'Régime introuvable' });
-        if (!/^S/i.test(reg.CodeRegimeDeclaration) || /^S[12]/i.test(reg.CodeRegimeDeclaration)) {
-            return res.status(400).json({ error: `Régime ${reg.CodeRegimeDeclaration} non éligible aux sommiers (doit commencer par S, exclus S1*/S2*)` });
+        if (reg.type_code !== 'SUSPENSIF') {
+            return res.status(400).json({ error: `Régime ${reg.CodeRegimeDeclaration} non éligible aux sommiers (seuls les régimes de type Suspensif le sont)` });
         }
 
         // Vérifier unicité globale du n° déclaration

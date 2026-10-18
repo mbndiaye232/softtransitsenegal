@@ -25,7 +25,7 @@ function Toast({ toasts }) {
 }
 
 // Bulle en position fixe : le tableau est dans un conteneur à défilement qui rognerait une bulle absolue
-function RegimeInfo({ regime, codeAdditionnel }) {
+function RegimeInfo({ regime, codeAdditionnel, type, categorie }) {
     const [pos, setPos] = useState(null)
     const show = (e) => {
         const r = e.currentTarget.getBoundingClientRect()
@@ -43,6 +43,7 @@ function RegimeInfo({ regime, codeAdditionnel }) {
                 <div role="tooltip" style={{ position:'fixed', left:pos.x, top:pos.y, transform:`translate(-50%, ${pos.below ? '0' : '-100%'})`, zIndex:300, background:'#0f172a', color:'white', padding:'0.625rem 0.875rem', borderRadius:'0.625rem', fontSize:'0.78rem', lineHeight:1.55, maxWidth:320, boxShadow:'0 10px 25px -5px rgba(0,0,0,0.3)', pointerEvents:'none' }}>
                     <div><span style={{ opacity:0.65 }}>Régime : </span><strong>{regime || '—'}</strong></div>
                     <div><span style={{ opacity:0.65 }}>Code additionnel : </span>{codeAdditionnel || '—'}</div>
+                    <div><span style={{ opacity:0.65 }}>Type : </span><strong>{type || '—'}</strong>{categorie ? <span style={{ opacity:0.8 }}> · {categorie}</span> : null}</div>
                 </div>
             )}
         </>
@@ -240,7 +241,7 @@ export default function RegimesDeclarationPage() {
                                         </td>
                                         <td style={{ padding:'1rem 1.25rem', borderBottom:'1px solid #f1f5f9' }}>
                                             <div style={{ display:'flex', gap:'0.3rem', justifyContent:'flex-end' }}>
-                                                <RegimeInfo regime={r.regime} codeAdditionnel={r.code_additionnel} />
+                                                <RegimeInfo regime={r.regime} codeAdditionnel={r.code_additionnel} type={r.type_regime_libelle} categorie={r.categorie_regime_libelle} />
                                                 <button className="rd-ab" onClick={() => { setEditingId(r.IDRegimeDeclaration); setFormData({ CodeRegimeDeclaration:r.CodeRegimeDeclaration, LibelleRegimeDeclaration:r.LibelleRegimeDeclaration, Observations:r.Observations||'' }) }} style={{ padding:'0.375rem', borderRadius:'0.5rem', border:'none', background:'transparent', color:'#94a3b8', cursor:'pointer', transition:'all 0.15s' }}><Edit size={15}/></button>
                                                 <button className="rd-adel" onClick={() => handleDelete(r.IDRegimeDeclaration)} style={{ padding:'0.375rem', borderRadius:'0.5rem', border:'none', background:'transparent', color:'#94a3b8', cursor:'pointer', transition:'all 0.15s' }}><Trash2 size={15}/></button>
                                             </div>

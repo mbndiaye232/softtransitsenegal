@@ -11,7 +11,13 @@ router.use(tenantMiddleware);
 router.get('/', checkPermission('REGIMES', 'can_view'), async (req, res) => {
     try {
         const [regimes] = await pool.query(
-            'SELECT * FROM regimedeclaration ORDER BY CodeRegimeDeclaration'
+            `SELECT rd.*,
+                    tr.code AS type_regime_code, tr.libelle AS type_regime_libelle,
+                    cr.libelle AS categorie_regime_libelle
+             FROM regimedeclaration rd
+             LEFT JOIN type_regime tr ON tr.id = rd.type_regime_id
+             LEFT JOIN categorie_regime cr ON cr.id = rd.categorie_regime_id
+             ORDER BY rd.CodeRegimeDeclaration, rd.IDRegimeDeclaration`
         );
         res.json(regimes);
     } catch (error) {
