@@ -89,3 +89,16 @@ re-téléverser le logo et les cachets depuis la page Société, ils partent dir
 - Ouvrir l'adresse du frontend, se connecter, recharger une page profonde (par exemple
   `/dossiers`) : elle doit s'afficher et non renvoyer une 404.
 - Après avoir téléversé le logo, générer un PDF et vérifier qu'il apparaît.
+
+## Sauvegarde des documents R2
+
+R2 n'a ni versions ni corbeille. `backend/scripts/copy-r2.js` recopie les objets nouveaux ou modifiés
+du bucket des documents vers un second bucket, sans jamais rien supprimer dans la copie.
+
+1. Créer un second bucket R2 (de préférence dans un autre compte Cloudflare) et renseigner `R2_COPY_BUCKET_NAME`
+   (et `R2_COPY_ACCOUNT_ID`, `R2_COPY_ACCESS_KEY_ID`, `R2_COPY_SECRET_ACCESS_KEY` si c'est un autre compte).
+2. Essai à blanc : `node scripts/copy-r2.js --dry-run` (depuis `backend/`), puis `node scripts/copy-r2.js`.
+3. Planifier la commande chaque nuit (planificateur de tâches Windows, cron ou tâche planifiée Render).
+   Le code de sortie est 1 si un objet n'a pas pu être copié.
+
+La clé `DOCUMENT_ENCRYPTION_KEY` n'est dans aucune sauvegarde : la conserver à part, sans elle les documents chiffrés sont illisibles.
