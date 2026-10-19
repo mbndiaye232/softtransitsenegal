@@ -80,6 +80,7 @@ export default function BackupManager() {
     const [isRunningBackup, setIsRunningBackup] = useState(false);
     const [message, setMessage]               = useState({ type: '', text: '' });
     const [hoveredRow, setHoveredRow]         = useState(null);
+    const [lastError, setLastError]           = useState(null);
 
     useEffect(() => { fetchData(); }, []);
 
@@ -91,6 +92,7 @@ export default function BackupManager() {
                 api.get('/backups/history')
             ]);
             if (configRes.data) {
+                setLastError(configRes.data.last_error || null);
                 setConfig({
                     backup_directory: configRes.data.backup_directory || '',
                     auto_backup_enabled: !!configRes.data.auto_backup_enabled,
@@ -100,7 +102,7 @@ export default function BackupManager() {
             }
             setHistory(historyRes.data || []);
         } catch (error) {
-            setMessage({ type: 'error', text: 'Impossible de charger la configuration de sauvegarde.' });
+            setMessage({ type: 'error', text: error.response?.data?.error || 'Impossible de charger la configuration de sauvegarde.' });
         } finally {
             setIsLoading(false);
         }
@@ -379,6 +381,11 @@ export default function BackupManager() {
                                         <div style={{ fontSize:'0.78rem', color:'#64748b', marginTop:'2px' }}>
                                             {config.auto_backup_enabled ? '✅ Actif — sauvegarde automatique en tâche de fond.' : 'Activez pour sauvegarder automatiquement en tâche de fond.'}
                                         </div>
+                                        {lastError && (
+                                            <div style={{ fontSize:'0.78rem', color:'#b91c1c', marginTop:'4px', fontWeight:600 }}>
+                                                ⚠ Dernier échec ({formatDate(lastError.at)}) : {lastError.message}
+                                            </div>
+                                        )}
                                     </div>
                                     <Toggle
                                         checked={config.auto_backup_enabled}

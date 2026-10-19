@@ -19,7 +19,7 @@ router.use(requireSuperAdmin);
 router.get('/config', async (req, res) => {
     try {
         const config = await backupService.getConfig();
-        res.json(config);
+        res.json({ ...config, last_error: backupService.lastError, running: backupService.running });
     } catch (err) {
         console.error('Error fetching backup config:', err);
         res.status(500).json({ error: 'Erreur serveur interne' });
