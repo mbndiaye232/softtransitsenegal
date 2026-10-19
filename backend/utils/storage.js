@@ -16,10 +16,10 @@ const r2Ready = !!(
     process.env.CLOUDFLARE_R2_SECRET_ACCESS_KEY
 );
 
-let uploadFile, downloadFile, deleteFile;
+let uploadFile, downloadFile, deleteFile, listFiles, openFile;
 
 if (r2Ready) {
-    const { S3Client, PutObjectCommand, GetObjectCommand, DeleteObjectCommand } = require('@aws-sdk/client-s3');
+    const { S3Client, PutObjectCommand, GetObjectCommand, DeleteObjectCommand, ListObjectsV2Command } = require('@aws-sdk/client-s3');
 
     const r2Client = new S3Client({
         region: 'auto',
@@ -46,6 +46,18 @@ if (r2Ready) {
         await r2Client.send(new DeleteObjectCommand({ Bucket: BUCKET, Key: key }));
     };
 
+    // Pour les sauvegardes : liste de tous les objets du bucket, puis flux de lecture d'un objet.
+    listFiles = async function* () {
+        let token;
+        do {
+            const res = await r2Client.send(new ListObjectsV2Command({ Bucket: BUCKET, ContinuationToken: token }));
+            for (const o of res.Contents || []) yield { key: o.Key, size: o.Size };
+            token = res.IsTruncated ? res.NextContinuationToken : undefined;
+        } while (token);
+    };
+
+    openFile = async (key) => (await r2Client.send(new GetObjectCommand({ Bucket: BUCKET, Key: key }))).Body;
+
     console.log(`✓ Stockage fichiers : Cloudflare R2 (bucket ${BUCKET})`);
 } else {
     const ROOT = path.join(__dirname, '..', 'uploads');
@@ -69,4 +81,5 @@ if (r2Ready) {
     console.log('✓ Stockage fichiers : disque local (backend/uploads)');
 }
 
-module.exports = { uploadFile, downloadFile, deleteFile };
+// listFiles / openFile : R2 uniquement (en local, la sauvegarde archive directement backend/uploads)
+module.exports = { uploadFile, downloadFile, deleteFile, listFiles, openFile, isR2: r2Ready };
