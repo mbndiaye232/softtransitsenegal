@@ -147,8 +147,25 @@ export default function BackupManager() {
         }
     };
 
-    const downloadBackup = (filename) => {
-        window.open(`${process.env.VITE_API_URL || 'http://localhost:3001/api'}/backups/download/${filename}`, '_blank');
+    // Téléchargement via l'API (adresse du serveur + jeton de connexion) : un simple lien ne transmet pas le jeton
+    // et, en production, pointait vers localhost.
+    const downloadBackup = async (filename) => {
+        try {
+            const res = await api.get(`/backups/download/${encodeURIComponent(filename)}`, { responseType: 'blob' });
+            const url = URL.createObjectURL(res.data);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = filename;
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+            URL.revokeObjectURL(url);
+        } catch (error) {
+            setMessage({
+                type: 'error',
+                text: error.response?.status === 404 ? 'Fichier de sauvegarde introuvable.' : 'Le téléchargement de la sauvegarde a échoué.'
+            });
+        }
     };
 
     const fmtSize = (bytes) => formatBytes(bytes);
