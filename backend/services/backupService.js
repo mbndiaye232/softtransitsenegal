@@ -5,6 +5,7 @@ const archiver = require('archiver');
 const cron = require('node-cron');
 
 const pool = require('../config/database');
+const storage = require('../utils/storage');
 
 // Emplacement de pg_dump : PG_DUMP_PATH (.env), sinon la version la plus récente installée
 // dans C:\Program Files\PostgreSQL (Windows), sinon « pg_dump » du PATH.
@@ -24,16 +25,20 @@ function pgDumpExecutable() {
 }
 
 function pgDump(targetFile) {
+    // Hébergeur (Render) : une seule chaîne DATABASE_URL ; en local : variables PG_* séparées
+    const connection = process.env.DATABASE_URL
+        ? ['--dbname', process.env.DATABASE_URL]
+        : ['--host', process.env.PG_HOST || 'localhost', '--port', process.env.PG_PORT || '5433',
+           '--username', process.env.PG_USER, process.env.PG_DATABASE || 'softtransit'];
+    const env = { ...process.env, PGPASSWORD: process.env.PG_PASSWORD };
+    if (process.env.DATABASE_URL && !env.PGSSLMODE) env.PGSSLMODE = 'require';
     return new Promise((resolve, reject) => {
         execFile(pgDumpExecutable(), [
-            '--host', process.env.PG_HOST || 'localhost',
-            '--port', process.env.PG_PORT || '5433',
-            '--username', process.env.PG_USER,
+            ...connection,
             '--format', 'plain',
             '--no-owner',
             '--file', targetFile,
-            process.env.PG_DATABASE || 'softtransit',
-        ], { env: { ...process.env, PGPASSWORD: process.env.PG_PASSWORD } }, (err, stdout, stderr) => {
+        ], { env }, (err, stdout, stderr) => {
             if (err) return reject(new Error(`pg_dump a échoué : ${stderr || err.message}`));
             resolve();
         });
@@ -192,13 +197,26 @@ class BackupService {
                 // Add SQL Dump
                 archive.file(tempSqlFile, { name: 'database_dump.sql' });
 
-                // Add Uploads directory (fichiers stockés par utils/storage.js)
+                // Add Uploads directory (stockage disque local de utils/storage.js)
                 const uploadsPath = path.join(__dirname, '../uploads');
                 if (fs.existsSync(uploadsPath)) {
                     archive.directory(uploadsPath, 'uploads');
                 }
 
-                archive.finalize();
+                // Stockage Cloudflare R2 : chaque objet du bucket est ajouté sous uploads/<clé>, un à la fois
+                // (mêmes chemins que le disque local : une restauration = extraire uploads/ dans backend/uploads)
+                const addR2 = async () => {
+                    if (!storage.isR2) return;
+                    let n = 0;
+                    for await (const { key } of storage.listFiles()) {
+                        const entry = new Promise((ok) => archive.once('entry', ok));
+                        archive.append(await storage.openFile(key), { name: path.posix.join('uploads', key.replace(/^uploads\//, '')) });
+                        await entry;
+                        n++;
+                    }
+                    console.log(`[BackupService] ${n} fichier(s) Cloudflare R2 archivé(s)`);
+                };
+                addR2().then(() => archive.finalize()).catch(reject);
             });
 
             console.log('[BackupService] Backup completed:', finalZipFile);
