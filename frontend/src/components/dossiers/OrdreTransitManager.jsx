@@ -168,18 +168,18 @@ const OrdreTransitManager = ({ dossierId }) => {
                 .ot-manager-container { background: white; border-radius: 1.5rem; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); overflow: hidden; margin-top: 2rem; }
                 .ot-header { padding: 1.5rem 2rem; background: #fcfcfd; border-bottom: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center; }
                 .ot-title { display: flex; align-items: center; gap: 0.75rem; }
-                .ot-icon { padding: 0.5rem; background: #6366f1; color: white; border-radius: 0.75rem; display: flex; }
+                .ot-icon { padding: 0.5rem; background: #3b82f6; color: white; border-radius: 0.75rem; display: flex; }
                 .ot-title h3 { font-size: 1.125rem; font-weight: 800; color: #0f172a; margin: 0; }
                 .ot-content { padding: 2rem; }
-                .ot-active-card { padding: 1.5rem; background: #f5f3ff; border: 1px solid #ddd6fe; border-radius: 1rem; }
+                .ot-active-card { padding: 1.5rem; background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 1rem; }
                 .ot-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
                 .form-group { display: flex; flexDirection: column; gap: 0.5rem; }
                 .form-label { font-size: 0.75rem; font-weight: 700; color: #64748b; text-transform: uppercase; }
                 .form-input { padding: 0.75rem; border: 1px solid #e2e8f0; border-radius: 0.5rem; outline: none; }
-                .form-input:focus { border-color: #6366f1; box-shadow: 0 0 0 2px #e0e7ff; }
+                .form-input:focus { border-color: #3b82f6; box-shadow: 0 0 0 2px #dbeafe; }
                 .badge-info { background: white; padding: 0.25rem 0.75rem; border-radius: 99px; font-size: 0.75rem; font-weight: 700; color: #64748b; border: 1px solid #e2e8f0; display: flex; align-items: center; gap: 0.375rem; }
-                .btn-primary { background: #6366f1; color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 0.5rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; transition: all 0.2s; }
-                .btn-primary:hover { background: #4f46e5; }
+                .btn-primary { background: #3b82f6; color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 0.5rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; transition: all 0.2s; }
+                .btn-primary:hover { background: #2563eb; }
                 .btn-outline { background: white; color: #64748b; border: 1px solid #e2e8f0; padding: 0.75rem 1.5rem; border-radius: 0.5rem; font-weight: 700; cursor: pointer; }
                 .regime-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-top: 1rem; }
                 .doc-table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
@@ -209,7 +209,7 @@ const OrdreTransitManager = ({ dossierId }) => {
                     <div className="ot-active-card">
                         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1.5rem' }}>
                             <div>
-                                <span style={{ fontSize: '0.625rem', fontWeight: 800, color: '#6366f1', textTransform: 'uppercase' }}>Numéro OT</span>
+                                <span style={{ fontSize: '0.625rem', fontWeight: 800, color: '#3b82f6', textTransform: 'uppercase' }}>Numéro OT</span>
                                 <h4 style={{ margin: 0, fontSize: '1.25rem' }}>{ot.NumeroOT}</h4>
                             </div>
                             <div style={{ textAlign: 'right' }}>

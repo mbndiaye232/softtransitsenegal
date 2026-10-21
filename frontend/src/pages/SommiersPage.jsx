@@ -175,7 +175,7 @@ export default function SommiersPage() {
 
             {/* ── HERO HEADER ── */}
             <div style={{
-                background: 'linear-gradient(135deg, #0c1a3a 0%, #1e3a8a 50%, #1d4ed8 100%)',
+                background: 'var(--hero-gradient)',
                 padding: '2.5rem 2.5rem 4rem',
                 position: 'relative', overflow: 'hidden',
             }}>

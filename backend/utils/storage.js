@@ -29,7 +29,7 @@ if (r2Ready) {
             secretAccessKey: process.env.CLOUDFLARE_R2_SECRET_ACCESS_KEY,
         },
     });
-    const BUCKET = process.env.CLOUDFLARE_R2_BUCKET_NAME || 'softtransitgabon-documents';
+    const BUCKET = process.env.CLOUDFLARE_R2_BUCKET_NAME || 'softtransitsenegal-documents';
 
     uploadFile = async (key, buffer, contentType = 'application/octet-stream') => {
         await r2Client.send(new PutObjectCommand({ Bucket: BUCKET, Key: key, Body: buffer, ContentType: contentType }));

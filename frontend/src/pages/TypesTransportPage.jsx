@@ -11,14 +11,14 @@ const ACC = '#0e7490'
 const ACC2 = '#0891b2'
 const LIGHT = '#ecfeff'
 const BORDER = '#a5f3fc'
-const GRAD = 'linear-gradient(135deg,#0c4a6e 0%,#0e7490 45%,#0891b2 100%)'
+const GRAD = 'var(--hero-gradient)'
 
 const TYPE_CFG = {
     maritime: { color:'#1d4ed8', bg:'#eff6ff', border:'#bfdbfe', icon: Ship },
     navire:   { color:'#1d4ed8', bg:'#eff6ff', border:'#bfdbfe', icon: Ship },
     mer:      { color:'#1d4ed8', bg:'#eff6ff', border:'#bfdbfe', icon: Ship },
-    aérien:   { color:'#7c3aed', bg:'#f5f3ff', border:'#ddd6fe', icon: Plane },
-    avion:    { color:'#7c3aed', bg:'#f5f3ff', border:'#ddd6fe', icon: Plane },
+    aérien:   { color:'#1d4ed8', bg:'#eff6ff', border:'#bfdbfe', icon: Plane },
+    avion:    { color:'#1d4ed8', bg:'#eff6ff', border:'#bfdbfe', icon: Plane },
     terrestre:{ color:'#b45309', bg:'#fffbeb', border:'#fde68a', icon: Truck },
     camion:   { color:'#b45309', bg:'#fffbeb', border:'#fde68a', icon: Truck },
     route:    { color:'#b45309', bg:'#fffbeb', border:'#fde68a', icon: Truck },
@@ -126,7 +126,7 @@ export default function TypesTransportPage() {
     // Compute distribution
     const distrib = [
         { key:'maritime', label:'Maritime', icon: Ship, color:'#1d4ed8' },
-        { key:'aérien',   label:'Aérien',   icon: Plane, color:'#7c3aed' },
+        { key:'aérien',   label:'Aérien',   icon: Plane, color:'#1d4ed8' },
         { key:'terrestre',label:'Terrestre',icon: Truck, color:'#b45309' },
         { key:'train',    label:'Ferroviaire',icon:Train,color:'#059669' },
         { key:'',         label:'Autres',   icon:PackageOpen,color:'#0e7490' },

@@ -25,11 +25,11 @@ import { Link, useNavigate } from 'react-router-dom'
 
 /* ── couleur par catégorie ── */
 const CAT_COLORS = {
-    'Communications':         { accent: '#6366f1', light: '#eef2ff', border: '#c7d2fe', grad: 'linear-gradient(135deg,#4338ca,#6366f1)', dot: '#818cf8' },
-    'Logistique & Transport': { accent: '#0891b2', light: '#ecfeff', border: '#a5f3fc', grad: 'linear-gradient(135deg,#0e7490,#06b6d4)', dot: '#22d3ee' },
-    'Facturation & Douane':   { accent: '#d97706', light: '#fffbeb', border: '#fde68a', grad: 'linear-gradient(135deg,#b45309,#f59e0b)', dot: '#fbbf24' },
-    'Référentiels Métier':    { accent: '#7c3aed', light: '#faf5ff', border: '#ddd6fe', grad: 'linear-gradient(135deg,#5b21b6,#8b5cf6)', dot: '#a78bfa' },
-    'Sécurité & Maintenance': { accent: '#0f172a', light: '#f8fafc', border: '#e2e8f0', grad: 'linear-gradient(135deg,#0f172a,#334155)', dot: '#64748b' },
+    'Communications':         { accent: '#3b82f6', light: '#eff6ff', border: '#bfdbfe', grad: 'var(--hero-gradient)', dot: '#60a5fa' },
+    'Logistique & Transport': { accent: '#0891b2', light: '#ecfeff', border: '#a5f3fc', grad: 'var(--hero-gradient)', dot: '#22d3ee' },
+    'Facturation & Douane':   { accent: '#d97706', light: '#fffbeb', border: '#fde68a', grad: 'var(--hero-gradient)', dot: '#fbbf24' },
+    'Référentiels Métier':    { accent: '#1d4ed8', light: '#faf5ff', border: '#bfdbfe', grad: 'var(--hero-gradient)', dot: '#60a5fa' },
+    'Sécurité & Maintenance': { accent: '#0f172a', light: '#f8fafc', border: '#e2e8f0', grad: 'var(--hero-gradient)', dot: '#64748b' },
 }
 
 const categories = [
@@ -110,7 +110,7 @@ export default function SettingsHub() {
 
             {/* ── Hero ── */}
             <div style={{
-                background: 'linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #4338ca 100%)',
+                background: 'var(--hero-gradient)',
                 padding: '2rem 2rem 5.5rem',
                 position: 'relative', overflow: 'hidden'
             }}>
@@ -127,7 +127,7 @@ export default function SettingsHub() {
                 <div style={{
                     position: 'absolute', top: '20px', left: '40%',
                     width: '120px', height: '120px', borderRadius: '50%',
-                    background: 'rgba(99,102,241,0.15)', pointerEvents: 'none'
+                    background: 'rgba(59,130,246,0.15)', pointerEvents: 'none'
                 }} />
 
                 <button

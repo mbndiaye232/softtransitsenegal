@@ -78,7 +78,7 @@ export default function EntrepotsPage() {
 
             {/* ── HERO HEADER ── */}
             <div style={{
-                background: 'linear-gradient(135deg, #042f2e 0%, #134e4a 50%, #0f766e 100%)',
+                background: 'var(--hero-gradient)',
                 padding: '2.5rem 2.5rem 4rem',
                 position: 'relative', overflow: 'hidden',
             }}>
@@ -141,7 +141,7 @@ export default function EntrepotsPage() {
                         <div style={{ padding: '16px 24px', borderBottom: '1px solid #f0fdf4', background: '#f0fdf4', display: 'flex', gap: 24 }}>
                             <StatBar label="Total entrepôts" value={entrepots.length} color="#0f766e" />
                             <StatBar label="Publics" value={entrepots.filter(e => e.type_entrepot === 'PUBLIC').length} color="#0891b2" />
-                            <StatBar label="Privés" value={entrepots.filter(e => e.type_entrepot === 'PRIVE').length} color="#7c3aed" />
+                            <StatBar label="Privés" value={entrepots.filter(e => e.type_entrepot === 'PRIVE').length} color="#1d4ed8" />
                         </div>
                     )}
 
@@ -340,7 +340,7 @@ function EntrepotView({ entrepot, onBack, showMsg }) {
 
             {/* ── HERO HEADER ── */}
             <div style={{
-                background: 'linear-gradient(135deg, #042f2e 0%, #134e4a 50%, #0f766e 100%)',
+                background: 'var(--hero-gradient)',
                 padding: '2.5rem 2.5rem 4rem',
                 position: 'relative', overflow: 'hidden',
             }}>

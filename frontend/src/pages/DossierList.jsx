@@ -9,7 +9,7 @@ import {
 /* ─── Helpers mode transport ─────────────────────────────────────────────── */
 const MODE_CONFIG = {
     MA: { label: 'Maritime', icon: <Ship size={14} />,   bg: '#eff6ff', color: '#1d4ed8' },
-    AE: { label: 'Aérien',   icon: <Plane size={14} />,  bg: '#fdf4ff', color: '#7c3aed' },
+    AE: { label: 'Aérien',   icon: <Plane size={14} />,  bg: '#fdf4ff', color: '#1d4ed8' },
     TE: { label: 'Routier',  icon: <Truck size={14} />,  bg: '#fff7ed', color: '#c2410c' },
 }
 const modeConf = (m) => MODE_CONFIG[m] || { label: m || '—', icon: <FileText size={14} />, bg: '#f3f4f6', color: '#6b7280' }
@@ -107,7 +107,7 @@ export default function DossierList() {
 
     if (loading) return (
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '60vh' }}>
-            <div style={{ width: 36, height: 36, border: '3px solid #e5e7eb', borderTopColor: '#f59e0b', borderRadius: '50%', animation: 'spin .7s linear infinite' }} />
+            <div style={{ width: 36, height: 36, border: '3px solid #e5e7eb', borderTopColor: '#2563eb', borderRadius: '50%', animation: 'spin .7s linear infinite' }} />
             <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
         </div>
     )
@@ -117,7 +117,7 @@ export default function DossierList() {
 
             {/* ── HERO HEADER ── */}
             <div style={{
-                background: 'linear-gradient(135deg, #78350f 0%, #b45309 45%, #f59e0b 100%)',
+                background: 'var(--hero-gradient)',
                 padding: '2.5rem 2.5rem 4rem',
                 position: 'relative', overflow: 'hidden',
             }}>
@@ -145,7 +145,7 @@ export default function DossierList() {
                         style={{
                             display: 'flex', alignItems: 'center', gap: '8px',
                             padding: '12px 22px', borderRadius: '12px', border: 'none', cursor: 'pointer',
-                            background: 'white', color: '#b45309', fontSize: '14px', fontWeight: 700,
+                            background: 'white', color: '#1d4ed8', fontSize: '14px', fontWeight: 700,
                             boxShadow: '0 4px 16px rgba(0,0,0,.2)', transition: 'all .2s',
                         }}
                         onMouseEnter={e => { e.currentTarget.style.transform='translateY(-2px)'; e.currentTarget.style.boxShadow='0 8px 24px rgba(0,0,0,.25)' }}
@@ -165,7 +165,7 @@ export default function DossierList() {
                     boxShadow: '0 8px 32px rgba(0,0,0,.08)', padding: '20px 24px', marginBottom: '28px',
                     display: 'flex', alignItems: 'center', gap: '16px', flexWrap: 'wrap',
                 }}>
-                    <StatPill icon={<FolderOpen size={20} />} label="Total" value={counts.all} color="#f59e0b"
+                    <StatPill icon={<FolderOpen size={20} />} label="Total" value={counts.all} color="#2563eb"
                         active={filterBilled === 'all'} onClick={() => setFilterBilled('all')} />
                     <StatPill icon={<Clock size={20} />} label="En cours" value={counts.enCours} color="#2563eb"
                         active={false} />
@@ -183,7 +183,7 @@ export default function DossierList() {
                             type="text" placeholder="Rechercher code, libellé, client..."
                             value={searchTerm} onChange={e => setSearchTerm(e.target.value)}
                             style={{ width: '100%', boxSizing: 'border-box', padding: '10px 36px 10px 38px', border: '1.5px solid #e5e7eb', borderRadius: '10px', fontSize: '14px', outline: 'none', background: '#f9fafb', transition: 'border-color .15s' }}
-                            onFocus={e => e.target.style.borderColor='#f59e0b'}
+                            onFocus={e => e.target.style.borderColor='#2563eb'}
                             onBlur={e => e.target.style.borderColor='#e5e7eb'}
                         />
                         {searchTerm && (
@@ -241,16 +241,16 @@ export default function DossierList() {
                                         onClick={() => navigate(`/dossiers/${dossier.id}`)}
                                         onMouseEnter={() => setHoveredRow(dossier.id)}
                                         onMouseLeave={() => setHoveredRow(null)}
-                                        style={{ borderBottom: '1px solid #f1f5f9', background: isH ? '#fffbeb' : 'white', cursor: 'pointer', transition: 'background .15s' }}
+                                        style={{ borderBottom: '1px solid #f1f5f9', background: isH ? '#eff6ff' : 'white', cursor: 'pointer', transition: 'background .15s' }}
                                     >
                                         {/* Code */}
                                         <td style={{ padding: '16px 20px' }}>
                                             <span style={{
                                                 fontFamily: 'monospace', fontWeight: 700, fontSize: '12px',
-                                                color: isH ? '#b45309' : '#4f46e5',
-                                                background: isH ? '#fef3c7' : '#eff6ff',
+                                                color: isH ? '#1d4ed8' : '#2563eb',
+                                                background: isH ? '#dbeafe' : '#eff6ff',
                                                 padding: '4px 10px', borderRadius: '7px',
-                                                border: `1px solid ${isH ? '#fde68a' : '#dbeafe'}`,
+                                                border: `1px solid ${isH ? '#bfdbfe' : '#dbeafe'}`,
                                                 whiteSpace: 'nowrap', display: 'inline-block',
                                                 transition: 'all .15s',
                                             }}>
@@ -295,8 +295,8 @@ export default function DossierList() {
                                             <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
                                                 <span style={{
                                                     padding: '4px 10px', borderRadius: '8px', fontSize: '12px', fontWeight: 700,
-                                                    background: dossier.status === 'CLOSED' ? '#fef3c7' : '#f0fdf4',
-                                                    color:      dossier.status === 'CLOSED' ? '#92400e'  : '#15803d',
+                                                    background: dossier.status === 'CLOSED' ? '#dbeafe' : '#f0fdf4',
+                                                    color:      dossier.status === 'CLOSED' ? '#1e3a8a'  : '#15803d',
                                                 }}>
                                                     {dossier.status === 'CLOSED' ? 'Clôturé' : 'En cours'}
                                                 </span>
@@ -316,9 +316,9 @@ export default function DossierList() {
                                                 <button
                                                     onClick={e => { e.stopPropagation(); navigate(`/dossiers/${dossier.id}`) }}
                                                     title="Modifier"
-                                                    style={{ width: '32px', height: '32px', borderRadius: '8px', border: '1.5px solid #e5e7eb', background: isH ? '#fef3c7' : 'white', color: isH ? '#b45309' : '#9ca3af', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all .15s' }}
+                                                    style={{ width: '32px', height: '32px', borderRadius: '8px', border: '1.5px solid #e5e7eb', background: isH ? '#dbeafe' : 'white', color: isH ? '#1d4ed8' : '#9ca3af', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all .15s' }}
                                                     onMouseEnter={e => { e.currentTarget.style.background='#eff6ff'; e.currentTarget.style.color='#2563eb'; e.currentTarget.style.borderColor='#bfdbfe' }}
-                                                    onMouseLeave={e => { e.currentTarget.style.background=isH?'#fef3c7':'white'; e.currentTarget.style.color=isH?'#b45309':'#9ca3af'; e.currentTarget.style.borderColor='#e5e7eb' }}
+                                                    onMouseLeave={e => { e.currentTarget.style.background=isH?'#dbeafe':'white'; e.currentTarget.style.color=isH?'#1d4ed8':'#9ca3af'; e.currentTarget.style.borderColor='#e5e7eb' }}
                                                 >
                                                     <Edit2 size={14} />
                                                 </button>
@@ -333,7 +333,7 @@ export default function DossierList() {
                                                 </button>
                                                 <button
                                                     onClick={e => { e.stopPropagation(); navigate(`/dossiers/${dossier.id}`) }}
-                                                    style={{ width: '32px', height: '32px', borderRadius: '8px', border: '1.5px solid #e5e7eb', background: isH ? '#f59e0b' : 'white', color: isH ? 'white' : '#9ca3af', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all .15s' }}
+                                                    style={{ width: '32px', height: '32px', borderRadius: '8px', border: '1.5px solid #e5e7eb', background: isH ? '#2563eb' : 'white', color: isH ? 'white' : '#9ca3af', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all .15s' }}
                                                 >
                                                     <ChevronRight size={15} />
                                                 </button>
@@ -354,7 +354,7 @@ export default function DossierList() {
                                             {searchTerm ? `Aucun dossier ne correspond à "${searchTerm}"` : 'Créez votre premier dossier de transit'}
                                         </p>
                                         {!searchTerm && (
-                                            <button onClick={() => navigate('/dossiers/new')} style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '10px 20px', borderRadius: '10px', border: 'none', cursor: 'pointer', background: '#f59e0b', color: 'white', fontSize: '14px', fontWeight: 700 }}>
+                                            <button onClick={() => navigate('/dossiers/new')} style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '10px 20px', borderRadius: '10px', border: 'none', cursor: 'pointer', background: '#2563eb', color: 'white', fontSize: '14px', fontWeight: 700 }}>
                                                 <Plus size={16} /> Nouveau dossier
                                             </button>
                                         )}

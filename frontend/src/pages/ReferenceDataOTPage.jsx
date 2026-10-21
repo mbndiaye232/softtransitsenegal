@@ -13,7 +13,7 @@ const TABS = [
         id: 'incoterms',
         label: 'Incoterms',
         icon: Globe,
-        grad: 'linear-gradient(135deg,#1e3a8a 0%,#1d4ed8 60%,#3b82f6 100%)',
+        grad: 'var(--hero-gradient)',
         acc: '#1d4ed8', acc2: '#3b82f6',
         light: '#eff6ff', border: '#bfdbfe',
     },
@@ -21,7 +21,7 @@ const TABS = [
         id: 'regimes',
         label: 'Régimes OT',
         icon: Layers,
-        grad: 'linear-gradient(135deg,#78350f 0%,#b45309 60%,#d97706 100%)',
+        grad: 'var(--hero-gradient)',
         acc: '#b45309', acc2: '#d97706',
         light: '#fffbeb', border: '#fde68a',
     },
@@ -29,13 +29,13 @@ const TABS = [
         id: 'typesDocs',
         label: 'Types Documents OT',
         icon: FileText,
-        grad: 'linear-gradient(135deg,#4c1d95 0%,#6d28d9 60%,#7c3aed 100%)',
-        acc: '#6d28d9', acc2: '#7c3aed',
-        light: '#f5f3ff', border: '#ddd6fe',
+        grad: 'var(--hero-gradient)',
+        acc: '#1e40af', acc2: '#1d4ed8',
+        light: '#eff6ff', border: '#bfdbfe',
     },
 ]
 
-const HERO_GRAD = 'linear-gradient(135deg,#0f172a 0%,#1e3a5f 45%,#1e40af 100%)'
+const HERO_GRAD = 'var(--hero-gradient)'
 
 /* ─── Toast ───────────────────────────────────────────────────────────────── */
 function Toast({ toasts }) {
@@ -191,7 +191,7 @@ export default function ReferenceDataOTPage() {
 
             {/* ── Hero ─────────────────────────────────────────────────────── */}
             <div style={{ background:HERO_GRAD, padding:'2.5rem 2.5rem 5rem', position:'relative', overflow:'hidden' }}>
-                {[['15%','20%',300,'rgba(59,130,246,0.3)'],['72%','50%',200,'rgba(30,64,175,0.25)'],['45%','60%',150,'rgba(99,102,241,0.2)']].map(([l,t,s,c],i)=>(
+                {[['15%','20%',300,'rgba(59,130,246,0.3)'],['72%','50%',200,'rgba(30,64,175,0.25)'],['45%','60%',150,'rgba(59,130,246,0.2)']].map(([l,t,s,c],i)=>(
                     <div key={i} style={{ position:'absolute', left:l, top:t, width:s, height:s, borderRadius:'50%', background:c, filter:'blur(70px)', pointerEvents:'none' }}/>
                 ))}
                 <div style={{ maxWidth:1200, margin:'0 auto', position:'relative' }}>

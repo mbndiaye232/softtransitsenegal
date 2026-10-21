@@ -1,6 +1,6 @@
 /**
  * Prépare la base de test : clone la base de développement softtransit_gabon vers
- * softtransit_gabon_e2e (jamais l'inverse), puis crée trois comptes fictifs.
+ * softtransit_senegal_e2e (jamais l'inverse), puis crée trois comptes fictifs.
  * Les mots de passe sont générés une fois dans e2e-gabon/.env (non commité).
  */
 const fs = require('fs');
@@ -20,8 +20,8 @@ const parseEnv = (file) => Object.fromEntries(
 );
 
 const dev = parseEnv(path.join(backend, '.env'));
-const SOURCE = dev.PG_DATABASE || 'softtransit_gabon';
-const TARGET = 'softtransit_gabon_e2e';
+const SOURCE = dev.PG_DATABASE || 'softtransit_senegal';
+const TARGET = 'softtransit_senegal_e2e';
 if (!TARGET.endsWith('_e2e') || TARGET === SOURCE) throw new Error('Base cible invalide');
 
 const envFile = path.join(ROOT, '.env');
@@ -50,6 +50,9 @@ const run = (cmd, args, input) => {
 
     const dump = run('pg_dump', [...cli, '-d', SOURCE, '--no-owner', '--no-privileges', '-E', 'UTF8']);
     run('psql', [...cli, '-d', TARGET, '-q', '-v', 'ON_ERROR_STOP=1'], dump);
+
+    // Option « portail client » : tables absentes de la base de développement tant que l'option n'est pas activée
+    run('psql', [...cli, '-d', TARGET, '-q', '-v', 'ON_ERROR_STOP=1', '-f', path.join(backend, 'migrations-pg', '007_portail_client.sql')]);
 
     const db = new Client({ ...conn, database: TARGET });
     await db.connect();

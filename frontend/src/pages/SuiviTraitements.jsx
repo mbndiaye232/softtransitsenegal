@@ -145,7 +145,7 @@ export default function SuiviTraitements() {
 
             {/* ── Hero Banner ── */}
             <div style={{
-                background: 'linear-gradient(135deg, #0c4a6e 0%, #0369a1 50%, #0ea5e9 100%)',
+                background: 'var(--hero-gradient)',
                 padding: '2rem 2rem 5rem',
                 position: 'relative',
                 overflow: 'hidden',
@@ -223,7 +223,7 @@ export default function SuiviTraitements() {
                 <div style={{ display: 'flex', gap: '0.9rem', flexWrap: 'wrap', position: 'relative' }}>
                     <StatPill
                         value={stats.critique} label="Critique" icon="🔴"
-                        gradient="linear-gradient(135deg,#dc2626,#ef4444)"
+                        gradient="var(--hero-gradient)"
                         active={false}
                     />
                     <StatPill
@@ -243,7 +243,7 @@ export default function SuiviTraitements() {
                     />
                     <StatPill
                         value={dossiers.length} label="Total en cours" icon="⚡"
-                        gradient="linear-gradient(135deg,#0369a1,#0ea5e9)"
+                        gradient="var(--hero-gradient)"
                         active={true}
                     />
                 </div>
@@ -284,7 +284,7 @@ export default function SuiviTraitements() {
                                         borderRadius: '99px',
                                         border: `2px solid ${active ? '#0369a1' : '#e2e8f0'}`,
                                         background: active
-                                            ? 'linear-gradient(135deg, #0369a1, #0ea5e9)'
+                                            ? 'var(--hero-gradient)'
                                             : 'white',
                                         color: active ? 'white' : '#64748b',
                                         fontWeight: 600, fontSize: '0.8rem', cursor: 'pointer',
@@ -317,7 +317,7 @@ export default function SuiviTraitements() {
                         <div style={{ textAlign: 'center', padding: '4rem 2rem', color: '#94a3b8' }}>
                             <div style={{
                                 width: '52px', height: '52px', borderRadius: '50%',
-                                background: 'linear-gradient(135deg,#0369a1,#0ea5e9)',
+                                background: 'var(--hero-gradient)',
                                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                                 margin: '0 auto 1rem',
                                 animation: 'spin 1s linear infinite',

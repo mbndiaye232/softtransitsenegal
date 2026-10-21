@@ -10,10 +10,10 @@ import { comptesMailsAPI } from '../services/api'
 
 /* ── Color config ── */
 const C = {
-    accent: '#6366f1',
-    light:  '#eef2ff',
-    border: '#c7d2fe',
-    grad:   'linear-gradient(135deg,#4338ca,#6366f1)',
+    accent: '#3b82f6',
+    light:  '#eff6ff',
+    border: '#bfdbfe',
+    grad:   'var(--hero-gradient)',
 }
 
 /* ── BlockCard ── */
@@ -244,12 +244,12 @@ export default function ComptesMailsPage() {
 
             {/* ══════════ HERO ══════════ */}
             <div style={{
-                background: 'linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #4338ca 100%)',
+                background: 'var(--hero-gradient)',
                 padding: '2.5rem 2rem 6rem',
                 position: 'relative', overflow: 'hidden',
             }}>
                 {/* Orbs */}
-                <div style={{ position: 'absolute', top: '-60px', right: '5%', width: '280px', height: '280px', borderRadius: '50%', background: 'radial-gradient(circle,rgba(99,102,241,0.4) 0%,transparent 70%)', filter: 'blur(40px)', pointerEvents: 'none' }} />
+                <div style={{ position: 'absolute', top: '-60px', right: '5%', width: '280px', height: '280px', borderRadius: '50%', background: 'radial-gradient(circle,rgba(59,130,246,0.4) 0%,transparent 70%)', filter: 'blur(40px)', pointerEvents: 'none' }} />
                 <div style={{ position: 'absolute', bottom: '-80px', left: '15%', width: '200px', height: '200px', borderRadius: '50%', background: 'radial-gradient(circle,rgba(6,182,212,0.25) 0%,transparent 70%)', filter: 'blur(40px)', pointerEvents: 'none' }} />
                 {/* Grid */}
                 <div style={{ position: 'absolute', inset: 0, backgroundImage: 'linear-gradient(rgba(255,255,255,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.025) 1px,transparent 1px)', backgroundSize: '40px 40px', pointerEvents: 'none' }} />
@@ -412,7 +412,7 @@ export default function ComptesMailsPage() {
                         <div style={{ padding: '2rem' }}>
 
                             {/* ── Section: Identifiants ── */}
-                            <SectionTitle icon={ShieldCheck} label="Identifiants & Identité" color="#6366f1" />
+                            <SectionTitle icon={ShieldCheck} label="Identifiants & Identité" color="#3b82f6" />
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.25rem', marginBottom: '2rem' }}>
                                 <FInput label="Adresse Mail" required>
                                     <input name="AdresseMail" value={formData.AdresseMail} onChange={handleChange}
@@ -509,7 +509,7 @@ export default function ComptesMailsPage() {
                             )}
 
                             {/* ── Section: Réception POP/IMAP ── */}
-                            <SectionTitle icon={Server} label="Réception — POP / IMAP" color="#7c3aed" />
+                            <SectionTitle icon={Server} label="Réception — POP / IMAP" color="#1d4ed8" />
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 140px 1fr 140px', gap: '1.25rem' }}>
                                 <FInput label="Hôte POP">
                                     <input name="ServeurPOP" value={formData.ServeurPOP} onChange={handleChange} style={inputStyle} />
@@ -545,7 +545,7 @@ export default function ComptesMailsPage() {
                                     padding: '11px 28px', fontWeight: 800, fontSize: '14px',
                                     cursor: (saving || testing) ? 'not-allowed' : 'pointer',
                                     opacity: (saving || testing) ? 0.7 : 1,
-                                    boxShadow: '0 4px 14px rgba(99,102,241,0.35)',
+                                    boxShadow: '0 4px 14px rgba(59,130,246,0.35)',
                                     transition: 'all 0.2s',
                                 }}>
                                 <Save size={17} />

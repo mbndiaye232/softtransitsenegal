@@ -41,6 +41,8 @@ const FacturationManager = ({ dossierId }) => {
     const [error, setError] = useState(null);
     const [searchQuery, setSearchQuery] = useState('');
     const [availableDebours, setAvailableDebours] = useState([]);
+    // Config commission du client : tauxDebours/tauxDouane (%), all=sur tous les débours, ids=rubriques ciblées
+    const [commissionConfig, setCommissionConfig] = useState({ tauxDebours: 0, tauxDouane: 0, all: true, ids: [] });
 
     // --- COPY STATES ---
     const [isCopying, setIsCopying] = useState(false);
@@ -85,6 +87,20 @@ const FacturationManager = ({ dossierId }) => {
             setDossier(dosRes.data);
             setInvoices(Array.isArray(invRes.data) ? invRes.data : []);
             setAvailableDebours(Array.isArray(debRes.data) ? debRes.data : []);
+
+            // Config commission débours du client rattaché au dossier
+            const clientId = dosRes.data?.clientId || dosRes.data?.IDCLIENTS;
+            if (clientId) {
+                try {
+                    const cRes = await clientsAPI.getOne(clientId);
+                    setCommissionConfig({
+                        tauxDebours: parseFloat(cRes.data?.TauxCommissionDebours) || 0,
+                        tauxDouane: parseFloat(cRes.data?.TauxCommissionDDouane) || 0,
+                        all: !!cRes.data?.sappliqueTousDebours,
+                        ids: Array.isArray(cRes.data?.commissionRubriques) ? cRes.data.commissionRubriques : []
+                    });
+                } catch (e) { console.error('Erreur chargement config commission débours:', e); }
+            }
 
             setLoading(false);
         } catch (err) {
@@ -146,27 +162,71 @@ const FacturationManager = ({ dossierId }) => {
         });
     }, [rubriques, searchQuery]);
 
+    // Montant douane déjà facturé pour ce dossier = somme HT des factures douane (FD-…).
+    // Sert de base à la commission douane d'une facture prestations (FP) séparée.
+    const fdDouaneTotal = useMemo(() => {
+        return (invoices || [])
+            .filter(f => String(f.NumeroFacture || '').toUpperCase().startsWith('FD'))
+            .reduce((s, f) => s + (Number(f.MontantHTFacture) || 0), 0);
+    }, [invoices]);
+
     const totals = useMemo(() => {
         const cats = { douane: 0, debours: 0, prestations: 0 };
         let has10 = false;
         let hasOthers = false;
+        // Type « de base » = sans les lignes de commission auto (4004/4005),
+        // pour savoir si la facture est une douane pure (FD) → pas de commission.
+        let baseHas10 = false;
+        let baseHasOthers = false;
 
         selectedRubriques.forEach(r => {
             const amount = Number(r.montant) || 0;
             const code = (r.CodeRubrique || '').toString();
+            const isCommissionLine = code === '4004' || code === '4005';
             if (code.startsWith('10')) {
                 cats.douane += amount;
                 has10 = true;
+                baseHas10 = true;
             } else {
                 hasOthers = true;
+                if (!isCommissionLine) baseHasOthers = true;
                 if (code.startsWith('11')) cats.debours += amount;
                 else if (code.startsWith('40')) cats.prestations += amount;
             }
         });
 
+        // Facture douane pure (uniquement 10xx) → aucune commission ne s'applique.
+        const isFactureDouane = baseHas10 && !baseHasOthers;
+
         const ht = Object.values(cats).reduce((a, b) => a + b, 0);
         const tva = cats.prestations * 0.18;
         const ttc = ht + tva;
+
+        // Bases de commission. Les lignes de commission elles-mêmes (4004/4005)
+        // sont des prestations 40xx → exclues des bases 10xx/11xx (pas de double comptage).
+        // Débours éligibles = tous les 11xx si « sur tous les débours », sinon
+        // uniquement les rubriques ciblées dans la fiche client.
+        let deboursEligible = 0;
+        selectedRubriques.forEach(r => {
+            const code = (r.CodeRubrique || '').toString();
+            if (code.startsWith('11') && (commissionConfig.all || commissionConfig.ids.includes(r.IDRubriques))) {
+                deboursEligible += Number(r.montant) || 0;
+            }
+        });
+        // Type « de base » : douane pure (FD), prestations (FP, pas de 10xx), ou globale (FG).
+        const isFacturePrestations = !baseHas10 && baseHasOthers;
+
+        // Base de la commission douane :
+        //   - FD → aucune commission
+        //   - FG → douane de la facture en cours (cats.douane)
+        //   - FP → montant des factures douane (FD-…) déjà établies pour le dossier
+        const commissionDouaneBase = isFactureDouane ? 0 : (isFacturePrestations ? fdDouaneTotal : cats.douane);
+
+        const commissionDebours = isFactureDouane ? 0 : deboursEligible * (commissionConfig.tauxDebours / 100);
+        const commissionDouane = isFactureDouane ? 0 : commissionDouaneBase * (commissionConfig.tauxDouane / 100);
+
+        // Avertissement : FP avec taux douane > 0 mais aucune FD établie → établir la FD d'abord.
+        const needFdWarning = isFacturePrestations && commissionConfig.tauxDouane > 0 && fdDouaneTotal === 0;
 
         let prefix = 'FG';
         let typeName = 'GLOBALE';
@@ -178,8 +238,8 @@ const FacturationManager = ({ dossierId }) => {
             typeName = 'PRESTATIONS';
         }
 
-        return { ...cats, ht, tva, ttc, prefix, typeName };
-    }, [selectedRubriques]);
+        return { ...cats, ht, tva, ttc, prefix, typeName, deboursEligible, commissionDebours, commissionDouane, needFdWarning };
+    }, [selectedRubriques, commissionConfig, fdDouaneTotal]);
 
     // --- ACTIONS ---
     const handleAddRubrique = (rub) => {
@@ -202,6 +262,67 @@ const FacturationManager = ({ dossierId }) => {
             r.IDRubriques === id ? { ...r, complement: val } : r
         ));
     };
+
+    // Intégration AUTOMATIQUE des commissions comme lignes facturables dès qu'un
+    // taux est > 0 :
+    //   - Commission débours → rubrique 4004 (base = débours éligibles 11xx)
+    //   - Commission douane   → rubrique 4005 (base = droits de douane 10xx)
+    // Les lignes sont créées / actualisées / supprimées selon les montants calculés.
+    useEffect(() => {
+        if (!rubriques.length) return;
+        const rub4004 = rubriques.find(r => String(r.CodeRubrique) === '4004'); // commission débours
+        const rub4005 = rubriques.find(r => String(r.CodeRubrique) === '4005'); // commission douane
+
+        // Bases recalculées ici (hors lignes de commission), pour rester stable.
+        // On suit aussi le type « de base » : une facture douane pure (uniquement
+        // 10xx) ne reçoit aucune commission (uniquement FP et FG).
+        let baseDebours = 0, baseDouane = 0;
+        let baseHas10 = false, baseHasOthers = false;
+        selectedRubriques.forEach(r => {
+            const code = String(r.CodeRubrique || '');
+            if (code === '4004' || code === '4005') return;
+            if (code.startsWith('10')) {
+                baseHas10 = true;
+                baseDouane += Number(r.montant) || 0;
+            } else {
+                baseHasOthers = true;
+                if (code.startsWith('11') && (commissionConfig.all || commissionConfig.ids.includes(r.IDRubriques))) {
+                    baseDebours += Number(r.montant) || 0;
+                }
+            }
+        });
+        const isFactureDouane = baseHas10 && !baseHasOthers;
+        const isFacturePrestations = !baseHas10 && baseHasOthers;
+        // FP → la commission douane porte sur les FD déjà établies du dossier ;
+        // FG → sur la douane de la facture en cours.
+        const douaneBase = isFacturePrestations ? fdDouaneTotal : baseDouane;
+        const wantDebours = (!isFactureDouane && commissionConfig.tauxDebours > 0) ? Math.round(baseDebours * commissionConfig.tauxDebours / 100) : 0;
+        const wantDouane = (!isFactureDouane && commissionConfig.tauxDouane > 0) ? Math.round(douaneBase * commissionConfig.tauxDouane / 100) : 0;
+
+        setSelectedRubriques(prev => {
+            let next = prev;
+            let changed = false;
+            const sync = (rub, want, complement) => {
+                if (!rub) return;
+                const idx = next.findIndex(r => r.IDRubriques === rub.IDRubriques);
+                if (want > 0) {
+                    if (idx === -1) {
+                        next = [...next, { ...rub, montant: want, complement }];
+                        changed = true;
+                    } else if ((Number(next[idx].montant) || 0) !== want) {
+                        next = next.map((r, i) => i === idx ? { ...r, montant: want } : r);
+                        changed = true;
+                    }
+                } else if (idx !== -1) {
+                    next = next.filter((_, i) => i !== idx);
+                    changed = true;
+                }
+            };
+            sync(rub4004, wantDebours, 'Commission sur débours');
+            sync(rub4005, wantDouane, 'Commission sur droits de douane');
+            return changed ? next : prev;
+        });
+    }, [selectedRubriques, commissionConfig, rubriques, fdDouaneTotal]);
 
     const handleFetchNoteDetail = async () => {
         try {
@@ -689,8 +810,8 @@ const FacturationManager = ({ dossierId }) => {
                 .fm-total-row { display: flex; justify-content: space-between; font-size: 11px; border-bottom: 1px solid var(--slate-800); padding-bottom: 0.5rem; }
                 .fm-final-ttc { display: flex; justify-content: space-between; font-weight: 800; font-size: 18px; color: #10b981; margin-top: 0.5rem; }
                 
-                .fm-submit-btn { width: 100%; padding: 1rem; background: var(--primary); color: white; border: none; border-radius: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; justify-content: center; gap: 0.75rem; box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.4); }
-                .fm-submit-btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 15px 20px -5px rgba(79, 70, 229, 0.5); }
+                .fm-submit-btn { width: 100%; padding: 1rem; background: var(--primary); color: white; border: none; border-radius: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; justify-content: center; gap: 0.75rem; box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.4); }
+                .fm-submit-btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 15px 20px -5px rgba(37, 99, 235, 0.5); }
                 .fm-submit-btn:disabled { background: var(--slate-800); color: var(--slate-600); cursor: not-allowed; box-shadow: none; }
                 
                 .fm-empty-state { height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--slate-400); text-align: center; padding: 3rem; }
@@ -721,14 +842,14 @@ const FacturationManager = ({ dossierId }) => {
                 .fm-justificatif-name { color: #334155; font-weight: 500; display: flex; align-items: center; gap: 0.5rem; overflow: hidden; text-overflow: ellipsis; }
                 
                 .fm-upload-area { border: 2px dashed #cbd5e1; border-radius: 0.75rem; padding: 1.5rem; text-align: center; background: #fff; transition: all 0.2s; cursor: pointer; position: relative; }
-                .fm-upload-area:hover { border-color: var(--primary); background: #f5f3ff; }
+                .fm-upload-area:hover { border-color: var(--primary); background: #eff6ff; }
                 .fm-upload-area input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
                 
                 .fm-modal-footer { padding: 1.25rem 1.5rem; background: #f8fafc; border-top: 1px solid #e2e8f0; display: flex; justify-content: flex-end; gap: 0.75rem; }
                 .fm-btn-cancel { padding: 0.6rem 1.2rem; border-radius: 0.5rem; font-weight: 600; font-size: 13px; color: #64748b; background: transparent; border: 1px solid #e2e8f0; cursor: pointer; }
                 .fm-btn-cancel:hover { background: #f1f5f9; }
-                .fm-btn-send { padding: 0.6rem 1.2rem; border-radius: 0.5rem; font-weight: 600; font-size: 13px; color: white; background: #6366f1; border: none; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; transition: all 0.2s; }
-                .fm-btn-send:hover:not(:disabled) { background: #4f46e5; transform: translateY(-1px); }
+                .fm-btn-send { padding: 0.6rem 1.2rem; border-radius: 0.5rem; font-weight: 600; font-size: 13px; color: white; background: #3b82f6; border: none; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; transition: all 0.2s; }
+                .fm-btn-send:hover:not(:disabled) { background: #2563eb; transform: translateY(-1px); }
                 .fm-btn-send:disabled { opacity: 0.6; cursor: not-allowed; }
             `}</style>
 
@@ -781,7 +902,7 @@ const FacturationManager = ({ dossierId }) => {
                                             <>
                                                 <button
                                                     className="fm-history-action"
-                                                    style={{ color: '#6366f1' }}
+                                                    style={{ color: '#3b82f6' }}
                                                     onClick={() => handleOpenEmailModal(inv)}
                                                     title="Gérer les justificatifs et envoyer par mail"
                                                 >
@@ -909,7 +1030,7 @@ const FacturationManager = ({ dossierId }) => {
 
                     {/* Content Panel */}
                     <div className="fm-content-panel">
-                        <div className="fm-content-header" style={{ background: isCopying ? '#4338ca' : 'var(--primary)' }}>
+                        <div className="fm-content-header" style={{ background: isCopying ? '#1d4ed8' : 'var(--primary)' }}>
                             <span style={{ fontSize: '11px', fontWeight: 800, textTransform: 'uppercase' }}>
                                 {isCopying ? 'Copie de Facture - Nouveau Contenu' : 'Contenu de la Facture'}
                             </span>
@@ -951,9 +1072,9 @@ const FacturationManager = ({ dossierId }) => {
 
                         {/* Destination Selection (Only when copying) */}
                         {isCopying && (
-                            <div style={{ padding: '1rem', background: '#f5f3ff', borderBottom: '1px solid #ddd6fe', display: 'flex', gap: '1rem' }}>
+                            <div style={{ padding: '1rem', background: '#eff6ff', borderBottom: '1px solid #bfdbfe', display: 'flex', gap: '1rem' }}>
                                 <div style={{ flex: 1 }}>
-                                    <label style={{ fontSize: '10px', fontWeight: 800, color: '#4338ca', display: 'block', marginBottom: '0.25rem' }}>CLIENT DE DESTINATION</label>
+                                    <label style={{ fontSize: '10px', fontWeight: 800, color: '#1d4ed8', display: 'block', marginBottom: '0.25rem' }}>CLIENT DE DESTINATION</label>
                                     <select
                                         style={{ width: '100%', padding: '0.4rem', borderRadius: '0.4rem', border: '1px solid #c4b5fd', fontSize: '12px' }}
                                         value={targetClientId}
@@ -970,7 +1091,7 @@ const FacturationManager = ({ dossierId }) => {
                                     </select>
                                 </div>
                                 <div style={{ flex: 1 }}>
-                                    <label style={{ fontSize: '10px', fontWeight: 800, color: '#4338ca', display: 'block', marginBottom: '0.25rem' }}>DOSSIER DE DESTINATION</label>
+                                    <label style={{ fontSize: '10px', fontWeight: 800, color: '#1d4ed8', display: 'block', marginBottom: '0.25rem' }}>DOSSIER DE DESTINATION</label>
                                     <select
                                         style={{ width: '100%', padding: '0.4rem', borderRadius: '0.4rem', border: '1px solid #c4b5fd', fontSize: '12px' }}
                                         value={targetDossierId}
@@ -1043,6 +1164,28 @@ const FacturationManager = ({ dossierId }) => {
                             <div className="fm-totals-grid">
                                 <div className="fm-total-row"><span>TOTAL HT</span> <span>{totals.ht.toLocaleString()} {getReferenceSymbol()}</span></div>
                                 <div className="fm-total-row"><span>TVA (18%)</span> <span>{totals.tva.toLocaleString()} {getReferenceSymbol()}</span></div>
+                                {totals.needFdWarning && (
+                                    <div className="fm-total-row" style={{ color: '#b91c1c', fontWeight: 700 }}>
+                                        <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                                            <AlertCircle size={14} /> Établissez d'abord la facture douane (commission douane = 0)
+                                        </span>
+                                    </div>
+                                )}
+                                {commissionConfig.tauxDouane > 0 && totals.commissionDouane > 0 && (
+                                    <div className="fm-total-row" style={{ color: '#1d4ed8' }}>
+                                        <span>Commission douane ({commissionConfig.tauxDouane}%) — auto</span>
+                                        <span>{Math.round(totals.commissionDouane).toLocaleString()} {getReferenceSymbol()}</span>
+                                    </div>
+                                )}
+                                {commissionConfig.tauxDebours > 0 && (
+                                    <div className="fm-total-row" style={{ color: '#1d4ed8' }}>
+                                        <span>
+                                            Commission débours ({commissionConfig.tauxDebours}%
+                                            {commissionConfig.all ? ', tous les 11xx' : ', rubriques ciblées'}) — auto
+                                        </span>
+                                        <span>{Math.round(totals.commissionDebours).toLocaleString()} {getReferenceSymbol()}</span>
+                                    </div>
+                                )}
                             </div>
                             <div className="fm-final-ttc">
                                 <span>TOTAL TTC</span>
@@ -1086,7 +1229,7 @@ const FacturationManager = ({ dossierId }) => {
                                         value={selectedCompteMailId}
                                         onChange={e => setSelectedCompteMailId(e.target.value)}
                                         disabled={emailLoading}
-                                        style={{ width: '100%', padding: '0.6rem 0.9rem', border: '1px solid #c7d2fe', borderRadius: '0.625rem', fontSize: '13px', background: '#f8fafc', outline: 'none' }}
+                                        style={{ width: '100%', padding: '0.6rem 0.9rem', border: '1px solid #bfdbfe', borderRadius: '0.625rem', fontSize: '13px', background: '#f8fafc', outline: 'none' }}
                                     >
                                         {comptesMails.map(c => (
                                             <option key={c.IDComptesMails} value={c.IDComptesMails}>
@@ -1101,7 +1244,7 @@ const FacturationManager = ({ dossierId }) => {
                             <div style={{ marginBottom: '1.25rem' }}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
                                     <label className="fm-section-label" style={{ margin: 0 }}>Destinataire</label>
-                                    <button onClick={() => setIsEditingEmail(true)} style={{ background: 'none', border: 'none', color: '#6366f1', fontSize: '11px', display: 'flex', alignItems: 'center', gap: '4px', cursor: 'pointer' }}>
+                                    <button onClick={() => setIsEditingEmail(true)} style={{ background: 'none', border: 'none', color: '#3b82f6', fontSize: '11px', display: 'flex', alignItems: 'center', gap: '4px', cursor: 'pointer' }}>
                                         <Edit2 size={12}/> Modifier
                                     </button>
                                 </div>
@@ -1110,7 +1253,7 @@ const FacturationManager = ({ dossierId }) => {
                                         type="email"
                                         value={editedEmail}
                                         onChange={e => setEditedEmail(e.target.value)}
-                                        style={{ flex: 1, padding: '0.6rem 0.9rem', borderRadius: '0.625rem', border: '1px solid #c7d2fe', fontSize: '13px', outline: 'none' }}
+                                        style={{ flex: 1, padding: '0.6rem 0.9rem', borderRadius: '0.625rem', border: '1px solid #bfdbfe', fontSize: '13px', outline: 'none' }}
                                         placeholder="email@societe.com"
                                     />
                                 </div>
@@ -1143,7 +1286,7 @@ const FacturationManager = ({ dossierId }) => {
                                             <label key={doc.id} style={{
                                                 display: 'flex', alignItems: 'center', gap: '10px',
                                                 padding: '0.625rem 1rem',
-                                                background: selectedDocIds.includes(doc.id) ? '#f5f3ff' : (i % 2 === 0 ? '#fafafa' : 'white'),
+                                                background: selectedDocIds.includes(doc.id) ? '#eff6ff' : (i % 2 === 0 ? '#fafafa' : 'white'),
                                                 borderBottom: i < dossierDocs.length - 1 ? '1px solid #f1f5f9' : 'none',
                                                 cursor: 'pointer', transition: 'background 0.15s'
                                             }}>
@@ -1154,16 +1297,16 @@ const FacturationManager = ({ dossierId }) => {
                                                         e.target.checked ? [...prev, doc.id] : prev.filter(id => id !== doc.id)
                                                     )}
                                                     disabled={emailLoading}
-                                                    style={{ accentColor: '#6366f1', width: 15, height: 15 }}
+                                                    style={{ accentColor: '#3b82f6', width: 15, height: 15 }}
                                                 />
-                                                <FileText size={13} style={{ color: selectedDocIds.includes(doc.id) ? '#6366f1' : '#94a3b8', flexShrink: 0 }}/>
+                                                <FileText size={13} style={{ color: selectedDocIds.includes(doc.id) ? '#3b82f6' : '#94a3b8', flexShrink: 0 }}/>
                                                 <span style={{ fontSize: '13px', color: '#334155', flex: 1 }}>{doc.title}</span>
                                                 {doc.typeLabel && <span style={{ fontSize: '11px', color: '#94a3b8', background: '#f1f5f9', borderRadius: '4px', padding: '1px 6px' }}>{doc.typeLabel}</span>}
                                             </label>
                                         ))}
                                     </div>
                                     {selectedDocIds.length > 0 && (
-                                        <div style={{ marginTop: '0.4rem', fontSize: '11px', color: '#6366f1', fontWeight: 600 }}>
+                                        <div style={{ marginTop: '0.4rem', fontSize: '11px', color: '#3b82f6', fontWeight: 600 }}>
                                             {selectedDocIds.length} document(s) sélectionné(s)
                                         </div>
                                     )}
@@ -1174,7 +1317,7 @@ const FacturationManager = ({ dossierId }) => {
                             <label className="fm-section-label">Ajouter des justificatifs (PDF/Images)</label>
                             <div className="fm-upload-area">
                                 {uploading ? (
-                                    <RefreshCw className="fm-spin-active" style={{ color: '#6366f1' }} />
+                                    <RefreshCw className="fm-spin-active" style={{ color: '#3b82f6' }} />
                                 ) : (
                                     <>
                                         <UploadCloud size={32} style={{ color: '#94a3b8', marginBottom: '0.5rem' }} />
@@ -1188,9 +1331,9 @@ const FacturationManager = ({ dossierId }) => {
                                 <div style={{ padding: '0.75rem 1rem', background: '#f1f5f9', fontSize: '11px', fontWeight: 700, color: '#475569', borderBottom: '1px solid #e2e8f0' }}>
                                     FICHIERS JOINTS ({justificatifs.length + selectedDocIds.length + 1})
                                 </div>
-                                <div className="fm-justificatif-item" style={{ background: '#f5f3ff', borderLeft: '3px solid #6366f1' }}>
+                                <div className="fm-justificatif-item" style={{ background: '#eff6ff', borderLeft: '3px solid #3b82f6' }}>
                                     <div className="fm-justificatif-name">
-                                        <FileText size={14} style={{ color: '#6366f1' }} />
+                                        <FileText size={14} style={{ color: '#3b82f6' }} />
                                         <span>Facture_{selectedFacture.NumeroFacture.replace(/\//g, '-')}.pdf (Principal)</span>
                                     </div>
                                 </div>

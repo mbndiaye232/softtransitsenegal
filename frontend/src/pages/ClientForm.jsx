@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { getReferenceSymbol } from '../utils/currency'
 import { useNavigate, useParams } from 'react-router-dom'
-import { clientsAPI, statutsAPI } from '../services/api'
+import { clientsAPI, statutsAPI, rubriquesAPI } from '../services/api'
 import {
     Save,
     X,
@@ -35,6 +35,9 @@ export default function ClientForm() {
     const [error, setError] = useState('')
     const [success, setSuccess] = useState('')
     const [statuts, setStatuts] = useState([])
+    const [deboursRubriques, setDeboursRubriques] = useState([]) // rubriques 11xx
+    const [commissionRubriques, setCommissionRubriques] = useState([]) // IDRubriques cochées
+    const [rubriqueSearch, setRubriqueSearch] = useState('')
 
     // Form Data
     const [formData, setFormData] = useState({
@@ -62,7 +65,7 @@ export default function ClientForm() {
         Observations: '',
         TauxCommissionDDouane: '0.00',
         TauxCommissionDebours: '0.00',
-        sappliqueTousDebours: false,
+        sappliqueTousDebours: true, // par défaut, la commission porte sur l'ensemble des débours (11xx)
         Alerte_Suspension: false
     })
 
@@ -75,6 +78,7 @@ export default function ClientForm() {
             loadClient()
         }
         loadStatuts()
+        loadDeboursRubriques()
     }, [id])
 
     const loadStatuts = async () => {
@@ -84,6 +88,22 @@ export default function ClientForm() {
         } catch (err) {
             console.error('Erreur chargement statuts:', err)
         }
+    }
+
+    const loadDeboursRubriques = async () => {
+        try {
+            const response = await rubriquesAPI.getAll()
+            const debours = (response.data || []).filter(r => String(r.CodeRubrique || '').startsWith('11'))
+            setDeboursRubriques(debours)
+        } catch (err) {
+            console.error('Erreur chargement rubriques débours:', err)
+        }
+    }
+
+    const toggleCommissionRubrique = (idRubrique) => {
+        setCommissionRubriques(prev =>
+            prev.includes(idRubrique) ? prev.filter(x => x !== idRubrique) : [...prev, idRubrique]
+        )
     }
 
     const loadClient = async () => {
@@ -119,6 +139,8 @@ export default function ClientForm() {
                 sappliqueTousDebours: !!data.sappliqueTousDebours,
                 Alerte_Suspension: !!data.Alerte_Suspension
             })
+
+            setCommissionRubriques(Array.isArray(data.commissionRubriques) ? data.commissionRubriques : [])
 
             if (data.CheminLettreEXO) {
                 const baseUrl = import.meta.env.VITE_API_URL.replace('/api', '')
@@ -182,6 +204,10 @@ export default function ClientForm() {
                 formDataObj.append('CheminLettreEXO', file)
             }
 
+            // Rubriques sur lesquelles s'applique la commission débours
+            // (ignoré côté backend si « Sur tous les débours » est coché)
+            formDataObj.append('commissionRubriques', JSON.stringify(formData.sappliqueTousDebours ? [] : commissionRubriques))
+
             if (isEdit) {
                 await clientsAPI.update(id, formDataObj)
                 setSuccess('Client modifié avec succès')
@@ -221,7 +247,7 @@ export default function ClientForm() {
                 .form-section { margin-bottom: 3rem; }
                 .form-section:last-child { margin-bottom: 0; }
                 .section-header { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.5rem; padding-bottom: 0.75rem; border-bottom: 2px solid #f1f5f9; }
-                .section-title { font-size: 0.7rem; font-weight: 800; color: #4f46e5; text-transform: uppercase; letter-spacing: 0.1em; }
+                .section-title { font-size: 0.7rem; font-weight: 800; color: #2563eb; text-transform: uppercase; letter-spacing: 0.1em; }
 
                 .grid-form { display: grid; grid-template-columns: repeat(12, 1fr); gap: 1.5rem; }
                 .col-3 { grid-column: span 3; }
@@ -244,19 +270,19 @@ export default function ClientForm() {
                     transition: all 0.2s;
                     color: #1e293b;
                 }
-                .premium-input:focus, .premium-select:focus, .premium-textarea:focus { border-color: #6366f1; background: white; box-shadow: 0 0 0 3px rgba(99,102,241,.1); }
+                .premium-input:focus, .premium-select:focus, .premium-textarea:focus { border-color: #3b82f6; background: white; box-shadow: 0 0 0 3px rgba(59,130,246,.1); }
 
                 .checkbox-group { display: flex; align-items: center; gap: 0.75rem; cursor: pointer; padding: 0.65rem 0.875rem; border-radius: 10px; transition: all 0.2s; }
                 .checkbox-group:hover { background: #f1f5f9; }
-                .checkbox-group input { width: 1.1rem; height: 1.1rem; accent-color: #4f46e5; }
+                .checkbox-group input { width: 1.1rem; height: 1.1rem; accent-color: #2563eb; }
                 .checkbox-label { font-size: 0.875rem; font-weight: 600; color: #334155; }
 
                 .form-footer { padding: 1.25rem 2.5rem; background: #f8fafc; border-top: 1px solid #f1f5f9; display: flex; justify-content: flex-end; gap: 1rem; }
                 .btn { padding: 0.7rem 1.75rem; border-radius: 10px; font-weight: 700; font-size: 0.875rem; border: none; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; transition: all 0.2s; }
                 .btn-secondary { background: white; color: #475569; border: 1.5px solid #e2e8f0; }
                 .btn-secondary:hover { background: #f8fafc; border-color: #cbd5e1; }
-                .btn-primary { background: linear-gradient(135deg,#4338ca,#6366f1); color: white; box-shadow: 0 4px 12px rgba(99,102,241,.3); }
-                .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(99,102,241,.35); }
+                .btn-primary { background: var(--hero-gradient); color: white; box-shadow: 0 4px 12px rgba(59,130,246,.3); }
+                .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(59,130,246,.35); }
                 .btn-primary:disabled { opacity: 0.7; cursor: not-allowed; transform: none; }
 
                 .alert { padding: 1rem 1.5rem; border-radius: 12px; font-size: 0.875rem; font-weight: 600; margin-bottom: 0; display: flex; align-items: center; gap: 0.75rem; }
@@ -266,7 +292,7 @@ export default function ClientForm() {
 
             {/* ── HERO HEADER ── */}
             <div style={{
-                background: 'linear-gradient(135deg, #1e1b4b 0%, #312e81 45%, #4f46e5 100%)',
+                background: 'var(--hero-gradient)',
                 padding: '2rem 2.5rem 3.5rem',
                 position: 'relative', overflow: 'hidden',
             }}>
@@ -434,11 +460,58 @@ export default function ClientForm() {
                                     </label>
                                 </div>
                                 <div className="input-group col-4">
-                                    <label className="checkbox-group" style={{ border: '1px solid #e0e7ff', borderRadius: 8, padding: '0.6rem 0.875rem', background: formData.Alerte_Suspension ? '#eef2ff' : 'transparent' }}>
+                                    <label className="checkbox-group" style={{ border: '1px solid #dbeafe', borderRadius: 8, padding: '0.6rem 0.875rem', background: formData.Alerte_Suspension ? '#eff6ff' : 'transparent' }}>
                                         <input type="checkbox" name="Alerte_Suspension" checked={formData.Alerte_Suspension} onChange={handleChange} />
-                                        <span className="checkbox-label" style={{ color: '#4338ca' }}>🔔 Alertes échéances suspensifs</span>
+                                        <span className="checkbox-label" style={{ color: '#1d4ed8' }}>🔔 Alertes échéances suspensifs</span>
                                     </label>
                                 </div>
+
+                                {/* Sélection des rubriques de débours — visible si « Sur tous les débours » est décochée */}
+                                {!formData.sappliqueTousDebours && (
+                                    <div className="col-12" style={{ border: '1.5px solid #e2e8f0', borderRadius: 12, padding: '1rem 1.25rem', background: '#f9fafb' }}>
+                                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.75rem', marginBottom: '0.75rem' }}>
+                                            <span style={{ fontSize: '0.8rem', fontWeight: 800, color: '#2563eb', textTransform: 'uppercase', letterSpacing: '.04em' }}>
+                                                Rubriques débours (commission appliquée) — {commissionRubriques.length} sélectionnée(s)
+                                            </span>
+                                            <div style={{ display: 'flex', gap: '0.5rem' }}>
+                                                <button type="button" className="btn btn-secondary" style={{ padding: '0.35rem 0.75rem', fontSize: '0.75rem' }}
+                                                    onClick={() => setCommissionRubriques(deboursRubriques.map(r => r.IDRubriques))}>Tout cocher</button>
+                                                <button type="button" className="btn btn-secondary" style={{ padding: '0.35rem 0.75rem', fontSize: '0.75rem' }}
+                                                    onClick={() => setCommissionRubriques([])}>Tout décocher</button>
+                                            </div>
+                                        </div>
+                                        <input
+                                            type="text"
+                                            className="premium-input"
+                                            placeholder="🔍 Rechercher une rubrique (code ou libellé)…"
+                                            value={rubriqueSearch}
+                                            onChange={(e) => setRubriqueSearch(e.target.value)}
+                                            style={{ marginBottom: '0.75rem' }}
+                                        />
+                                        <div style={{ maxHeight: 260, overflowY: 'auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '0.25rem' }}>
+                                            {deboursRubriques
+                                                .filter(r => {
+                                                    const q = rubriqueSearch.toLowerCase()
+                                                    return !q || String(r.CodeRubrique).toLowerCase().includes(q) || String(r.libelleRubrique || '').toLowerCase().includes(q)
+                                                })
+                                                .map(r => (
+                                                    <label key={r.IDRubriques} className="checkbox-group" style={{ padding: '0.4rem 0.6rem' }}>
+                                                        <input
+                                                            type="checkbox"
+                                                            checked={commissionRubriques.includes(r.IDRubriques)}
+                                                            onChange={() => toggleCommissionRubrique(r.IDRubriques)}
+                                                        />
+                                                        <span className="checkbox-label" style={{ fontSize: '0.8rem', fontWeight: 500 }}>
+                                                            <strong>{r.CodeRubrique}</strong> — {r.libelleRubrique}
+                                                        </span>
+                                                    </label>
+                                                ))}
+                                            {deboursRubriques.length === 0 && (
+                                                <span style={{ fontSize: '0.8rem', color: '#94a3b8' }}>Aucune rubrique de débours (11xx) trouvée.</span>
+                                            )}
+                                        </div>
+                                    </div>
+                                )}
                             </div>
                         </div>
 

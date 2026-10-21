@@ -139,7 +139,7 @@ export default function StatusList() {
                 .premium-input:focus { border-color: var(--primary); background: white; box-shadow: 0 0 0 4px var(--primary-light); }
 
                 .btn { padding: 0.75rem 1.5rem; border-radius: var(--radius-md); font-weight: 700; font-size: 0.875rem; border: none; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; transition: all 0.2s; }
-                .btn-primary { background: var(--primary); color: white; box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.2); }
+                .btn-primary { background: var(--primary); color: white; box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2); }
                 .btn-primary:hover { background: var(--primary-hover); transform: translateY(-1px); }
                 .btn-secondary { background: white; color: var(--slate-600); border: 1px solid var(--border); }
                 .btn-secondary:hover { background: var(--slate-50); }

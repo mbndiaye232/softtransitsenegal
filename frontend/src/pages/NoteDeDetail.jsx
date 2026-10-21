@@ -12,15 +12,15 @@ import {
 } from 'lucide-react';
 
 /* ─── Color config per block ─────────────────────────────────────────────── */
-const COLORS = {
-    clients:   { accent:'#4f46e5', light:'#eef2ff', border:'#c7d2fe', text:'#3730a3' },
-    dossiers:  { accent:'#f59e0b', light:'#fffbeb', border:'#fde68a', text:'#92400e' },
-    notes:     { accent:'#7c3aed', light:'#faf5ff', border:'#ddd6fe', text:'#5b21b6' },
-    produits:  { accent:'#ea580c', light:'#fff7ed', border:'#fed7aa', text:'#9a3412' },
-    regimes:   { accent:'#16a34a', light:'#f0fdf4', border:'#bbf7d0', text:'#14532d' },
-    repartition:{ accent:'#0891b2', light:'#ecfeff', border:'#a5f3fc', text:'#164e63' },
+const COLORS = {  // charte SST : bleus pour les blocs de saisie, vert pour la validation
+    clients:   { accent:'#2563eb', light:'#eff6ff', border:'#bfdbfe', text:'#1e40af' },
+    dossiers:  { accent:'#1d4ed8', light:'#eff6ff', border:'#bfdbfe', text:'#1e3a8a' },
+    notes:     { accent:'#1b3464', light:'#f1f5f9', border:'#cbd5e1', text:'#0f172a' },
+    produits:  { accent:'#2563eb', light:'#eff6ff', border:'#bfdbfe', text:'#1e40af' },
+    regimes:   { accent:'#059669', light:'#f0fdf4', border:'#bbf7d0', text:'#14532d' },
+    repartition:{ accent:'#3b82f6', light:'#eff6ff', border:'#bfdbfe', text:'#1e40af' },
     matrice:   { accent:'#1e293b', light:'#f8fafc', border:'#e2e8f0', text:'#0f172a' },
-    taxes:     { accent:'#dc2626', light:'#fff1f2', border:'#fecdd3', text:'#991b1b' },
+    taxes:     { accent:'#1b3464', light:'#f1f5f9', border:'#cbd5e1', text:'#0f172a' },
     actions:   { accent:'#059669', light:'#ecfdf5', border:'#a7f3d0', text:'#065f46' },
 };
 
@@ -66,12 +66,12 @@ const MiniTable = ({ cols, rows, selectedId, onSelect, getKey, getCells, emptyMs
                 const key = getKey(row);
                 const sel = selectedId === key;
                 return (
-                    <tr key={key} onClick={() => onSelect(row)} style={{ cursor: 'pointer', background: sel ? '#ede9fe' : 'white', borderBottom: '1px solid #f8fafc', transition: 'background .1s' }}
+                    <tr key={key} onClick={() => onSelect(row)} style={{ cursor: 'pointer', background: sel ? '#dbeafe' : 'white', borderBottom: '1px solid #f8fafc', transition: 'background .1s' }}
                         onMouseEnter={e => { if (!sel) e.currentTarget.style.background = '#f8fafc' }}
                         onMouseLeave={e => { if (!sel) e.currentTarget.style.background = 'white' }}
                     >
                         {getCells(row, sel).map((cell, i) => (
-                            <td key={i} style={{ padding: '8px 12px', color: sel ? '#5b21b6' : '#374151', fontWeight: i === 0 ? 700 : 400 }}>{cell}</td>
+                            <td key={i} style={{ padding: '8px 12px', color: sel ? '#1e3a8a' : '#374151', fontWeight: i === 0 ? 700 : 400 }}>{cell}</td>
                         ))}
                         {onDelete && (
                             <td style={{ padding: '4px 8px', textAlign: 'center' }}>
@@ -499,8 +499,8 @@ export default function NoteDeDetail() {
     if (loading && !clients.length) return (
         <div style={{display:'flex',justifyContent:'center',alignItems:'center',minHeight:'100vh',background:'#f1f5f9'}}>
             <div style={{textAlign:'center'}}>
-                <div style={{width:44,height:44,border:'3px solid #ddd6fe',borderTopColor:'#7c3aed',borderRadius:'50%',animation:'spin .8s linear infinite',margin:'0 auto 12px'}}/>
-                <div style={{fontSize:14,color:'#5b21b6',fontWeight:600}}>Chargement…</div>
+                <div style={{width:44,height:44,border:'3px solid #bfdbfe',borderTopColor:'#1d4ed8',borderRadius:'50%',animation:'spin .8s linear infinite',margin:'0 auto 12px'}}/>
+                <div style={{fontSize:14,color:'#1e3a8a',fontWeight:600}}>Chargement…</div>
             </div>
             <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
         </div>
@@ -509,17 +509,17 @@ export default function NoteDeDetail() {
     /* ─── Label rows for matrix ─────────────────────────────────────────── */
     const MATRIX_LABELS = ['INDEX','CODE NTS (*)','RÉGIME ACC.','DPI / B.E.','TITRE EXO','ORIGINE','PROVENANCE','VALEUR FOB','DEVISE FOB','VALEUR FRET','DEVISE FRET','VALEUR ASSUR.','DEVISE ASSUR.','NB COLIS','POIDS BRUT','POIDS NET','QTE COMPL.','QTE MERCH.','COMMISSION','VALEUR CAF (XOF)'];
 
-    const TOAST_COLORS = { success:'#059669', error:'#dc2626', warning:'#d97706', info:'#4f46e5' };
+    const TOAST_COLORS = { success:'#059669', error:'#dc2626', warning:'#d97706', info:'#2563eb' };
 
     return (
         <div style={{ minHeight:'100vh', background:'#f1f5f9', display:'flex', flexDirection:'column', gap:14, padding:14, fontFamily:'inherit' }}>
 
             {/* ── Page header ────────────────────────────────────────────── */}
             <header style={{
-                background: 'linear-gradient(135deg,#1e1b4b,#4f46e5,#6d28d9)',
+                background: 'var(--hero-gradient)',
                 borderRadius: 16, padding: '14px 24px',
                 display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-                boxShadow: '0 4px 20px rgba(79,70,229,.35)',
+                boxShadow: '0 4px 20px rgba(37,99,235,.35)',
                 position: 'relative', overflow: 'hidden',
             }}>
                 <div style={{position:'absolute',top:-40,right:-40,width:160,height:160,background:'rgba(255,255,255,.05)',borderRadius:'50%'}}/>
@@ -773,7 +773,7 @@ export default function NoteDeDetail() {
 
                     {/* Liquidation des taxes */}
                     <div style={{background:'white',borderRadius:16,border:`1px solid ${COLORS.taxes.border}`,boxShadow:`0 2px 12px ${COLORS.taxes.accent}14`,overflow:'hidden'}}>
-                        <div style={{padding:'10px 14px',background:`linear-gradient(135deg,${COLORS.taxes.accent},#b91c1c)`,display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+                        <div style={{padding:'10px 14px',background:`var(--hero-gradient-soft)`,display:'flex',justifyContent:'space-between',alignItems:'center'}}>
                             <div style={{display:'flex',alignItems:'center',gap:6}}>
                                 <Tag size={13} color="white"/>
                                 <span style={{fontSize:11,fontWeight:800,color:'white'}}>Liquidation des Taxes</span>
@@ -826,7 +826,7 @@ export default function NoteDeDetail() {
                         </div>
 
                         {totalTaxes>0 && (
-                            <div style={{padding:'10px 14px',background:`linear-gradient(135deg,${COLORS.taxes.accent},#b91c1c)`,display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+                            <div style={{padding:'10px 14px',background:`var(--hero-gradient-soft)`,display:'flex',justifyContent:'space-between',alignItems:'center'}}>
                                 <span style={{fontSize:9,fontWeight:800,color:'rgba(255,255,255,.6)',textTransform:'uppercase',letterSpacing:'.05em'}}>Cumul liquidé</span>
                                 <span style={{fontSize:15,fontWeight:900,color:'white'}}>{fmt(totalTaxes)} <small style={{fontSize:10,opacity:.7}}>XOF</small></span>
                             </div>
@@ -884,7 +884,7 @@ export default function NoteDeDetail() {
                             {selectedNote&&(
                                 <div style={{marginTop:2,padding:'10px 11px',background:'#f8fafc',borderRadius:9,border:'1px solid #e5e7eb'}}>
                                     <div style={{fontSize:9,fontWeight:800,color:'#94a3b8',textTransform:'uppercase',letterSpacing:'.06em',marginBottom:5}}>Note sélectionnée</div>
-                                    <div style={{fontSize:12,fontWeight:700,color:'#5b21b6'}}>{selectedNote.REPERTOIRE||'EN ATTENTE'}</div>
+                                    <div style={{fontSize:12,fontWeight:700,color:'#1e3a8a'}}>{selectedNote.REPERTOIRE||'EN ATTENTE'}</div>
                                     <div style={{fontSize:10,color:'#9ca3af',marginTop:2}}>ID: {selectedNote.IDNotesDeDetails}</div>
                                 </div>
                             )}

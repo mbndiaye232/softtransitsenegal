@@ -12,11 +12,11 @@ const INITIAL_MODAL = { type: null, data: {} };
 
 /* ── Color config per block ── */
 const C = {
-    produits: { accent: '#2563eb', light: '#eff6ff', border: '#bfdbfe', grad: 'linear-gradient(135deg,#1d4ed8,#3b82f6)' },
-    taxes:    { accent: '#7c3aed', light: '#f5f3ff', border: '#ddd6fe', grad: 'linear-gradient(135deg,#6d28d9,#8b5cf6)' },
-    taux:     { accent: '#059669', light: '#ecfdf5', border: '#a7f3d0', grad: 'linear-gradient(135deg,#047857,#10b981)' },
-    bulk:     { accent: '#d97706', light: '#fffbeb', border: '#fde68a', grad: 'linear-gradient(135deg,#b45309,#f59e0b)' },
-    tarifs:   { accent: '#4f46e5', light: '#eef2ff', border: '#c7d2fe', grad: 'linear-gradient(135deg,#4338ca,#6366f1)' },
+    produits: { accent: '#2563eb', light: '#eff6ff', border: '#bfdbfe', grad: 'var(--hero-gradient)' },
+    taxes:    { accent: '#1d4ed8', light: '#eff6ff', border: '#bfdbfe', grad: 'var(--hero-gradient)' },
+    taux:     { accent: '#059669', light: '#ecfdf5', border: '#a7f3d0', grad: 'var(--hero-gradient)' },
+    bulk:     { accent: '#d97706', light: '#fffbeb', border: '#fde68a', grad: 'var(--hero-gradient)' },
+    tarifs:   { accent: '#2563eb', light: '#eff6ff', border: '#bfdbfe', grad: 'var(--hero-gradient)' },
 };
 
 /* ── Reusable BlockCard ── */
@@ -448,13 +448,13 @@ export default function TarifsManager() {
     );
     const fInput = (props) => (
         <input {...props} style={{ width: '100%', padding: '8px 12px', border: '1.5px solid #e2e8f0', borderRadius: '9px', fontSize: '14px', outline: 'none', boxSizing: 'border-box', transition: 'border-color 0.2s', ...props.style }}
-            onFocus={e => e.target.style.borderColor = '#6366f1'}
+            onFocus={e => e.target.style.borderColor = '#3b82f6'}
             onBlur={e => e.target.style.borderColor = '#e2e8f0'}
         />
     );
     const fSelect = (props, children) => (
         <select {...props} style={{ width: '100%', padding: '8px 12px', border: '1.5px solid #e2e8f0', borderRadius: '9px', fontSize: '14px', outline: 'none', background: 'white', boxSizing: 'border-box', ...props.style }}
-            onFocus={e => e.target.style.borderColor = '#6366f1'}
+            onFocus={e => e.target.style.borderColor = '#3b82f6'}
             onBlur={e => e.target.style.borderColor = '#e2e8f0'}
         >{children}</select>
     );
@@ -489,12 +489,12 @@ export default function TarifsManager() {
 
             {/* ══════════ HERO ══════════ */}
             <div style={{
-                background: 'linear-gradient(135deg, #0f172a 0%, #1e3a5f 45%, #1e40af 100%)',
+                background: 'var(--hero-gradient)',
                 padding: '2.5rem 2rem 6rem',
                 position: 'relative', overflow: 'hidden',
             }}>
                 {/* Decorative orbs */}
-                <div style={{ position: 'absolute', top: '-60px', right: '5%', width: '280px', height: '280px', borderRadius: '50%', background: 'radial-gradient(circle,rgba(99,102,241,0.35) 0%,transparent 70%)', filter: 'blur(40px)', pointerEvents: 'none' }} />
+                <div style={{ position: 'absolute', top: '-60px', right: '5%', width: '280px', height: '280px', borderRadius: '50%', background: 'radial-gradient(circle,rgba(59,130,246,0.35) 0%,transparent 70%)', filter: 'blur(40px)', pointerEvents: 'none' }} />
                 <div style={{ position: 'absolute', bottom: '-80px', left: '10%', width: '240px', height: '240px', borderRadius: '50%', background: 'radial-gradient(circle,rgba(6,182,212,0.25) 0%,transparent 70%)', filter: 'blur(40px)', pointerEvents: 'none' }} />
                 <div style={{ position: 'absolute', top: '30%', left: '45%', width: '160px', height: '160px', borderRadius: '50%', background: 'radial-gradient(circle,rgba(16,185,129,0.2) 0%,transparent 70%)', filter: 'blur(50px)', pointerEvents: 'none' }} />
                 {/* Grid texture */}
@@ -528,7 +528,7 @@ export default function TarifsManager() {
                             { label: 'Produits NTS', value: totalProduits || produits.length, icon: Package, color: '#93c5fd', bg: 'rgba(147,197,253,0.15)' },
                             { label: 'Taxes', value: taxes.length, icon: Tag, color: '#c4b5fd', bg: 'rgba(196,181,253,0.15)' },
                             { label: 'Codes Taux', value: taux.length, icon: Percent, color: '#6ee7b7', bg: 'rgba(110,231,183,0.15)' },
-                            { label: 'Associations', value: totalTarifs, icon: Link2, color: '#a5b4fc', bg: 'rgba(165,180,252,0.15)' },
+                            { label: 'Associations', value: totalTarifs, icon: Link2, color: '#93c5fd', bg: 'rgba(165,180,252,0.15)' },
                         ].map((k, i) => {
                             const Ic = k.icon;
                             return (
@@ -648,11 +648,11 @@ export default function TarifsManager() {
                         <div style={{
                             borderRadius: '18px', overflow: 'hidden',
                             boxShadow: '0 4px 24px rgba(0,0,0,0.1)',
-                            border: '1px solid #ddd6fe',
+                            border: '1px solid #bfdbfe',
                         }}>
                             {/* Header */}
                             <div style={{
-                                background: 'linear-gradient(135deg,#6d28d9,#8b5cf6)',
+                                background: 'var(--hero-gradient)',
                                 padding: '1rem 1.5rem',
                                 display: 'flex', alignItems: 'center', gap: '10px',
                             }}>
@@ -683,11 +683,11 @@ export default function TarifsManager() {
                                                         display: 'flex', alignItems: 'center', gap: '10px',
                                                         padding: '9px 14px', cursor: 'pointer',
                                                         borderBottom: '1px solid #f1f5f9',
-                                                        background: isSel ? '#f5f3ff' : 'transparent',
-                                                        borderLeft: isSel ? '3px solid #7c3aed' : '3px solid transparent',
+                                                        background: isSel ? '#eff6ff' : 'transparent',
+                                                        borderLeft: isSel ? '3px solid #1d4ed8' : '3px solid transparent',
                                                         transition: 'all 0.15s',
                                                     }}>
-                                                    <span style={{ fontFamily: 'monospace', fontSize: '12px', fontWeight: 800, background: '#f5f3ff', color: '#7c3aed', padding: '2px 7px', borderRadius: '5px', minWidth: '28px', textAlign: 'center' }}>
+                                                    <span style={{ fontFamily: 'monospace', fontSize: '12px', fontWeight: 800, background: '#eff6ff', color: '#1d4ed8', padding: '2px 7px', borderRadius: '5px', minWidth: '28px', textAlign: 'center' }}>
                                                         {t.CodeTaxe}
                                                     </span>
                                                     <span style={{ fontSize: '12px', color: '#334155', fontWeight: isSel ? 700 : 400 }}>{t.LibelleTaxe}</span>
@@ -725,9 +725,9 @@ export default function TarifsManager() {
                                                                 type="checkbox"
                                                                 checked={isChecked}
                                                                 onChange={() => toggleComplement(t.CodeTaxe)}
-                                                                style={{ accentColor: '#7c3aed', width: '15px', height: '15px' }}
+                                                                style={{ accentColor: '#1d4ed8', width: '15px', height: '15px' }}
                                                             />
-                                                            <span style={{ fontFamily: 'monospace', fontSize: '12px', fontWeight: 800, background: '#f5f3ff', color: '#7c3aed', padding: '2px 7px', borderRadius: '5px', minWidth: '28px', textAlign: 'center' }}>
+                                                            <span style={{ fontFamily: 'monospace', fontSize: '12px', fontWeight: 800, background: '#eff6ff', color: '#1d4ed8', padding: '2px 7px', borderRadius: '5px', minWidth: '28px', textAlign: 'center' }}>
                                                                 {t.CodeTaxe}
                                                             </span>
                                                             <span style={{ fontSize: '12px', color: '#334155' }}>{t.LibelleTaxe}</span>
@@ -744,7 +744,7 @@ export default function TarifsManager() {
                                                     onClick={handleSaveComplements}
                                                     disabled={savingComplements}
                                                     style={{
-                                                        background: 'linear-gradient(135deg,#6d28d9,#8b5cf6)',
+                                                        background: 'var(--hero-gradient)',
                                                         color: 'white', border: 'none', borderRadius: '9px',
                                                         padding: '9px 22px', fontWeight: 800, fontSize: '13px',
                                                         cursor: savingComplements ? 'not-allowed' : 'pointer',

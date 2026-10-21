@@ -89,25 +89,25 @@ export default function DomainesActivitePage() {
         (d.Code || '').toLowerCase().includes(search.toLowerCase())
     );
 
-    const COLORS = ['#4f46e5', '#06b6d4', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899', '#3b82f6'];
+    const COLORS = ['#2563eb', '#06b6d4', '#10b981', '#f59e0b', '#ef4444', '#3b82f6', '#ec4899', '#3b82f6'];
 
     return (
         <div style={{ padding: '2rem', background: '#f8fafc', minHeight: '100vh' }}>
             <style>{`
                 .da-back { display: flex; align-items: center; gap: 0.5rem; color: #64748b; font-size: 0.875rem; font-weight: 600; cursor: pointer; border: none; background: none; margin-bottom: 1.5rem; transition: color 0.2s; }
-                .da-back:hover { color: #4f46e5; }
+                .da-back:hover { color: #2563eb; }
                 .da-header h1 { font-size: 1.875rem; font-weight: 800; color: #0f172a; display: flex; align-items: center; gap: 0.75rem; margin: 0 0 0.5rem; }
                 .da-header p { color: #64748b; font-weight: 500; margin: 0 0 2rem; }
 
                 .da-bar { display: flex; gap: 1rem; margin-bottom: 1.5rem; }
                 .da-search { position: relative; flex: 1; }
                 .da-search input { width: 100%; padding: 0.75rem 1rem 0.75rem 2.75rem; border: 1px solid #e2e8f0; border-radius: 0.75rem; outline: none; font-size: 0.875rem; transition: all 0.2s; }
-                .da-search input:focus { border-color: #4f46e5; box-shadow: 0 0 0 4px rgba(79,70,229,0.1); }
+                .da-search input:focus { border-color: #2563eb; box-shadow: 0 0 0 4px rgba(37,99,235,0.1); }
                 .da-search-icon { position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: #94a3b8; }
-                .da-btn-add { display: flex; align-items: center; gap: 0.5rem; background: #4f46e5; color: white; padding: 0.75rem 1.5rem; border-radius: 0.75rem; font-weight: 700; border: none; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 6px -1px rgba(79,70,229,0.2); }
-                .da-btn-add:hover { background: #4338ca; transform: translateY(-1px); }
+                .da-btn-add { display: flex; align-items: center; gap: 0.5rem; background: #2563eb; color: white; padding: 0.75rem 1.5rem; border-radius: 0.75rem; font-weight: 700; border: none; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 6px -1px rgba(37,99,235,0.2); }
+                .da-btn-add:hover { background: #1d4ed8; transform: translateY(-1px); }
                 .da-btn-refresh { display: flex; align-items: center; justify-content: center; width: 46px; border: 1px solid #e2e8f0; border-radius: 0.75rem; background: white; color: #64748b; cursor: pointer; transition: all 0.2s; }
-                .da-btn-refresh:hover { border-color: #4f46e5; color: #4f46e5; }
+                .da-btn-refresh:hover { border-color: #2563eb; color: #2563eb; }
 
                 .da-table-wrap { background: white; border: 1px solid #e2e8f0; border-radius: 1rem; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
                 .da-table { width: 100%; border-collapse: collapse; text-align: left; }
@@ -116,12 +116,12 @@ export default function DomainesActivitePage() {
                 .da-table tr:last-child td { border-bottom: none; }
                 .da-table tr:hover td { background: #f8fafc; }
 
-                .da-code { font-family: 'JetBrains Mono', monospace; background: rgba(79,70,229,0.08); color: #4f46e5; padding: 0.25rem 0.625rem; border-radius: 0.375rem; font-weight: 700; font-size: 0.8125rem; letter-spacing: 0.05em; }
+                .da-code { font-family: 'JetBrains Mono', monospace; background: rgba(37,99,235,0.08); color: #2563eb; padding: 0.25rem 0.625rem; border-radius: 0.375rem; font-weight: 700; font-size: 0.8125rem; letter-spacing: 0.05em; }
                 .da-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-right: 0.75rem; }
 
                 .da-actions { display: flex; gap: 0.4rem; justify-content: flex-end; }
                 .da-btn-icon { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 0.5rem; border: 1px solid #e2e8f0; background: white; color: #64748b; cursor: pointer; transition: all 0.2s; }
-                .da-btn-icon:hover { background: #f8fafc; color: #4f46e5; border-color: #4f46e5; }
+                .da-btn-icon:hover { background: #f8fafc; color: #2563eb; border-color: #2563eb; }
                 .da-btn-del:hover { border-color: #ef4444; color: #ef4444; background: #fef2f2; }
 
                 .da-alert { display: flex; align-items: center; gap: 0.75rem; padding: 1rem 1.25rem; border-radius: 0.75rem; margin-bottom: 1.5rem; font-size: 0.875rem; font-weight: 600; }
@@ -141,12 +141,12 @@ export default function DomainesActivitePage() {
                 .da-mbody { padding: 1.5rem; display: flex; flex-direction: column; gap: 1.25rem; }
                 .da-fg label { display: block; font-size: 0.75rem; font-weight: 700; color: #475569; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem; }
                 .da-input { width: 100%; padding: 0.75rem 1rem; border: 1px solid #e2e8f0; border-radius: 0.75rem; outline: none; font-size: 0.875rem; background: #f8fafc; transition: all 0.2s; }
-                .da-input:focus { border-color: #4f46e5; background: white; box-shadow: 0 0 0 4px rgba(79,70,229,0.1); }
+                .da-input:focus { border-color: #2563eb; background: white; box-shadow: 0 0 0 4px rgba(37,99,235,0.1); }
                 .da-mfoot { padding: 1.5rem; background: #f8fafc; border-top: 1px solid #e2e8f0; display: flex; justify-content: flex-end; gap: 0.75rem; }
                 .da-cancel { padding: 0.75rem 1.5rem; border-radius: 0.75rem; font-weight: 700; border: 1px solid #e2e8f0; background: white; color: #64748b; cursor: pointer; }
                 .da-cancel:hover { background: #f1f5f9; }
-                .da-save { padding: 0.75rem 1.5rem; border-radius: 0.75rem; font-weight: 700; background: #4f46e5; color: white; border: none; cursor: pointer; transition: all 0.2s; }
-                .da-save:hover { background: #4338ca; transform: translateY(-1px); }
+                .da-save { padding: 0.75rem 1.5rem; border-radius: 0.75rem; font-weight: 700; background: #2563eb; color: white; border: none; cursor: pointer; transition: all 0.2s; }
+                .da-save:hover { background: #1d4ed8; transform: translateY(-1px); }
                 .da-close { color: #64748b; cursor: pointer; border: none; background: none; }
                 .da-close:hover { color: #ef4444; }
             `}</style>
@@ -156,7 +156,7 @@ export default function DomainesActivitePage() {
             </button>
 
             <div className="da-header">
-                <h1><Briefcase size={30} color="#4f46e5" /> Domaines d'Activité</h1>
+                <h1><Briefcase size={30} color="#2563eb" /> Domaines d'Activité</h1>
                 <p>Configurez les domaines d'activité : Magasinage, Manutention, Transport, etc.</p>
             </div>
 

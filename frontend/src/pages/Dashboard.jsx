@@ -136,7 +136,7 @@ export default function Dashboard() {
             icon: Users,
             label: 'Équipe active',
             value: stats.activeTeam,
-            color: '#f472b6', bg: 'rgba(244,114,182,0.18)',
+            color: '#60a5fa', bg: 'rgba(96,165,250,0.18)',
         },
     ]
 
@@ -167,14 +167,14 @@ export default function Dashboard() {
                     66%      { transform: translateY(8px) rotate(-1deg); }
                 }
                 @keyframes glow-pulse {
-                    0%, 100% { box-shadow: 0 0 20px rgba(99,102,241,0.4); }
-                    50%      { box-shadow: 0 0 40px rgba(99,102,241,0.8); }
+                    0%, 100% { box-shadow: 0 0 20px rgba(59,130,246,0.4); }
+                    50%      { box-shadow: 0 0 40px rgba(59,130,246,0.8); }
                 }
             `}</style>
 
             {/* ══════════════════ NAVBAR ══════════════════ */}
             <header style={{
-                background: 'linear-gradient(135deg, #030014 0%, #0f0c29 60%, #1a0533 100%)',
+                background: 'var(--hero-gradient)',
                 padding: '0 2rem',
                 height: '64px',
                 display: 'flex',
@@ -189,7 +189,7 @@ export default function Dashboard() {
                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                     <div style={{
                         width: '38px', height: '38px', borderRadius: '11px',
-                        background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
+                        background: 'var(--hero-gradient)',
                         display: 'flex', alignItems: 'center', justifyContent: 'center',
                         animation: 'glow-pulse 3s ease-in-out infinite',
                     }}>
@@ -218,7 +218,7 @@ export default function Dashboard() {
                     }}>
                         <div style={{
                             width: '34px', height: '34px', borderRadius: '50%',
-                            background: 'linear-gradient(135deg, #6366f1, #c084fc)',
+                            background: 'var(--hero-gradient)',
                             display: 'flex', alignItems: 'center', justifyContent: 'center',
                             fontSize: '14px', fontWeight: 900, color: 'white',
                             flexShrink: 0,
@@ -230,7 +230,7 @@ export default function Dashboard() {
                                 {user?.name || 'Utilisateur'}
                             </div>
                             <div style={{
-                                fontSize: '10px', fontWeight: 800, color: '#818cf8',
+                                fontSize: '10px', fontWeight: 800, color: '#60a5fa',
                                 textTransform: 'uppercase', letterSpacing: '0.06em',
                             }}>
                                 {user?.role}
@@ -261,7 +261,7 @@ export default function Dashboard() {
 
             {/* ══════════════════ HERO ══════════════════ */}
             <div style={{
-                background: 'linear-gradient(135deg, #030014 0%, #0f0c29 25%, #1a0533 50%, #302b63 75%, #1e1b4b 100%)',
+                background: 'linear-gradient(135deg, #0b1220 0%, #0f172a 35%, #172a52 75%, #1b3464 100%)',
                 padding: '4rem 2rem 7rem',
                 position: 'relative',
                 overflow: 'hidden',
@@ -270,28 +270,28 @@ export default function Dashboard() {
                 <div style={{
                     position: 'absolute', top: '-80px', right: '3%',
                     width: '420px', height: '420px', borderRadius: '50%',
-                    background: 'radial-gradient(circle, rgba(139,92,246,0.45) 0%, transparent 70%)',
+                    background: 'radial-gradient(circle, rgba(37,99,235,0.42) 0%, transparent 70%)',
                     filter: 'blur(50px)',
                     animation: 'pulse-orb 4s ease-in-out infinite',
                 }} />
                 <div style={{
                     position: 'absolute', bottom: '-100px', left: '8%',
                     width: '350px', height: '350px', borderRadius: '50%',
-                    background: 'radial-gradient(circle, rgba(6,182,212,0.35) 0%, transparent 70%)',
+                    background: 'radial-gradient(circle, rgba(59,130,246,0.28) 0%, transparent 70%)',
                     filter: 'blur(50px)',
                     animation: 'pulse-orb 5.5s ease-in-out infinite 1.2s',
                 }} />
                 <div style={{
                     position: 'absolute', top: '20%', left: '35%',
                     width: '250px', height: '250px', borderRadius: '50%',
-                    background: 'radial-gradient(circle, rgba(236,72,153,0.25) 0%, transparent 70%)',
+                    background: 'radial-gradient(circle, rgba(96,165,250,0.16) 0%, transparent 70%)',
                     filter: 'blur(60px)',
                     animation: 'drift 8s ease-in-out infinite',
                 }} />
                 <div style={{
                     position: 'absolute', top: '60%', right: '20%',
                     width: '180px', height: '180px', borderRadius: '50%',
-                    background: 'radial-gradient(circle, rgba(251,191,36,0.2) 0%, transparent 70%)',
+                    background: 'radial-gradient(circle, rgba(5,150,105,0.16) 0%, transparent 70%)',
                     filter: 'blur(40px)',
                     animation: 'pulse-orb 7s ease-in-out infinite 0.5s',
                 }} />
@@ -309,10 +309,10 @@ export default function Dashboard() {
                     <div style={{ marginBottom: '24px' }}>
                         <div style={{
                             display: 'inline-flex', alignItems: 'center', gap: '7px',
-                            background: 'rgba(99,102,241,0.18)',
-                            border: '1px solid rgba(99,102,241,0.4)',
+                            background: 'rgba(59,130,246,0.18)',
+                            border: '1px solid rgba(59,130,246,0.4)',
                             borderRadius: '99px', padding: '5px 16px',
-                            color: '#a5b4fc', fontSize: '12px', fontWeight: 800,
+                            color: '#93c5fd', fontSize: '12px', fontWeight: 800,
                             textTransform: 'uppercase', letterSpacing: '0.09em',
                         }}>
                             <Sparkles size={13} />
@@ -331,7 +331,7 @@ export default function Dashboard() {
                     }}>
                         Bienvenue,{' '}
                         <span style={{
-                            background: 'linear-gradient(135deg, #818cf8 0%, #c084fc 40%, #f472b6 80%, #fb923c 100%)',
+                            background: 'linear-gradient(135deg, #60a5fa 0%, #38bdf8 55%, #6ee7b7 100%)',
                             WebkitBackgroundClip: 'text',
                             WebkitTextFillColor: 'transparent',
                             backgroundClip: 'text',
@@ -340,7 +340,7 @@ export default function Dashboard() {
                         </span>
                     </h1>
                     <p style={{
-                        color: 'rgba(255,255,255,0.45)',
+                        color: 'rgba(255,255,255,0.62)',
                         fontSize: '1.1rem', fontWeight: 500,
                         margin: '0 0 2.75rem',
                         letterSpacing: '0.01em',
@@ -433,14 +433,14 @@ export default function Dashboard() {
                 }}>
                     {/* Card header */}
                     <div style={{
-                        background: 'linear-gradient(135deg, #030014 0%, #0f0c29 50%, #1e1b4b 100%)',
+                        background: 'var(--hero-gradient)',
                         padding: '1.5rem 2rem',
                         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
                     }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
                             <div style={{
                                 width: '6px', height: '36px', borderRadius: '3px',
-                                background: 'linear-gradient(180deg, #818cf8, #f472b6)',
+                                background: 'linear-gradient(180deg, #60a5fa, #2563eb)',
                             }} />
                             <div>
                                 <div style={{
@@ -488,7 +488,7 @@ export default function Dashboard() {
                 }}>
                     {/* Header */}
                     <div style={{
-                        background: 'linear-gradient(135deg, #0c4a6e 0%, #0369a1 100%)',
+                        background: 'var(--hero-gradient)',
                         padding: '1rem 1.5rem',
                         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
                     }}>
@@ -579,7 +579,7 @@ export default function Dashboard() {
                     overflow: 'hidden',
                 }}>
                     <div style={{
-                        background: 'linear-gradient(135deg, #030014 0%, #0f0c29 50%, #1e1b4b 100%)',
+                        background: 'var(--hero-gradient)',
                         padding: '1rem 2rem',
                         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
                     }}>
@@ -598,9 +598,9 @@ export default function Dashboard() {
                         padding: '1.5rem 2rem',
                     }}>
                         {[
-                            { label: 'Raison Sociale',        value: user?.company_name, Icon: Building2, color: '#6366f1' },
-                            { label: 'Identifiant de connexion', value: user?.login,     Icon: User,      color: '#8b5cf6' },
-                            { label: 'Adresse Email',          value: user?.email,        Icon: Mail,      color: '#ec4899' },
+                            { label: 'Raison Sociale',        value: user?.company_name, Icon: Building2, color: '#3b82f6' },
+                            { label: 'Identifiant de connexion', value: user?.login,     Icon: User,      color: '#3b82f6' },
+                            { label: 'Adresse Email',          value: user?.email,        Icon: Mail,      color: '#2563eb' },
                         ].map((item, i, arr) => (
                             <div key={i} style={{
                                 display: 'flex', flexDirection: 'column', gap: '6px',

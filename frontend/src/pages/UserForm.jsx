@@ -9,11 +9,11 @@ import {
     ArrowLeft, UserCircle, Users, ShieldCheck, Settings2
 } from 'lucide-react'
 
-const GRAD  = 'linear-gradient(135deg,#312e81 0%,#4338ca 50%,#6366f1 100%)'
-const ACC   = '#4338ca'
-const ACC2  = '#6366f1'
-const LIGHT = '#eef2ff'
-const BORDER= '#c7d2fe'
+const GRAD  = 'var(--hero-gradient)'
+const ACC   = '#1d4ed8'
+const ACC2  = '#3b82f6'
+const LIGHT = '#eff6ff'
+const BORDER= '#bfdbfe'
 
 /* ── Input style ── */
 const inp = {
@@ -172,7 +172,7 @@ export default function UserForm() {
 
             {/* ── Hero ── */}
             <div style={{ background:GRAD, padding:'2.5rem 2.5rem 5rem', position:'relative', overflow:'hidden' }}>
-                {[['15%','15%',260,'rgba(99,102,241,.3)'],['72%','45%',200,'rgba(67,56,202,.25)']].map(([l,t,s,c],i)=>(
+                {[['15%','15%',260,'rgba(59,130,246,.3)'],['72%','45%',200,'rgba(67,56,202,.25)']].map(([l,t,s,c],i)=>(
                     <div key={i} style={{ position:'absolute', left:l, top:t, width:s, height:s, borderRadius:'50%', background:c, filter:'blur(65px)', pointerEvents:'none' }}/>
                 ))}
                 <div style={{ maxWidth:1000, margin:'0 auto', position:'relative' }}>
@@ -285,12 +285,12 @@ export default function UserForm() {
                                 </select>
                             </Field>
                             <Field label="Alertes suspensions" span={3}>
-                                <label style={{ display:'flex', alignItems:'center', gap:'0.6rem', cursor:'pointer', padding:'0.65rem 0.875rem', border:`1px solid ${formData.recevoir_alerte_suspension ? '#6366f1' : '#e5e7eb'}`, borderRadius:'0.5rem', background: formData.recevoir_alerte_suspension ? '#eef2ff' : 'transparent', transition:'all .15s' }}>
+                                <label style={{ display:'flex', alignItems:'center', gap:'0.6rem', cursor:'pointer', padding:'0.65rem 0.875rem', border:`1px solid ${formData.recevoir_alerte_suspension ? '#3b82f6' : '#e5e7eb'}`, borderRadius:'0.5rem', background: formData.recevoir_alerte_suspension ? '#eff6ff' : 'transparent', transition:'all .15s' }}>
                                     <input type="checkbox" name="recevoir_alerte_suspension"
                                         checked={formData.recevoir_alerte_suspension}
                                         onChange={handleChange}
-                                        style={{ width:'1.1rem', height:'1.1rem', accentColor:'#6366f1', cursor:'pointer' }}/>
-                                    <span style={{ fontSize:'0.85rem', fontWeight:600, color:'#4338ca' }}>🔔 Recevoir alertes suspensifs</span>
+                                        style={{ width:'1.1rem', height:'1.1rem', accentColor:'#3b82f6', cursor:'pointer' }}/>
+                                    <span style={{ fontSize:'0.85rem', fontWeight:600, color:'#1d4ed8' }}>🔔 Recevoir alertes suspensifs</span>
                                 </label>
                             </Field>
                         </div>
@@ -308,7 +308,7 @@ export default function UserForm() {
                         {/* Info banner */}
                         <div style={{ margin:'1.25rem 1.5rem 0', padding:'0.875rem 1rem', background: formData.role==='ADMIN' ? '#fefce8' : LIGHT, border:`1px solid ${formData.role==='ADMIN' ? '#fde68a' : BORDER}`, borderRadius:'0.75rem', display:'flex', gap:'0.625rem', alignItems:'flex-start' }}>
                             <Info size={14} color={formData.role==='ADMIN' ? '#b45309' : ACC} style={{ flexShrink:0, marginTop:1 }}/>
-                            <p style={{ margin:0, fontSize:'0.8rem', color: formData.role==='ADMIN' ? '#92400e' : '#3730a3', lineHeight:1.5, fontWeight:500 }}>
+                            <p style={{ margin:0, fontSize:'0.8rem', color: formData.role==='ADMIN' ? '#92400e' : '#1e40af', lineHeight:1.5, fontWeight:500 }}>
                                 {formData.role === 'ADMIN'
                                     ? "Les administrateurs héritent de tous les privilèges. Vous pouvez néanmoins affiner ces droits ci-dessous."
                                     : "Définissez précisément les modules auxquels cet agent peut accéder en cochant les droits correspondants."}

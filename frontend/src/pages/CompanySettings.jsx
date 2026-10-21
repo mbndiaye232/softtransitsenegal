@@ -230,8 +230,8 @@ export default function CompanySettings() {
                 
                 .save-bar { margin-top: 2rem; display: flex; justify-content: flex-end; gap: 1rem; padding: 2rem; background: var(--slate-50); border: 1px solid var(--border); border-radius: var(--radius-xl); box-shadow: var(--shadow-sm); }
                 .btn { padding: 0.75rem 2rem; border-radius: var(--radius-md); font-weight: 700; font-size: 0.875rem; border: none; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; transition: all 0.2s; }
-                .btn-primary { background: var(--primary); color: white; box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.2); }
-                .btn-primary:hover { background: var(--primary-hover); transform: translateY(-2px); box-shadow: 0 6px 12px -2px rgba(79, 70, 229, 0.3); }
+                .btn-primary { background: var(--primary); color: white; box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2); }
+                .btn-primary:hover { background: var(--primary-hover); transform: translateY(-2px); box-shadow: 0 6px 12px -2px rgba(37, 99, 235, 0.3); }
 
                 .alert { padding: 1rem 1.5rem; border-radius: var(--radius-md); font-size: 0.875rem; font-weight: 600; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.75rem; }
                 .alert-error { background: #fef2f2; color: var(--danger); border: 1px solid #fee2e2; }
@@ -370,7 +370,7 @@ export default function CompanySettings() {
                                         </div>
                                         <div className="input-group col-6">
                                             <label className="input-label">Capital Social (Devise incluse)</label>
-                                            <input name="Capital" className="premium-input" value={formData.Capital} onChange={handleChange} placeholder="Ex: 10 000 000 F XAF" />
+                                            <input name="Capital" className="premium-input" value={formData.Capital} onChange={handleChange} placeholder="Ex: 10 000 000 F CFA" />
                                         </div>
                                         <div className="input-group col-12">
                                             <label className="input-label">Activités Principales</label>

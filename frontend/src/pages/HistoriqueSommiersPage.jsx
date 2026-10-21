@@ -34,7 +34,7 @@ const STATUT_STYLE = {
 
 const TYPE_ENTREPOT_STYLE = {
     PUBLIC:  { bg: '#eff6ff', color: '#2563eb' },
-    PRIVE:   { bg: '#f5f3ff', color: '#7c3aed' },
+    PRIVE:   { bg: '#eff6ff', color: '#1d4ed8' },
     REEL:    { bg: '#f0fdf4', color: '#15803d' },
     FICTIF:  { bg: '#fff7ed', color: '#c2410c' },
     MAD:     { bg: '#fefce8', color: '#ca8a04' },
@@ -849,7 +849,7 @@ export default function HistoriqueSommiersPage() {
 
             {/* ── HERO ── */}
             <div style={{
-                background: 'linear-gradient(135deg, #0c1a3a 0%, #1e3a8a 50%, #1d4ed8 100%)',
+                background: 'var(--hero-gradient)',
                 padding: '1.5rem 2.5rem 2.5rem',
                 position: 'relative', overflow: 'hidden',
             }}>

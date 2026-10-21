@@ -26,7 +26,7 @@ module.exports = defineConfig({
         { name: 'setup', testMatch: /auth\.setup\.js/ },
         { name: 'chromium', testIgnore: /auth\.setup\.js/, dependencies: ['setup'], use: { ...devices['Desktop Chrome'] } },
     ],
-    // Backend et frontend de test, branchés sur la base softtransit_gabon_e2e (jamais la base de développement).
+    // Backend et frontend de test, branchés sur la base softtransit_senegal_e2e (jamais la base de développement).
     webServer: [
         {
             command: 'node server.js',
@@ -36,9 +36,11 @@ module.exports = defineConfig({
             timeout: 60_000,
             env: {
                 PORT: String(API_PORT),
-                PG_DATABASE: 'softtransit_gabon_e2e',
+                PG_DATABASE: 'softtransit_senegal_e2e',
                 FRONTEND_URL: WEB_URL,
                 NODE_ENV: 'test',
+                PORTAIL_CLIENT_ENABLED: 'true', // option testée par tests/13-portail-client.spec.js
+                DISABLE_RATE_LIMIT: 'true', // les limites (5 inscriptions ou réinitialisations par heure) sont partagées par toute la suite
                 // aucun envoi d'e-mail réel pendant les tests
                 SMTP_HOST: '', SMTP_USER: '', SMTP_PASS: '', BREVO_API_KEY: '',
             },
@@ -49,7 +51,7 @@ module.exports = defineConfig({
             url: WEB_URL,
             reuseExistingServer: false,
             timeout: 120_000,
-            env: { VITE_API_URL: API_URL },
+            env: { VITE_API_URL: API_URL, VITE_PORTAIL_CLIENT: 'true' }, // portail client (option) testé par 13 et 14
         },
     ],
 })

@@ -87,7 +87,7 @@ export default function DirecteurModal({ onClose }) {
             >
                 {/* Header */}
                 <div style={{
-                    background: 'linear-gradient(135deg, #1e1b4b 0%, #312e81 60%, #4338ca 100%)',
+                    background: 'var(--hero-gradient)',
                     padding: '1.25rem 1.5rem',
                     display: 'flex', alignItems: 'center', justifyContent: 'space-between',
                     flexShrink: 0,
@@ -233,7 +233,7 @@ export default function DirecteurModal({ onClose }) {
                         onClick={() => { onClose(); navigate('/decision-dashboard') }}
                         style={{
                             display: 'flex', alignItems: 'center', gap: '8px',
-                            background: 'linear-gradient(135deg, #1e1b4b 0%, #4338ca 100%)',
+                            background: 'var(--hero-gradient)',
                             color: 'white', border: 'none', borderRadius: '10px',
                             padding: '10px 18px', fontWeight: 700, fontSize: '13px',
                             cursor: 'pointer',

@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import {
     Building2, Users, UserSquare2, Briefcase, ClipboardList,
     BarChart3, FileText, Settings, LogOut, Key,
-    Save, Layers, LayoutDashboard, ChevronRight, ShieldCheck, Folders, Lock, Anchor, Warehouse, History
+    Save, Layers, LayoutDashboard, ChevronRight, ShieldCheck, Folders, Lock, Anchor, Warehouse, History, Globe
 } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 
@@ -11,27 +11,27 @@ import { useAuth } from '../context/AuthContext'
 const CATS = [
     {
         label: 'Référentiels Métier',
-        color: '#6366f1',
-        grad: 'linear-gradient(135deg,#4338ca,#6366f1)',
+        color: '#2563eb',
+        grad: 'var(--hero-gradient)',
         ids: ['societe', 'agents', 'clients', 'tiers'],
     },
     {
         label: 'Dossiers & Transit',
-        color: '#0369a1',
-        grad: 'linear-gradient(135deg,#0c4a6e,#0369a1)',
+        color: '#1d4ed8',
+        grad: 'var(--hero-gradient)',
         ids: ['dossiers', 'suivi', 'arrivees', 'cotation', 'ot', 'config-ot', 'documents', 'notes', 'traitements', 'sommiers', 'entrepots', 'historique-sommiers'],
     },
     {
         label: 'Documents & Finance',
         color: '#059669',
-        grad: 'linear-gradient(135deg,#064e3b,#059669)',
+        grad: 'var(--hero-gradient)',
         ids: ['finances', 'suivi-factures'],
     },
     {
         label: 'Outils & Administration',
-        color: '#d97706',
-        grad: 'linear-gradient(135deg,#92400e,#d97706)',
-        ids: ['dashboard', 'parametres', 'licence', 'sauvegarder', 'quitter'],
+        color: '#475569',
+        grad: 'var(--hero-gradient)',
+        ids: ['dashboard', 'parametres', 'portail', 'licence', 'sauvegarder', 'quitter'],
     },
 ]
 
@@ -51,35 +51,40 @@ export default function DashboardMenu() {
     //               FACTURES, NOTES, CONFIG, PAYS, DEVISES, TAXES, REGIMES,
     //               STATUTS, PRODUITS, GROUPES
     const allItems = [
-        { id: 'societe',     label: 'Société',           icon: Building2,       path: '/settings',           color: '#6366f1', grad: 'linear-gradient(135deg,#4338ca,#6366f1)',  perm: 'STRUCTURES' },
-        { id: 'agents',      label: 'Agents',             icon: Users,           path: '/users',              color: '#8b5cf6', grad: 'linear-gradient(135deg,#7c3aed,#8b5cf6)',  perm: 'AGENTS' },
-        { id: 'clients',     label: 'Clients',            icon: UserSquare2,     path: '/clients',            color: '#a855f7', grad: 'linear-gradient(135deg,#9333ea,#a855f7)',  perm: 'CLIENTS' },
-        { id: 'tiers',       label: 'Tiers',              icon: Users,           path: '/tiers',              color: '#ec4899', grad: 'linear-gradient(135deg,#db2777,#ec4899)',  perm: 'TIERS' },
-        { id: 'dossiers',    label: 'Dossiers',           icon: Briefcase,       path: '/dossiers',           color: '#2563eb', grad: 'linear-gradient(135deg,#1d4ed8,#2563eb)',  perm: 'DOSSIERS', multi: true },
-        { id: 'suivi',       label: 'Suivi dossiers',     icon: ClipboardList,   path: '/suivi-dossiers',     color: '#0891b2', grad: 'linear-gradient(135deg,#0e7490,#0891b2)',  perm: 'DOSSIERS' },
-        { id: 'arrivees',    label: 'Arrivées navires',   icon: Anchor,          path: '/transport-arrivals', color: '#0369a1', grad: 'linear-gradient(135deg,#0c4a6e,#0369a1)',  perm: 'DOSSIERS' },
+        { id: 'societe',     label: 'Société',           icon: Building2,       path: '/settings',           color: '#3b82f6', grad: 'var(--hero-gradient)',  perm: 'STRUCTURES' },
+        { id: 'agents',      label: 'Agents',             icon: Users,           path: '/users',              color: '#3b82f6', grad: 'var(--hero-gradient)',  perm: 'AGENTS' },
+        { id: 'clients',     label: 'Clients',            icon: UserSquare2,     path: '/clients',            color: '#a855f7', grad: 'var(--hero-gradient)',  perm: 'CLIENTS' },
+        { id: 'tiers',       label: 'Tiers',              icon: Users,           path: '/tiers',              color: '#ec4899', grad: 'var(--hero-gradient)',  perm: 'TIERS' },
+        { id: 'dossiers',    label: 'Dossiers',           icon: Briefcase,       path: '/dossiers',           color: '#2563eb', grad: 'var(--hero-gradient)',  perm: 'DOSSIERS', multi: true },
+        { id: 'suivi',       label: 'Suivi dossiers',     icon: ClipboardList,   path: '/suivi-dossiers',     color: '#0891b2', grad: 'var(--hero-gradient)',  perm: 'DOSSIERS' },
+        { id: 'arrivees',    label: 'Arrivées navires',   icon: Anchor,          path: '/transport-arrivals', color: '#0369a1', grad: 'var(--hero-gradient)',  perm: 'DOSSIERS' },
         { id: 'cotation',    label: 'Cotation',           icon: Layers,          path: '/cotations',          color: '#10b981', grad: 'linear-gradient(135deg,#059669,#10b981)',  perm: 'COTATIONS' },
         { id: 'ot',          label: 'Ordre de Transit',   icon: FileText,        path: '/ordres-transit',     color: '#f97316', grad: 'linear-gradient(135deg,#ea580c,#f97316)',  perm: 'DOSSIERS' },
-        { id: 'config-ot',   label: 'Configuration OT',   icon: Settings,        path: '/config-transit',     color: '#64748b', grad: 'linear-gradient(135deg,#475569,#64748b)',  perm: 'CONFIG',   multi: true },
+        { id: 'config-ot',   label: 'Configuration OT',   icon: Settings,        path: '/config-transit',     color: '#64748b', grad: 'var(--hero-gradient)',  perm: 'CONFIG',   multi: true },
         { id: 'documents',   label: 'Gestion documents',  icon: FileText,        path: '/documents',          color: '#06b6d4', grad: 'linear-gradient(135deg,#0891b2,#06b6d4)',  perm: 'FACTURES' },
-        { id: 'notes',       label: 'Note de détail',     icon: FileText,        path: '/notes',              color: '#3b82f6', grad: 'linear-gradient(135deg,#2563eb,#3b82f6)',  perm: 'NOTES' },
-        { id: 'finances',    label: 'Etats financiers',   icon: BarChart3,       path: '/etats-financiers',   color: '#6366f1', grad: 'linear-gradient(135deg,#4338ca,#6366f1)',  perm: 'FACTURES', multi: true },
-        { id: 'suivi-factures', label: 'Suivi factures',  icon: FileText,        path: '/suivi-factures',     color: '#059669', grad: 'linear-gradient(135deg,#047857,#059669)',  perm: 'FACTURES' },
-        { id: 'traitements', label: 'Suivi traitements',  icon: Layers,          path: '/suivi-traitements',  color: '#8b5cf6', grad: 'linear-gradient(135deg,#7c3aed,#8b5cf6)',  perm: 'DOSSIERS' },
-        { id: 'sommiers',    label: 'Sommiers',           icon: ShieldCheck,     path: '/sommiers',           color: '#1d4ed8', grad: 'linear-gradient(135deg,#1e3a8a,#1d4ed8)',  perm: 'DOSSIERS' },
-        { id: 'entrepots',           label: 'Entrepôts',           icon: Warehouse, path: '/entrepots',           color: '#0f766e', grad: 'linear-gradient(135deg,#134e4a,#0f766e)', perm: 'DOSSIERS' },
-        { id: 'historique-sommiers', label: 'Historique Sommiers', icon: History,   path: '/historique-sommiers', color: '#6d28d9', grad: 'linear-gradient(135deg,#4c1d95,#6d28d9)', perm: 'DOSSIERS' },
-        { id: 'dashboard',   label: 'Dashboard',          icon: LayoutDashboard, path: '/decision-dashboard', color: '#ec4899', grad: 'linear-gradient(135deg,#db2777,#ec4899)',  perm: null,       multi: true },
+        { id: 'notes',       label: 'Note de détail',     icon: FileText,        path: '/notes',              color: '#3b82f6', grad: 'var(--hero-gradient)',  perm: 'NOTES' },
+        { id: 'finances',    label: 'Etats financiers',   icon: BarChart3,       path: '/etats-financiers',   color: '#3b82f6', grad: 'var(--hero-gradient)',  perm: 'FACTURES', multi: true },
+        { id: 'suivi-factures', label: 'Suivi factures',  icon: FileText,        path: '/suivi-factures',     color: '#059669', grad: 'var(--hero-gradient)',  perm: 'FACTURES' },
+        { id: 'traitements', label: 'Suivi traitements',  icon: Layers,          path: '/suivi-traitements',  color: '#3b82f6', grad: 'var(--hero-gradient)',  perm: 'DOSSIERS' },
+        { id: 'sommiers',    label: 'Sommiers',           icon: ShieldCheck,     path: '/sommiers',           color: '#1d4ed8', grad: 'var(--hero-gradient)',  perm: 'DOSSIERS' },
+        { id: 'entrepots',           label: 'Entrepôts',           icon: Warehouse, path: '/entrepots',           color: '#0f766e', grad: 'var(--hero-gradient)', perm: 'DOSSIERS' },
+        { id: 'historique-sommiers', label: 'Historique Sommiers', icon: History,   path: '/historique-sommiers', color: '#1e40af', grad: 'var(--hero-gradient)', perm: 'DOSSIERS' },
+        { id: 'dashboard',   label: 'Dashboard',          icon: LayoutDashboard, path: '/decision-dashboard', color: '#ec4899', grad: 'var(--hero-gradient)',  perm: null,       multi: true },
         { id: 'parametres',  label: 'Paramètres',         icon: Settings,        path: '/parameters-hub',     color: '#f59e0b', grad: 'linear-gradient(135deg,#d97706,#f59e0b)',  perm: 'CONFIG',   multi: true },
         { id: 'licence',     label: 'Licence',            icon: Key,             path: '#',                   color: '#10b981', grad: 'linear-gradient(135deg,#059669,#10b981)',  perm: null,       disabled: true },
+        ...(import.meta.env.VITE_PORTAIL_CLIENT === 'true'
+            ? [{ id: 'portail', label: 'Portail client', icon: Globe, path: '/portail-admin', color: '#0891b2', grad: 'var(--hero-gradient)', perm: 'CONFIG' }]
+            : []),
         { id: 'sauvegarder', label: 'Sauvegarder',        icon: Save,            path: '/backups',            color: '#06b6d4', grad: 'linear-gradient(135deg,#0891b2,#06b6d4)',  perm: 'CONFIG' },
-        { id: 'quitter', label: 'Quitter', icon: LogOut, path: null, color: '#ef4444', grad: 'linear-gradient(135deg,#dc2626,#ef4444)', perm: null, onClick: handleLogout },
+        { id: 'quitter', label: 'Quitter', icon: LogOut, path: null, color: '#ef4444', grad: 'var(--hero-gradient)', perm: null, onClick: handleLogout },
     ]
 
     return (
         <div>
             {CATS.map(cat => {
+                // Charte SST : une seule couleur par famille (le bouton « Quitter » garde son rouge)
                 const catItems = allItems.filter(item => cat.ids.includes(item.id))
+                    .map(item => item.id === 'quitter' ? item : { ...item, color: cat.color, grad: 'var(--hero-gradient)' })
                 if (!catItems.length) return null
 
                 return (

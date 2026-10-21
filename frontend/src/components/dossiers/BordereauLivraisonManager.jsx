@@ -110,9 +110,9 @@ const BordereauLivraisonManager = ({ dossierId }) => {
                     gap: 0.75rem; 
                     font-size: 1rem;
                     transition: all 0.2s;
-                    box-shadow: 0 4px 14px 0 rgba(99, 102, 241, 0.39);
+                    box-shadow: 0 4px 14px 0 rgba(59, 130, 246, 0.39);
                 }
-                .btn-generate:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(99, 102, 241, 0.23); }
+                .btn-generate:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(59, 130, 246, 0.23); }
                 .btn-generate:disabled { opacity: 0.6; cursor: not-allowed; }
             `}</style>
 
@@ -145,7 +145,7 @@ const BordereauLivraisonManager = ({ dossierId }) => {
                                     <span className="otr-card-date"><Calendar size={12} /> {new Date(order.DateOrdreTransport).toLocaleDateString()}</span>
                                 </div>
                                 <div className="otr-card-info">
-                                    <Truck size={14} color="#6366f1" />
+                                    <Truck size={14} color="#3b82f6" />
                                     <span>{order.TransporteuretAdresse}</span>
                                 </div>
                                 <div style={{ fontSize: '0.75rem', color: '#94a3b8', marginTop: 'auto' }}>

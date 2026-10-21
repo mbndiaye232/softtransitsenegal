@@ -135,7 +135,7 @@ export default function OrdreTransitPage() {
 
             {/* ── Hero ─────────────────────────────────────────────────────── */}
             <div style={{
-                background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 55%, #334155 100%)',
+                background: 'var(--hero-gradient)',
                 padding: '32px 40px 72px', position:'relative', overflow:'hidden',
             }}>
                 <div style={{ position:'absolute', top:-70, right:-70, width:250, height:250, background:'rgba(255,255,255,.04)', borderRadius:'50%' }} />
@@ -416,7 +416,7 @@ export default function OrdreTransitPage() {
                                 <button type="button" onClick={() => setShowModal(false)} style={{ display:'flex', alignItems:'center', gap:8, padding:'11px 22px', borderRadius:12, border:'1px solid #e5e7eb', background:'white', color:'#374151', fontWeight:700, fontSize:13, cursor:'pointer' }}>
                                     <X size={15}/> Annuler
                                 </button>
-                                <button type="submit" disabled={saving} style={{ display:'flex', alignItems:'center', gap:8, padding:'11px 26px', borderRadius:12, border:'none', background: saving?'#94a3b8':'linear-gradient(135deg,#1e293b,#334155)', color:'white', fontWeight:700, fontSize:13, cursor: saving?'not-allowed':'pointer', boxShadow:'0 4px 14px rgba(15,23,42,.35)', transition:'all .15s' }}>
+                                <button type="submit" disabled={saving} style={{ display:'flex', alignItems:'center', gap:8, padding:'11px 26px', borderRadius:12, border:'none', background: saving?'#94a3b8':'var(--hero-gradient)', color:'white', fontWeight:700, fontSize:13, cursor: saving?'not-allowed':'pointer', boxShadow:'0 4px 14px rgba(15,23,42,.35)', transition:'all .15s' }}>
                                     {saving ? 'Enregistrement…' : <><Check size={15}/> Enregistrer</>}
                                 </button>
                             </div>

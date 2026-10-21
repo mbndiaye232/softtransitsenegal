@@ -7,7 +7,7 @@ import { clientsAPI } from '../services/api'
 /* ─── Palette couleur par initiale ──────────────────────────────────────── */
 const ACCENT_COLORS = [
     { bg: '#eff6ff', accent: '#2563eb', text: '#1d4ed8' },
-    { bg: '#f5f3ff', accent: '#7c3aed', text: '#6d28d9' },
+    { bg: '#eff6ff', accent: '#1d4ed8', text: '#1e40af' },
     { bg: '#fdf2f8', accent: '#db2777', text: '#be185d' },
     { bg: '#fff7ed', accent: '#ea580c', text: '#c2410c' },
     { bg: '#f0fdf4', accent: '#16a34a', text: '#15803d' },
@@ -265,7 +265,7 @@ export default function ClientList() {
 
     if (loading) return (
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '60vh' }}>
-            <div style={{ width: 36, height: 36, border: '3px solid #e5e7eb', borderTopColor: '#6366f1', borderRadius: '50%', animation: 'spin .7s linear infinite' }} />
+            <div style={{ width: 36, height: 36, border: '3px solid #e5e7eb', borderTopColor: '#3b82f6', borderRadius: '50%', animation: 'spin .7s linear infinite' }} />
             <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
         </div>
     )
@@ -275,7 +275,7 @@ export default function ClientList() {
 
             {/* ── HERO HEADER ── */}
             <div style={{
-                background: 'linear-gradient(135deg, #1e1b4b 0%, #312e81 45%, #4f46e5 100%)',
+                background: 'var(--hero-gradient)',
                 padding: '2.5rem 2.5rem 4rem',
                 position: 'relative', overflow: 'hidden',
             }}>
@@ -304,7 +304,7 @@ export default function ClientList() {
                         style={{
                             display: 'flex', alignItems: 'center', gap: '8px',
                             padding: '12px 22px', borderRadius: '12px', border: 'none', cursor: 'pointer',
-                            background: 'white', color: '#4f46e5',
+                            background: 'white', color: '#2563eb',
                             fontSize: '14px', fontWeight: 700,
                             boxShadow: '0 4px 16px rgba(0,0,0,.2)',
                             transition: 'all .2s',
@@ -331,7 +331,7 @@ export default function ClientList() {
                     display: 'flex', alignItems: 'center', gap: '20px', flexWrap: 'wrap',
                 }}>
                     {/* Stats pills */}
-                    <StatPill icon={<Building2 size={20} />} label="Total clients" value={counts.tous} color="#4f46e5" />
+                    <StatPill icon={<Building2 size={20} />} label="Total clients" value={counts.tous} color="#2563eb" />
                     <StatPill icon={<BadgeCheck size={20} />} label="Exonérés TVA" value={counts.exoneres} color="#16a34a" />
                     <StatPill icon={<TrendingUp size={20} />} label="Assujettis" value={counts.assujettis} color="#2563eb" />
 
@@ -354,7 +354,7 @@ export default function ClientList() {
                                 transition: 'border-color .15s',
                                 background: '#f9fafb',
                             }}
-                            onFocus={e => e.target.style.borderColor = '#6366f1'}
+                            onFocus={e => e.target.style.borderColor = '#3b82f6'}
                             onBlur={e => e.target.style.borderColor = '#e5e7eb'}
                         />
                         {searchTerm && (
@@ -416,7 +416,7 @@ export default function ClientList() {
                         {!searchTerm && (
                             <button
                                 onClick={() => navigate('/clients/new')}
-                                style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 20px', borderRadius: '10px', border: 'none', cursor: 'pointer', background: '#4f46e5', color: 'white', fontSize: '14px', fontWeight: 700 }}
+                                style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 20px', borderRadius: '10px', border: 'none', cursor: 'pointer', background: '#2563eb', color: 'white', fontSize: '14px', fontWeight: 700 }}
                             >
                                 <Plus size={16} /> Ajouter un client
                             </button>

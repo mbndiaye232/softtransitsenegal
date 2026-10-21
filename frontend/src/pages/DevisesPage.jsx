@@ -12,7 +12,7 @@ const ACC = '#047857'
 const ACC2 = '#10b981'
 const LIGHT = '#ecfdf5'
 const BORDER = '#a7f3d0'
-const GRAD = 'linear-gradient(135deg,#064e3b 0%,#047857 45%,#10b981 100%)'
+const GRAD = 'var(--hero-gradient)'
 
 function Toast({ toasts }) {
     return (
@@ -37,7 +37,7 @@ function Toast({ toasts }) {
 
 const SYMBOL_PALETTES = [
     { color:'#1d4ed8', bg:'#eff6ff', border:'#bfdbfe' },
-    { color:'#7c3aed', bg:'#f5f3ff', border:'#ddd6fe' },
+    { color:'#1d4ed8', bg:'#eff6ff', border:'#bfdbfe' },
     { color:'#b45309', bg:'#fffbeb', border:'#fde68a' },
     { color:'#047857', bg:'#ecfdf5', border:'#a7f3d0' },
     { color:'#be123c', bg:'#fff1f2', border:'#fecdd3' },
@@ -162,7 +162,7 @@ export default function DevisesPage() {
                         <div style={{ display:'flex', gap:'0.75rem', flexWrap:'wrap' }}>
                             {[
                                 { label:'Devises configurées', value: devises.length, icon: Layers },
-                                { label:`Taux moy. (${refDevise?.Symbole || 'F XAF'})`, value: devises.length ? Math.round(devises.reduce((s,d)=>s+parseFloat(d.TauxChangeDeviseCFA||0),0)/devises.length).toLocaleString() : '—', icon: TrendingUp },
+                                { label:`Taux moy. (${refDevise?.Symbole || 'F CFA'})`, value: devises.length ? Math.round(devises.reduce((s,d)=>s+parseFloat(d.TauxChangeDeviseCFA||0),0)/devises.length).toLocaleString() : '—', icon: TrendingUp },
                             ].map(({ label, value, icon: Ic }) => (
                                 <div key={label} style={{ background:'rgba(255,255,255,0.15)', backdropFilter:'blur(12px)', border:'1px solid rgba(255,255,255,0.2)', borderRadius:'0.875rem', padding:'0.75rem 1.25rem', display:'flex', alignItems:'center', gap:'0.75rem' }}>
                                     <Ic size={18} color="rgba(255,255,255,0.8)"/>
@@ -233,10 +233,10 @@ export default function DevisesPage() {
                                             </div>
                                             {/* Exchange rate */}
                                             <div style={{ background:pal.bg, border:`1px solid ${pal.border}`, borderRadius:'0.75rem', padding:'0.875rem 1rem', display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:'1.25rem' }}>
-                                                <div style={{ fontSize:'0.75rem', color:'#64748b', fontWeight:600 }}>Taux de change ({refDevise?.Symbole || 'F XAF'})</div>
+                                                <div style={{ fontSize:'0.75rem', color:'#64748b', fontWeight:600 }}>Taux de change ({refDevise?.Symbole || 'F CFA'})</div>
                                                 <div style={{ fontWeight:800, color:pal.color, fontSize:'1.0625rem' }}>
                                                     {parseFloat(devise.TauxChangeDeviseCFA).toLocaleString('fr-FR', { maximumFractionDigits: 6 })}
-                                                    <span style={{ fontWeight:500, color:'#94a3b8', fontSize:'0.7rem', marginLeft:'0.375rem' }}>{refDevise?.Symbole || 'F XAF'}</span>
+                                                    <span style={{ fontWeight:500, color:'#94a3b8', fontSize:'0.7rem', marginLeft:'0.375rem' }}>{refDevise?.Symbole || 'F CFA'}</span>
                                                 </div>
                                             </div>
                                             <div style={{ display:'flex', flexDirection:'column', gap:'0.5rem', borderTop:`1px solid ${pal.border}`, paddingTop:'1rem' }}>
@@ -312,7 +312,7 @@ export default function DevisesPage() {
                                 </div>
                                 <div>
                                     <label style={{ display:'block', fontSize:'0.7rem', fontWeight:800, color:'#64748b', textTransform:'uppercase', letterSpacing:'0.06em', marginBottom:'0.4rem' }}>
-                                        Taux de change vers {editingItem?.est_reference ? 'elle-même' : (refDevise?.libelle || 'la devise de référence')} ({refDevise?.Symbole || 'F XAF'}) <span style={{color:ACC2}}>*</span>
+                                        Taux de change vers {editingItem?.est_reference ? 'elle-même' : (refDevise?.libelle || 'la devise de référence')} ({refDevise?.Symbole || 'F CFA'}) <span style={{color:ACC2}}>*</span>
                                     </label>
                                     <div style={{ position:'relative' }}>
                                         <input className="dv-inp" type="number" step="0.0001" style={{ ...inputSt, ...(editingItem?.est_reference ? { background:'#f1f5f9', color:'#94a3b8', cursor:'not-allowed' } : {}) }}
@@ -322,7 +322,7 @@ export default function DevisesPage() {
                                             readOnly={!!editingItem?.est_reference}
                                             required
                                         />
-                                        <span style={{ position:'absolute', right:'1rem', top:'50%', transform:'translateY(-50%)', fontWeight:700, fontSize:'0.75rem', color:'#94a3b8' }}>{refDevise?.Symbole || 'F XAF'}</span>
+                                        <span style={{ position:'absolute', right:'1rem', top:'50%', transform:'translateY(-50%)', fontWeight:700, fontSize:'0.75rem', color:'#94a3b8' }}>{refDevise?.Symbole || 'F CFA'}</span>
                                     </div>
                                     <p style={{ margin:'0.375rem 0 0', fontSize:'0.7rem', color:'#94a3b8', fontStyle:'italic' }}>
                                         {editingItem?.est_reference

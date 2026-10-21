@@ -134,7 +134,7 @@ export default function FloatingNav() {
                     align-items: center;
                     justify-content: center;
                     cursor: pointer;
-                    box-shadow: 0 10px 25px -5px rgba(79, 70, 229, 0.5);
+                    box-shadow: 0 10px 25px -5px rgba(37, 99, 235, 0.5);
                     transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
                     z-index: 2;
                 }

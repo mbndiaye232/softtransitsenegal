@@ -10,7 +10,7 @@ const ACC = '#9f1239'
 const ACC2 = '#e11d48'
 const LIGHT = '#fff1f2'
 const BORDER = '#fecdd3'
-const GRAD = 'linear-gradient(135deg,#881337 0%,#9f1239 45%,#e11d48 100%)'
+const GRAD = 'var(--hero-gradient)'
 
 function Toast({ toasts }) {
     return (

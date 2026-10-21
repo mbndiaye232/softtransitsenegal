@@ -345,7 +345,7 @@ export default function EtatsFinanciers() {
             <div className="ef-table-area">
                 {fcReportTitle && (
                     <div className="ef-report-title">
-                        <TrendingUp size={18} color="#4f46e5" />
+                        <TrendingUp size={18} color="#2563eb" />
                         {fcReportTitle}
                         <span className="ef-count-pill">{fcFactures.length} facture(s)</span>
                     </div>
@@ -353,7 +353,7 @@ export default function EtatsFinanciers() {
 
                 <div className="ef-table-card">
                     {loading ? (
-                        <div className="ef-empty"><Loader2 size={40} className="ef-spinner" color="#6366f1" /></div>
+                        <div className="ef-empty"><Loader2 size={40} className="ef-spinner" color="#3b82f6" /></div>
                     ) : fcFactures.length > 0 ? (
                         <div className="ef-table-scroll">
                             <div style={{ overflowX: 'auto' }}>
@@ -524,7 +524,7 @@ export default function EtatsFinanciers() {
             </div>
 
             <aside className="ef-controls no-print">
-                <div className="ef-controls-header" style={{ background: 'linear-gradient(135deg, #0f766e 0%, #134e4a 100%)' }}>
+                <div className="ef-controls-header" style={{ background: 'var(--hero-gradient)' }}>
                     <h3><Filter size={16} /> Configuration du relevé</h3>
                 </div>
                 <div className="ef-controls-body">
@@ -589,7 +589,7 @@ export default function EtatsFinanciers() {
                         <button className="ef-btn ef-btn-success" style={{ flex: 1, padding: '0.5rem' }} onClick={handleImprimerRelevePDF} disabled={rcFactures.length === 0 || loading}>
                             {loading ? <Loader2 size={16} className="ef-spinner" /> : <Printer size={16} />} Imprimer Relevé
                         </button>
-                        <button className="ef-btn ef-btn-success" style={{ flex: 1, padding: '0.5rem', background: 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)' }} onClick={handleImprimerEtatFacturesPDF} disabled={rcFactures.length === 0 || loading}>
+                        <button className="ef-btn ef-btn-success" style={{ flex: 1, padding: '0.5rem', background: 'var(--hero-gradient)' }} onClick={handleImprimerEtatFacturesPDF} disabled={rcFactures.length === 0 || loading}>
                             {loading ? <Loader2 size={16} className="ef-spinner" /> : <Printer size={16} />} Imprimer État
                         </button>
                     </div>
@@ -782,11 +782,11 @@ export default function EtatsFinanciers() {
                 </div>
 
                 <aside className="ef-controls no-print">
-                    <div className="ef-controls-header" style={{ background: 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)' }}>
+                    <div className="ef-controls-header" style={{ background: 'var(--hero-gradient)' }}>
                         <h3><Filter size={16} /> Actions</h3>
                     </div>
                     <div className="ef-controls-body">
-                        <button className="ef-btn ef-btn-primary" style={{ background: 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)', boxShadow: '0 4px 12px rgba(2, 132, 199, 0.3)' }} onClick={handleAfficherCAClients} disabled={loading}>
+                        <button className="ef-btn ef-btn-primary" style={{ background: 'var(--hero-gradient)', boxShadow: '0 4px 12px rgba(2, 132, 199, 0.3)' }} onClick={handleAfficherCAClients} disabled={loading}>
                             {loading ? <><Loader2 size={16} className="ef-spinner" /> Traitement...</> : <><Eye size={16} /> Traiter</>}
                         </button>
                         <button className="ef-btn ef-btn-success" onClick={handleImprimer} disabled={caData.length === 0}>
@@ -916,11 +916,11 @@ export default function EtatsFinanciers() {
 
     /* ── Tab color config ── */
     const TAB_COLORS = {
-        'factures-clients': { accent:'#4f46e5', light:'#eef2ff', grad:'linear-gradient(135deg,#4338ca,#6366f1)', label:'Factures Clients' },
-        'releve-client':    { accent:'#0d9488', light:'#f0fdfa', grad:'linear-gradient(135deg,#0f766e,#14b8a6)', label:'Relevé Client' },
-        'grand-livre':      { accent:'#d97706', light:'#fffbeb', grad:'linear-gradient(135deg,#b45309,#f59e0b)', label:'Grand Livre' },
-        'ca-clients':       { accent:'#0284c7', light:'#eff6ff', grad:'linear-gradient(135deg,#0369a1,#0ea5e9)', label:"Chiffre d'affaires" },
-        'journal-saari':    { accent:'#059669', light:'#ecfdf5', grad:'linear-gradient(135deg,#047857,#10b981)', label:'Journal SAARI' },
+        'factures-clients': { accent:'#2563eb', light:'#eff6ff', grad:'var(--hero-gradient)', label:'Factures Clients' },
+        'releve-client':    { accent:'#0d9488', light:'#f0fdfa', grad:'var(--hero-gradient)', label:'Relevé Client' },
+        'grand-livre':      { accent:'#d97706', light:'#fffbeb', grad:'var(--hero-gradient)', label:'Grand Livre' },
+        'ca-clients':       { accent:'#0284c7', light:'#eff6ff', grad:'var(--hero-gradient)', label:"Chiffre d'affaires" },
+        'journal-saari':    { accent:'#059669', light:'#ecfdf5', grad:'var(--hero-gradient)', label:'Journal SAARI' },
     };
     const tc = TAB_COLORS[activeTab];
 
@@ -942,12 +942,12 @@ export default function EtatsFinanciers() {
                 .ef-container { min-height: 100vh; background: #f1f5f9; font-family: 'Inter', system-ui, -apple-system, sans-serif; display: flex; flex-direction: column; }
 
                 /* ── Hero header ── */
-                .ef-header { background: linear-gradient(135deg, #0f172a 0%, #1e293b 55%, #334155 100%); color: white; padding: 20px 32px 56px; position: relative; overflow: hidden; flex-shrink: 0; }
+                .ef-header { background: var(--hero-gradient); color: white; padding: 20px 32px 56px; position: relative; overflow: hidden; flex-shrink: 0; }
                 .ef-header::before { content:''; position:absolute; top:-60px; right:-60px; width:220px; height:220px; background:rgba(255,255,255,.04); border-radius:50%; }
                 .ef-header::after  { content:''; position:absolute; bottom:-30px; right:180px; width:110px; height:110px; background:rgba(255,255,255,.03); border-radius:50%; }
                 .ef-header-left { display: flex; align-items: center; gap: 1rem; }
                 .ef-header-left h1 { font-size: 1.375rem; font-weight: 900; margin: 0; display: flex; align-items: center; gap: 0.625rem; color: white; letter-spacing:-.02em; }
-                .ef-header-left .ef-badge { font-size: 0.65rem; font-weight: 800; background: rgba(99,102,241,.25); color: #a5b4fc; padding: 0.25rem 0.75rem; border-radius: 99px; text-transform: uppercase; letter-spacing: 0.06em; border:1px solid rgba(99,102,241,.3); }
+                .ef-header-left .ef-badge { font-size: 0.65rem; font-weight: 800; background: rgba(59,130,246,.25); color: #93c5fd; padding: 0.25rem 0.75rem; border-radius: 99px; text-transform: uppercase; letter-spacing: 0.06em; border:1px solid rgba(59,130,246,.3); }
                 .ef-back-btn { background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.22); color: rgba(255,255,255,.85); padding: 0.5rem 1.1rem; border-radius: 99px; font-size: 0.8rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 0.4rem; transition: all 0.2s; backdrop-filter:blur(6px); }
                 .ef-back-btn:hover { background: rgba(255,255,255,.22); color: white; }
 
@@ -962,7 +962,7 @@ export default function EtatsFinanciers() {
                 .ef-content-area { flex: 1; display: flex; overflow: hidden; padding: 16px 32px 32px; gap: 16px; }
                 .ef-main { flex: 1; display: flex; overflow: hidden; gap: 16px; }
                 .ef-table-area { flex: 1; overflow: auto; display: flex; flex-direction: column; gap: 12px; }
-                .ef-report-title { font-size: 0.9rem; font-weight: 800; color: #0f172a; margin: 0; padding: 0.875rem 1.25rem; background: linear-gradient(135deg, #eef2ff 0%, #e0e7ff 100%); border-radius: 12px; border: 1px solid #c7d2fe; display: flex; align-items: center; gap: 0.75rem; }
+                .ef-report-title { font-size: 0.9rem; font-weight: 800; color: #0f172a; margin: 0; padding: 0.875rem 1.25rem; background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border-radius: 12px; border: 1px solid #bfdbfe; display: flex; align-items: center; gap: 0.75rem; }
                 .ef-table-card { background: white; border-radius: 16px; box-shadow: 0 2px 8px rgba(0,0,0,.06); border: 1px solid #e5e7eb; overflow: hidden; flex: 1; display: flex; flex-direction: column; }
                 .ef-table-scroll { flex: 1; overflow: auto; }
                 .ef-table { width: 100%; border-collapse: collapse; white-space: nowrap; }
@@ -988,7 +988,7 @@ export default function EtatsFinanciers() {
                 .ef-field { display: flex; flex-direction: column; gap: 0.3rem; }
                 .ef-field label { font-size: 0.6rem; font-weight: 800; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.07em; display:flex; align-items:center; gap:4px; }
                 .ef-field input, .ef-field select { padding: 0.6rem 0.75rem; border: 1px solid #e5e7eb; border-radius: 8px; font-size: 0.8rem; font-weight: 600; color: #0f172a; background: #f8fafc; transition: all 0.15s; width: 100%; box-sizing: border-box; }
-                .ef-field input:focus, .ef-field select:focus { border-color: #6366f1; background: white; outline: none; box-shadow: 0 0 0 3px rgba(99,102,241,.1); }
+                .ef-field input:focus, .ef-field select:focus { border-color: #3b82f6; background: white; outline: none; box-shadow: 0 0 0 3px rgba(59,130,246,.1); }
 
                 .ef-btn { padding: 0.7rem 1rem; border-radius: 10px; font-weight: 800; font-size: 0.8rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.5rem; transition: all 0.15s; border: none; width: 100%; }
                 .ef-btn-primary { color: white; }

@@ -26,8 +26,8 @@ import {
 /* ─── Mode config (same as DossierList) ─────────────────────────────────── */
 const MODE_CONFIG = {
     MA: { label: 'Maritime', icon: <Ship size={13} />,  bg: '#dbeafe', color: '#1d4ed8', grad: '#1e40af' },
-    AE: { label: 'Aérien',   icon: <Plane size={13} />, bg: '#ede9fe', color: '#7c3aed', grad: '#5b21b6' },
-    TE: { label: 'Routier',  icon: <Truck size={13} />, bg: '#ffedd5', color: '#c2410c', grad: '#9a3412' },
+    AE: { label: 'Aérien',   icon: <Plane size={13} />, bg: '#dbeafe', color: '#1d4ed8', grad: '#1e3a8a' },
+    TE: { label: 'Routier',  icon: <Truck size={13} />, bg: '#dbeafe', color: '#1d4ed8', grad: '#1e40af' },
 }
 const modeConf = (m) => MODE_CONFIG[m] || { label: m || '—', icon: <FileText size={13} />, bg: '#f3f4f6', color: '#6b7280', grad: '#374151' }
 
@@ -164,10 +164,10 @@ const DossierEdit = () => {
 
     /* ── Loading ── */
     if (loading) return (
-        <div style={{ display:'flex', justifyContent:'center', alignItems:'center', minHeight:'100vh', background:'#fffbeb' }}>
+        <div style={{ display:'flex', justifyContent:'center', alignItems:'center', minHeight:'100vh', background:'#eff6ff' }}>
             <div style={{ textAlign:'center' }}>
-                <div style={{ width:44, height:44, border:'3px solid #fde68a', borderTopColor:'#f59e0b', borderRadius:'50%', animation:'spin .8s linear infinite', margin:'0 auto 12px' }} />
-                <div style={{ fontSize:14, color:'#92400e', fontWeight:600 }}>Chargement du dossier…</div>
+                <div style={{ width:44, height:44, border:'3px solid #bfdbfe', borderTopColor:'#2563eb', borderRadius:'50%', animation:'spin .8s linear infinite', margin:'0 auto 12px' }} />
+                <div style={{ fontSize:14, color:'#1e3a8a', fontWeight:600 }}>Chargement du dossier…</div>
             </div>
             <style>{`@keyframes spin { to { transform:rotate(360deg) } }`}</style>
         </div>
@@ -178,11 +178,11 @@ const DossierEdit = () => {
     const mc = modeConf(form.mode);
 
     return (
-        <div style={{ minHeight:'100vh', background:'#fffbeb', fontFamily:'inherit' }}>
+        <div style={{ minHeight:'100vh', background:'#eff6ff', fontFamily:'inherit' }}>
 
             {/* ── Hero Banner ────────────────────────────────────────────── */}
             <div style={{
-                background: 'linear-gradient(135deg, #78350f 0%, #b45309 50%, #f59e0b 100%)',
+                background: 'var(--hero-gradient)',
                 padding: '28px 40px 70px',
                 position: 'relative', overflow: 'hidden',
             }}>
@@ -248,9 +248,9 @@ const DossierEdit = () => {
                                     padding:'9px 14px', borderRadius:10, border:'none', cursor:'pointer',
                                     fontSize:13, fontWeight:700, whiteSpace:'nowrap',
                                     transition:'all .15s',
-                                    background: isActive ? 'linear-gradient(135deg,#b45309,#f59e0b)' : 'transparent',
+                                    background: isActive ? 'var(--hero-gradient)' : 'transparent',
                                     color: isActive ? 'white' : '#6b7280',
-                                    boxShadow: isActive ? '0 4px 12px rgba(245,158,11,.35)' : 'none',
+                                    boxShadow: isActive ? '0 4px 12px rgba(37,99,235,.35)' : 'none',
                                 }}
                             >
                                 {tab.icon}{tab.label}
@@ -316,9 +316,9 @@ const DossierEdit = () => {
                                             style={{
                                                 padding:'0 12px', borderRadius:10, border:'none', cursor:'pointer',
                                                 transition:'all .15s', flexShrink:0,
-                                                background: editCode ? 'linear-gradient(135deg,#b45309,#f59e0b)' : '#f1f5f9',
+                                                background: editCode ? 'var(--hero-gradient)' : '#f1f5f9',
                                                 color: editCode ? 'white' : '#64748b',
-                                                boxShadow: editCode ? '0 4px 12px rgba(245,158,11,.35)' : 'none',
+                                                boxShadow: editCode ? '0 4px 12px rgba(37,99,235,.35)' : 'none',
                                             }}
                                         >
                                             <Settings size={15} />
@@ -339,7 +339,7 @@ const DossierEdit = () => {
                                             href={`${import.meta.env.VITE_API_URL || 'http://localhost:3001/api'}${dossierInfo.fileUrl}`}
                                             target="_blank"
                                             rel="noreferrer"
-                                            style={{ display:'flex', alignItems:'center', gap:4, color:'#b45309', fontWeight:600, fontSize:12, marginTop:6, textDecoration:'none' }}
+                                            style={{ display:'flex', alignItems:'center', gap:4, color:'#1d4ed8', fontWeight:600, fontSize:12, marginTop:6, textDecoration:'none' }}
                                         >
                                             <LinkIcon size={11} /> Voir la fiche actuelle
                                         </a>
@@ -373,7 +373,7 @@ const DossierEdit = () => {
                                             fontFamily:'inherit', transition:'border-color .15s, box-shadow .15s',
                                             boxSizing:'border-box',
                                         }}
-                                        onFocus={e => { e.target.style.borderColor='#f59e0b'; e.target.style.boxShadow='0 0 0 3px rgba(245,158,11,.15)'; e.target.style.background='white'; }}
+                                        onFocus={e => { e.target.style.borderColor='#2563eb'; e.target.style.boxShadow='0 0 0 3px rgba(37,99,235,.15)'; e.target.style.background='white'; }}
                                         onBlur={e => { e.target.style.borderColor='#e5e7eb'; e.target.style.boxShadow='none'; e.target.style.background='#f8fafc'; }}
                                     />
                                 </Field>
@@ -404,7 +404,7 @@ const DossierEdit = () => {
                                         <div key={doc.id} style={{ display:'flex', justifyContent:'space-between', alignItems:'center', padding:'14px 18px', background:'#f8fafc', border:'1px solid #e5e7eb', borderRadius:12 }}>
                                             <div style={{ display:'flex', alignItems:'center', gap:14 }}>
                                                 <div style={{ padding:10, background:'white', borderRadius:10, boxShadow:'0 1px 3px rgba(0,0,0,.08)' }}>
-                                                    <FileText size={18} color="#b45309" />
+                                                    <FileText size={18} color="#1d4ed8" />
                                                 </div>
                                                 <div>
                                                     <div style={{ fontWeight:700, color:'#111827', fontSize:14 }}>{doc.label || doc.type}</div>
@@ -451,9 +451,9 @@ const DossierEdit = () => {
                                 style={{
                                     display:'flex', alignItems:'center', gap:8,
                                     padding:'11px 28px', borderRadius:12, border:'none',
-                                    background: saving ? '#d97706' : 'linear-gradient(135deg,#b45309,#f59e0b)',
+                                    background: saving ? '#2563eb' : 'var(--hero-gradient)',
                                     color:'white', fontWeight:700, fontSize:14, cursor: saving ? 'not-allowed' : 'pointer',
-                                    boxShadow:'0 4px 14px rgba(245,158,11,.4)',
+                                    boxShadow:'0 4px 14px rgba(37,99,235,.4)',
                                     transition:'all .15s',
                                 }}
                             >
@@ -492,7 +492,7 @@ const DossierEdit = () => {
 const FormSection = ({ icon, title, children }) => (
     <div style={{ background:'white', borderRadius:20, border:'1px solid #e5e7eb', boxShadow:'0 2px 8px rgba(0,0,0,.05)', padding:'24px 28px', marginBottom:20 }}>
         <div style={{ display:'flex', alignItems:'center', gap:10, marginBottom:20, paddingBottom:14, borderBottom:'1px solid #f1f5f9' }}>
-            <div style={{ display:'flex', padding:7, background:'#fffbeb', borderRadius:8, color:'#b45309' }}>{icon}</div>
+            <div style={{ display:'flex', padding:7, background:'#eff6ff', borderRadius:8, color:'#1d4ed8' }}>{icon}</div>
             <span style={{ fontSize:11, fontWeight:800, color:'#94a3b8', textTransform:'uppercase', letterSpacing:'.08em' }}>{title}</span>
         </div>
         {children}
@@ -521,7 +521,7 @@ const PInput = ({ readOnly, style: extraStyle, ...props }) => (
             ...(readOnly ? { background:'#f1f5f9', color:'#94a3b8', borderStyle:'dashed', cursor:'default' } : {}),
             ...extraStyle,
         }}
-        onFocus={readOnly ? undefined : e => { e.target.style.borderColor='#f59e0b'; e.target.style.boxShadow='0 0 0 3px rgba(245,158,11,.15)'; e.target.style.background='white'; }}
+        onFocus={readOnly ? undefined : e => { e.target.style.borderColor='#2563eb'; e.target.style.boxShadow='0 0 0 3px rgba(37,99,235,.15)'; e.target.style.background='white'; }}
         onBlur={readOnly ? undefined : e => { e.target.style.borderColor='#e5e7eb'; e.target.style.boxShadow='none'; e.target.style.background='#f8fafc'; }}
     />
 );
@@ -535,7 +535,7 @@ const PSelect = ({ disabled, ...props }) => (
             cursor: disabled ? 'not-allowed' : 'pointer',
             ...(disabled ? { background:'#f1f5f9', color:'#94a3b8', borderStyle:'dashed' } : {}),
         }}
-        onFocus={disabled ? undefined : e => { e.target.style.borderColor='#f59e0b'; e.target.style.boxShadow='0 0 0 3px rgba(245,158,11,.15)'; e.target.style.background='white'; }}
+        onFocus={disabled ? undefined : e => { e.target.style.borderColor='#2563eb'; e.target.style.boxShadow='0 0 0 3px rgba(37,99,235,.15)'; e.target.style.background='white'; }}
         onBlur={disabled ? undefined : e => { e.target.style.borderColor='#e5e7eb'; e.target.style.boxShadow='none'; e.target.style.background='#f8fafc'; }}
     />
 );
@@ -545,14 +545,14 @@ const CheckCard = ({ label, desc, checked, onChange }) => (
         onClick={onChange}
         style={{
             display:'flex', alignItems:'center', gap:16, padding:'18px 20px',
-            background: checked ? '#fffbeb' : '#f8fafc',
-            border: `1.5px solid ${checked ? '#f59e0b' : '#e5e7eb'}`,
+            background: checked ? '#eff6ff' : '#f8fafc',
+            border: `1.5px solid ${checked ? '#2563eb' : '#e5e7eb'}`,
             borderRadius:14, cursor:'pointer', transition:'all .15s',
         }}
     >
         <div style={{
-            width:22, height:22, borderRadius:6, border:`2px solid ${checked ? '#f59e0b' : '#d1d5db'}`,
-            background: checked ? '#f59e0b' : 'white', flexShrink:0,
+            width:22, height:22, borderRadius:6, border:`2px solid ${checked ? '#2563eb' : '#d1d5db'}`,
+            background: checked ? '#2563eb' : 'white', flexShrink:0,
             display:'flex', alignItems:'center', justifyContent:'center', transition:'all .15s',
         }}>
             {checked && <CheckCircle size={13} color="white" />}

@@ -49,7 +49,7 @@ function Toggle({ checked, onChange }) {
             onClick={onChange}
             style={{
                 width: '48px', height: '26px', borderRadius: '99px', cursor: 'pointer',
-                background: checked ? 'linear-gradient(135deg,#1e3a8a,#3b82f6)' : '#cbd5e1',
+                background: checked ? 'var(--hero-gradient)' : '#cbd5e1',
                 position: 'relative', transition: 'background 0.3s', flexShrink: 0,
                 boxShadow: checked ? '0 2px 8px rgba(59,130,246,0.4)' : 'none'
             }}
@@ -190,7 +190,7 @@ export default function BackupManager() {
 
             {/* ── Hero ── */}
             <div style={{
-                background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 55%, #1e3a5f 100%)',
+                background: 'var(--hero-gradient)',
                 padding: '2rem 2rem 5.5rem',
                 position: 'relative', overflow: 'hidden'
             }}>
@@ -262,7 +262,7 @@ export default function BackupManager() {
 
                 {isLoading ? (
                     <div style={{ background:'white', borderRadius:'1.15rem', border:'1px solid #e2e8f0', boxShadow:'0 20px 60px rgba(0,0,0,0.08)', padding:'4rem 2rem', textAlign:'center' }}>
-                        <div style={{ width:'52px', height:'52px', borderRadius:'50%', background:'linear-gradient(135deg,#0f172a,#3b82f6)', display:'flex', alignItems:'center', justifyContent:'center', margin:'0 auto 1rem', animation:'spin 1s linear infinite', boxShadow:'0 4px 16px rgba(59,130,246,0.3)' }}>
+                        <div style={{ width:'52px', height:'52px', borderRadius:'50%', background:'var(--hero-gradient)', display:'flex', alignItems:'center', justifyContent:'center', margin:'0 auto 1rem', animation:'spin 1s linear infinite', boxShadow:'0 4px 16px rgba(59,130,246,0.3)' }}>
                             <RefreshCw size={22} color="white"/>
                         </div>
                         <p style={{ color:'#64748b', margin:0 }}>Chargement de la configuration…</p>
@@ -287,7 +287,7 @@ export default function BackupManager() {
                                         width:'100%', padding:'1.1rem',
                                         background: (isRunningBackup || !config.backup_directory)
                                             ? 'linear-gradient(135deg,#94a3b8,#cbd5e1)'
-                                            : 'linear-gradient(135deg,#047857,#10b981)',
+                                            : 'var(--hero-gradient)',
                                         color:'white', border:'none', borderRadius:'0.85rem',
                                         fontSize:'1rem', fontWeight:700, cursor: (isRunningBackup || !config.backup_directory) ? 'not-allowed' : 'pointer',
                                         transition:'all 0.25s',
@@ -362,7 +362,7 @@ export default function BackupManager() {
                                                             display:'inline-flex', alignItems:'center', gap:'0.3rem',
                                                             padding:'0.35rem 0.75rem', fontSize:'0.75rem', fontWeight:700,
                                                             color: hov ? 'white' : '#2563eb',
-                                                            background: hov ? 'linear-gradient(135deg,#1d4ed8,#3b82f6)' : '#eff6ff',
+                                                            background: hov ? 'var(--hero-gradient)' : '#eff6ff',
                                                             border:'none', borderRadius:'0.5rem', cursor:'pointer',
                                                             transition:'all 0.2s',
                                                             boxShadow: hov ? '0 4px 10px rgba(37,99,235,0.3)' : 'none'
@@ -466,7 +466,7 @@ export default function BackupManager() {
                                 <button type="submit" disabled={isSaving} style={{
                                     display:'flex', alignItems:'center', justifyContent:'center', gap:'0.5rem',
                                     width:'100%', padding:'0.95rem',
-                                    background: isSaving ? 'linear-gradient(135deg,#94a3b8,#cbd5e1)' : 'linear-gradient(135deg,#0f172a,#334155)',
+                                    background: isSaving ? 'linear-gradient(135deg,#94a3b8,#cbd5e1)' : 'var(--hero-gradient)',
                                     color:'white', border:'none', borderRadius:'0.85rem',
                                     fontWeight:700, fontSize:'0.9rem', cursor: isSaving ? 'not-allowed' : 'pointer',
                                     transition:'all 0.2s',

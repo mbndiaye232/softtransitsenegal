@@ -7,7 +7,7 @@ import {
 import { useNavigate } from 'react-router-dom'
 import { clientsAPI, dossiersAPI, documentsAPI, typesDocumentsAPI } from '../services/api'
 
-const GRAD  = 'linear-gradient(135deg,#0c4a6e 0%,#0e7490 50%,#06b6d4 100%)'
+const GRAD  = 'var(--hero-gradient)'
 const ACC   = '#0e7490'
 const ACC2  = '#06b6d4'
 const LIGHT = '#ecfeff'
@@ -264,7 +264,7 @@ export default function DocumentManager() {
                         {/* Actions */}
                         <div style={{ display:'flex', gap:'0.625rem' }}>
                             <button onClick={handleExtract} disabled={!selectedDossier || loading}
-                                style={{ display:'flex', alignItems:'center', gap:'0.5rem', padding:'0.7rem 1.1rem', background: selectedDossier ? 'linear-gradient(135deg,#0c4a6e,#0e7490)' : '#e2e8f0', color: selectedDossier ? 'white' : '#94a3b8', border:'none', borderRadius:'0.75rem', fontWeight:700, fontSize:'0.8rem', cursor: selectedDossier ? 'pointer' : 'not-allowed', whiteSpace:'nowrap', transition:'all .2s' }}>
+                                style={{ display:'flex', alignItems:'center', gap:'0.5rem', padding:'0.7rem 1.1rem', background: selectedDossier ? 'var(--hero-gradient)' : '#e2e8f0', color: selectedDossier ? 'white' : '#94a3b8', border:'none', borderRadius:'0.75rem', fontWeight:700, fontSize:'0.8rem', cursor: selectedDossier ? 'pointer' : 'not-allowed', whiteSpace:'nowrap', transition:'all .2s' }}>
                                 <FolderDown size={15}/> Récupérer tout
                             </button>
                             <button onClick={() => setShowModal(true)} disabled={!selectedDossier || loading}

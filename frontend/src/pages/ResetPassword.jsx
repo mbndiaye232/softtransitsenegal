@@ -74,7 +74,7 @@ export default function ResetPassword() {
                     position: absolute;
                     width: 500px;
                     height: 500px;
-                    background: radial-gradient(circle, rgba(79, 70, 229, 0.1) 0%, rgba(79, 70, 229, 0) 70%);
+                    background: radial-gradient(circle, rgba(37, 99, 235, 0.1) 0%, rgba(37, 99, 235, 0) 70%);
                     border-radius: 50%;
                     z-index: 0;
                 }
@@ -95,7 +95,7 @@ export default function ResetPassword() {
                 }
                 
                 .icon-box { 
-                    width: 64px; height: 64px; background: #eef2ff; border-radius: 1.25rem; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; color: #4f46e5; 
+                    width: 64px; height: 64px; background: #eff6ff; border-radius: 1.25rem; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; color: #2563eb; 
                 }
                 
                 .auth-header h1 { font-size: 1.75rem; font-weight: 800; color: #0f172a; margin: 0 0 0.5rem 0; letter-spacing: -0.02em; }
@@ -116,12 +116,12 @@ export default function ResetPassword() {
                     transition: all 0.2s;
                     background: #fcfdfe;
                 }
-                .premium-input:focus { border-color: #4f46e5; background: white; outline: none; box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1); }
+                .premium-input:focus { border-color: #2563eb; background: white; outline: none; box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1); }
                 
                 .submit-btn {
                     width: 100%;
                     padding: 1rem;
-                    background: #4f46e5;
+                    background: #2563eb;
                     color: white;
                     border: none;
                     border-radius: 1rem;
@@ -133,10 +133,10 @@ export default function ResetPassword() {
                     justify-content: center;
                     gap: 0.75rem;
                     transition: all 0.2s;
-                    box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.2);
+                    box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.2);
                     margin-top: 1rem;
                 }
-                .submit-btn:hover { background: #4338ca; transform: translateY(-1px); }
+                .submit-btn:hover { background: #1d4ed8; transform: translateY(-1px); }
                 .submit-btn:disabled { opacity: 0.7; cursor: not-allowed; }
 
                 .alert { padding: 1rem; border-radius: 1rem; margin-bottom: 2rem; font-size: 0.875rem; font-weight: 600; display: flex; align-items: center; gap: 0.75rem; text-align: left; }
@@ -210,7 +210,7 @@ export default function ResetPassword() {
                 )}
 
                 <div style={{ marginTop: '2.5rem', textAlign: 'center', fontSize: '0.875rem', color: '#64748b', fontWeight: 600 }}>
-                    Besoin d'aide ? <a href="mailto:support@softtransit.com" style={{ color: '#4f46e5', textDecoration: 'none' }}>Contactez le support</a>
+                    Besoin d'aide ? <a href="mailto:support@softtransit.com" style={{ color: '#2563eb', textDecoration: 'none' }}>Contactez le support</a>
                 </div>
             </div>
         </div>

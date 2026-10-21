@@ -75,7 +75,7 @@ const TransportArrivals = () => {
                 .title-area p { font-size: 0.875rem; color: var(--slate-500); margin: 0.25rem 0 0 0; }
                 
                 .dashboard-banner {
-                    background: #f59e0b;
+                    background: var(--hero-gradient-soft);
                     color: white;
                     text-align: center;
                     padding: 1rem;
@@ -83,7 +83,7 @@ const TransportArrivals = () => {
                     font-size: 1.1rem;
                     font-weight: 800;
                     letter-spacing: 0.02em;
-                    box-shadow: 0 4px 6px -1px rgba(245, 158, 11, 0.4);
+                    box-shadow: 0 8px 20px -8px rgba(37, 99, 235, 0.55);
                 }
 
                 .list-card { background: white; border-radius: var(--radius-xl); border: 1px solid var(--border); box-shadow: var(--shadow); overflow: hidden; }

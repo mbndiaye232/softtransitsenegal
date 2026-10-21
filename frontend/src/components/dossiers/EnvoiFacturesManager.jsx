@@ -8,7 +8,7 @@ import {
 import { facturesAPI, comptesMailsAPI, documentsAPI } from '../../services/api';
 
 const C = {
-    grad:   'linear-gradient(135deg,#0c4a6e 0%,#0e7490 50%,#06b6d4 100%)',
+    grad:   'var(--hero-gradient)',
     accent: '#0e7490',
     light:  '#ecfeff',
     border: '#a5f3fc',

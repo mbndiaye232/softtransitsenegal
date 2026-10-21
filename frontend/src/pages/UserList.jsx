@@ -10,7 +10,7 @@ import {
 /* ─── Palette avatar par initiale ───────────────────────────────────────── */
 const AVATAR_COLORS = [
     { bg: '#eff6ff', text: '#2563eb' },
-    { bg: '#f5f3ff', text: '#7c3aed' },
+    { bg: '#eff6ff', text: '#1d4ed8' },
     { bg: '#fdf2f8', text: '#db2777' },
     { bg: '#fff7ed', text: '#ea580c' },
     { bg: '#f0fdf4', text: '#16a34a' },
@@ -25,7 +25,7 @@ const initials = (name = '') => name.trim().split(/\s+/).slice(0, 2).map(w => w[
 const ROLE_CONFIG = {
     SUPER_ADMIN: { label: 'Super Admin', bg: '#fef3c7', color: '#92400e', icon: <ShieldAlert size={11} /> },
     ADMIN:       { label: 'Admin',       bg: '#fee2e2', color: '#991b1b', icon: <ShieldCheck size={11} /> },
-    EDITOR:      { label: 'Éditeur',     bg: '#eef2ff', color: '#3730a3', icon: <Shield size={11} /> },
+    EDITOR:      { label: 'Éditeur',     bg: '#eff6ff', color: '#1e40af', icon: <Shield size={11} /> },
     USER:        { label: 'Utilisateur', bg: '#f1f5f9', color: '#475569', icon: <Shield size={11} /> },
 }
 const roleConf = (role) => ROLE_CONFIG[role] || ROLE_CONFIG.USER
@@ -133,7 +133,7 @@ export default function UserList() {
 
             {/* ── HERO HEADER ── */}
             <div style={{
-                background: 'linear-gradient(135deg, #164e63 0%, #0e7490 45%, #0891b2 100%)',
+                background: 'var(--hero-gradient)',
                 padding: '2.5rem 2.5rem 4rem',
                 position: 'relative', overflow: 'hidden',
             }}>

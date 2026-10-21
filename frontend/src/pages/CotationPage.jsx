@@ -8,7 +8,7 @@ import {
 
 /* ─── avatar palette ─────────────────────────────────────────────────────── */
 const AVATAR_COLORS = [
-    ['#ede9fe','#6d28d9'],['#dbeafe','#1d4ed8'],['#dcfce7','#15803d'],
+    ['#dbeafe','#1e40af'],['#dbeafe','#1d4ed8'],['#dcfce7','#15803d'],
     ['#ffedd5','#c2410c'],['#fce7f3','#be185d'],['#e0f2fe','#0369a1'],
     ['#fef9c3','#a16207'],['#f1f5f9','#475569'],
 ];
@@ -89,10 +89,10 @@ const CotationPage = () => {
 
     /* ── Loading ── */
     if (loading) return (
-        <div style={{ display:'flex', justifyContent:'center', alignItems:'center', minHeight:'100vh', background:'#f5f3ff' }}>
+        <div style={{ display:'flex', justifyContent:'center', alignItems:'center', minHeight:'100vh', background:'#eff6ff' }}>
             <div style={{ textAlign:'center' }}>
-                <div style={{ width:44, height:44, border:'3px solid #ddd6fe', borderTopColor:'#7c3aed', borderRadius:'50%', animation:'spin .8s linear infinite', margin:'0 auto 12px' }} />
-                <div style={{ fontSize:14, color:'#5b21b6', fontWeight:600 }}>Chargement de l'affectation…</div>
+                <div style={{ width:44, height:44, border:'3px solid #bfdbfe', borderTopColor:'#1d4ed8', borderRadius:'50%', animation:'spin .8s linear infinite', margin:'0 auto 12px' }} />
+                <div style={{ fontSize:14, color:'#1e3a8a', fontWeight:600 }}>Chargement de l'affectation…</div>
             </div>
             <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
         </div>
@@ -101,11 +101,11 @@ const CotationPage = () => {
     const canApply = !!selectedDossier && !!selectedAgent && !isSubmitting;
 
     return (
-        <div style={{ minHeight:'100vh', background:'#f5f3ff', fontFamily:'inherit' }}>
+        <div style={{ minHeight:'100vh', background:'#eff6ff', fontFamily:'inherit' }}>
 
             {/* ── Hero ─────────────────────────────────────────────────────── */}
             <div style={{
-                background: 'linear-gradient(135deg, #2e1065 0%, #5b21b6 55%, #7c3aed 100%)',
+                background: 'var(--hero-gradient)',
                 padding: '32px 40px 72px', position:'relative', overflow:'hidden',
             }}>
                 <div style={{ position:'absolute', top:-70, right:-70, width:240, height:240, background:'rgba(255,255,255,.05)', borderRadius:'50%' }} />
@@ -158,9 +158,9 @@ const CotationPage = () => {
                                     display:'flex', alignItems:'center', gap:8,
                                     padding:'9px 20px', borderRadius:12, border:'none', cursor:'pointer',
                                     fontSize:13, fontWeight:700, transition:'all .15s',
-                                    background: isActive ? 'linear-gradient(135deg,#5b21b6,#7c3aed)' : 'transparent',
+                                    background: isActive ? 'var(--hero-gradient)' : 'transparent',
                                     color: isActive ? 'white' : '#6b7280',
-                                    boxShadow: isActive ? '0 4px 12px rgba(124,58,237,.35)' : 'none',
+                                    boxShadow: isActive ? '0 4px 12px rgba(29,78,216,.35)' : 'none',
                                 }}
                             >
                                 {tab.icon} {tab.label}
@@ -186,7 +186,7 @@ const CotationPage = () => {
                                 <span style={{ fontSize:11, fontWeight:800, color:'#94a3b8', textTransform:'uppercase', letterSpacing:'.08em' }}>
                                     {viewMode === 'pending' ? 'Dossiers Non Affectés' : 'Dossiers En Cours'}
                                 </span>
-                                <span style={{ background:'#ede9fe', color:'#6d28d9', borderRadius:99, padding:'3px 10px', fontSize:11, fontWeight:800 }}>
+                                <span style={{ background:'#dbeafe', color:'#1e40af', borderRadius:99, padding:'3px 10px', fontSize:11, fontWeight:800 }}>
                                     {filteredDossiers.length}
                                 </span>
                             </div>
@@ -199,7 +199,7 @@ const CotationPage = () => {
                                     value={searchTerm}
                                     onChange={e => setSearchTerm(e.target.value)}
                                     style={{ paddingLeft:32, paddingRight: searchTerm ? 30 : 12, paddingTop:8, paddingBottom:8, border:'1px solid #e5e7eb', borderRadius:10, fontSize:13, outline:'none', width:240, background:'#f8fafc' }}
-                                    onFocus={e => { e.target.style.borderColor='#7c3aed'; e.target.style.boxShadow='0 0 0 3px rgba(124,58,237,.12)'; }}
+                                    onFocus={e => { e.target.style.borderColor='#1d4ed8'; e.target.style.boxShadow='0 0 0 3px rgba(29,78,216,.12)'; }}
                                     onBlur={e  => { e.target.style.borderColor='#e5e7eb'; e.target.style.boxShadow='none'; }}
                                 />
                                 {searchTerm && (
@@ -270,21 +270,21 @@ const CotationPage = () => {
                                             style={{
                                                 display:'flex', alignItems:'center', gap:12,
                                                 padding:'12px 14px', borderRadius:12, cursor:'pointer',
-                                                border:`1.5px solid ${isSelected ? '#7c3aed' : '#f1f5f9'}`,
+                                                border:`1.5px solid ${isSelected ? '#1d4ed8' : '#f1f5f9'}`,
                                                 background: isSelected ? '#faf5ff' : '#fafafa',
                                                 transition:'all .15s',
                                             }}
-                                            onMouseEnter={e => { if (!isSelected) { e.currentTarget.style.borderColor='#ddd6fe'; e.currentTarget.style.background='#f5f3ff'; } }}
+                                            onMouseEnter={e => { if (!isSelected) { e.currentTarget.style.borderColor='#bfdbfe'; e.currentTarget.style.background='#eff6ff'; } }}
                                             onMouseLeave={e => { if (!isSelected) { e.currentTarget.style.borderColor='#f1f5f9'; e.currentTarget.style.background='#fafafa'; } }}
                                         >
-                                            <div style={{ width:38, height:38, borderRadius:10, background: isSelected ? '#7c3aed' : bg, color: isSelected ? 'white' : color, display:'flex', alignItems:'center', justifyContent:'center', fontWeight:800, fontSize:14, flexShrink:0, transition:'all .15s' }}>
+                                            <div style={{ width:38, height:38, borderRadius:10, background: isSelected ? '#1d4ed8' : bg, color: isSelected ? 'white' : color, display:'flex', alignItems:'center', justifyContent:'center', fontWeight:800, fontSize:14, flexShrink:0, transition:'all .15s' }}>
                                                 {name.charAt(0).toUpperCase()}
                                             </div>
                                             <div style={{ flex:1, minWidth:0 }}>
                                                 <div style={{ fontWeight:700, fontSize:14, color:'#111827' }}>{name}</div>
                                                 <div style={{ fontSize:12, color:'#9ca3af', marginTop:1 }}>{agent.login}</div>
                                             </div>
-                                            {isSelected && <Check size={16} color="#7c3aed" />}
+                                            {isSelected && <Check size={16} color="#1d4ed8" />}
                                         </div>
                                     );
                                 })}
@@ -300,7 +300,7 @@ const CotationPage = () => {
                                     value={assignmentDate}
                                     onChange={e => setAssignmentDate(e.target.value)}
                                     style={{ width:'100%', padding:'10px 14px', border:'1px solid #e5e7eb', borderRadius:10, fontSize:13, outline:'none', background:'white', boxSizing:'border-box' }}
-                                    onFocus={e => { e.target.style.borderColor='#7c3aed'; e.target.style.boxShadow='0 0 0 3px rgba(124,58,237,.12)'; }}
+                                    onFocus={e => { e.target.style.borderColor='#1d4ed8'; e.target.style.boxShadow='0 0 0 3px rgba(29,78,216,.12)'; }}
                                     onBlur={e  => { e.target.style.borderColor='#e5e7eb'; e.target.style.boxShadow='none'; }}
                                 />
 
@@ -315,7 +315,7 @@ const CotationPage = () => {
                                             value={reassignMotif}
                                             onChange={e => setReassignMotif(e.target.value)}
                                             style={{ width:'100%', padding:'10px 14px', border:'1px solid #e5e7eb', borderRadius:10, fontSize:13, outline:'none', background:'white', resize:'vertical', fontFamily:'inherit', boxSizing:'border-box' }}
-                                            onFocus={e => { e.target.style.borderColor='#7c3aed'; e.target.style.boxShadow='0 0 0 3px rgba(124,58,237,.12)'; }}
+                                            onFocus={e => { e.target.style.borderColor='#1d4ed8'; e.target.style.boxShadow='0 0 0 3px rgba(29,78,216,.12)'; }}
                                             onBlur={e  => { e.target.style.borderColor='#e5e7eb'; e.target.style.boxShadow='none'; }}
                                         />
                                     </div>
@@ -323,7 +323,7 @@ const CotationPage = () => {
 
                                 {/* Selection summary */}
                                 {selectedDossier && selectedAgent && (
-                                    <div style={{ marginTop:14, background:'linear-gradient(135deg,#2e1065,#5b21b6)', borderRadius:12, padding:'14px 16px', position:'relative', overflow:'hidden' }}>
+                                    <div style={{ marginTop:14, background:'var(--hero-gradient)', borderRadius:12, padding:'14px 16px', position:'relative', overflow:'hidden' }}>
                                         <div style={{ position:'absolute', right:-15, bottom:-15, width:80, height:80, background:'rgba(255,255,255,.06)', borderRadius:'50%' }} />
                                         <div style={{ display:'flex', gap:6, marginBottom:8, alignItems:'center' }}>
                                             <FileText size={12} color="rgba(255,255,255,.6)" />
@@ -353,10 +353,10 @@ const CotationPage = () => {
                                         disabled={!canApply}
                                         style={{
                                             flex:1, padding:'11px', borderRadius:12, border:'none',
-                                            background: canApply ? 'linear-gradient(135deg,#5b21b6,#7c3aed)' : '#e5e7eb',
+                                            background: canApply ? 'var(--hero-gradient)' : '#e5e7eb',
                                             color: canApply ? 'white' : '#9ca3af',
                                             fontWeight:700, fontSize:13, cursor: canApply ? 'pointer' : 'not-allowed',
-                                            boxShadow: canApply ? '0 4px 14px rgba(124,58,237,.4)' : 'none',
+                                            boxShadow: canApply ? '0 4px 14px rgba(29,78,216,.4)' : 'none',
                                             transition:'all .15s',
                                         }}
                                     >
@@ -381,7 +381,7 @@ const DossierRow = ({ d, selected, showDeclarant, onClick }) => {
 
     const cellStyle = {
         padding:'13px 20px', borderBottom:'1px solid #f8fafc',
-        background: selected ? '#faf5ff' : hovered ? '#f5f3ff' : 'white',
+        background: selected ? '#faf5ff' : hovered ? '#eff6ff' : 'white',
         transition:'background .1s',
     };
 
@@ -409,13 +409,13 @@ const DossierRow = ({ d, selected, showDeclarant, onClick }) => {
             </td>
             {showDeclarant && (
                 <td style={cellStyle}>
-                    <span style={{ background:'#ede9fe', color:'#5b21b6', borderRadius:99, padding:'4px 10px', fontSize:11, fontWeight:700 }}>
+                    <span style={{ background:'#dbeafe', color:'#1e3a8a', borderRadius:99, padding:'4px 10px', fontSize:11, fontWeight:700 }}>
                         {d.active_agent_name}
                     </span>
                 </td>
             )}
             <td style={{ ...cellStyle, width:36 }}>
-                <ChevronRight size={16} color={highlight ? '#7c3aed' : '#d1d5db'} style={{ transition:'color .15s' }} />
+                <ChevronRight size={16} color={highlight ? '#1d4ed8' : '#d1d5db'} style={{ transition:'color .15s' }} />
             </td>
         </tr>
     );

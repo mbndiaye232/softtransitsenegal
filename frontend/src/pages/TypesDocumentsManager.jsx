@@ -6,11 +6,11 @@ import {
 } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 
-const ACC = '#7c3aed'
-const ACC2 = '#8b5cf6'
-const LIGHT = '#f5f3ff'
-const BORDER = '#ddd6fe'
-const GRAD = 'linear-gradient(135deg,#4c1d95 0%,#6d28d9 45%,#8b5cf6 100%)'
+const ACC = '#1d4ed8'
+const ACC2 = '#3b82f6'
+const LIGHT = '#eff6ff'
+const BORDER = '#bfdbfe'
+const GRAD = 'var(--hero-gradient)'
 
 function Toast({ toasts }) {
     return (
@@ -88,7 +88,7 @@ const TypesDocumentsManager = () => {
 
             {/* Hero */}
             <div style={{ background:GRAD, padding:'2.5rem 2.5rem 5rem', position:'relative', overflow:'hidden' }}>
-                {[['25%','20%',260,'rgba(139,92,246,0.35)'],['70%','55%',180,'rgba(109,40,217,0.25)']].map(([l,t,s,c],i)=>(
+                {[['25%','20%',260,'rgba(59,130,246,0.35)'],['70%','55%',180,'rgba(109,40,217,0.25)']].map(([l,t,s,c],i)=>(
                     <div key={i} style={{ position:'absolute', left:l, top:t, width:s, height:s, borderRadius:'50%', background:c, filter:'blur(60px)', pointerEvents:'none' }}/>
                 ))}
                 <div style={{ maxWidth:1000, margin:'0 auto', position:'relative' }}>
@@ -115,7 +115,7 @@ const TypesDocumentsManager = () => {
             </div>
 
             <div style={{ maxWidth:1000, margin:'-3.5rem auto 0', padding:'0 2.5rem', position:'relative' }}>
-                <div style={{ background:'white', borderRadius:'1.25rem', border:`1px solid ${BORDER}`, boxShadow:'0 4px 24px rgba(124,58,237,0.08)', overflow:'hidden' }}>
+                <div style={{ background:'white', borderRadius:'1.25rem', border:`1px solid ${BORDER}`, boxShadow:'0 4px 24px rgba(29,78,216,0.08)', overflow:'hidden' }}>
                     {/* Card header */}
                     <div style={{ background:GRAD, padding:'1rem 1.5rem', display:'flex', alignItems:'center', justifyContent:'space-between', gap:'1rem', flexWrap:'wrap' }}>
                         <div style={{ display:'flex', alignItems:'center', gap:'0.75rem' }}>

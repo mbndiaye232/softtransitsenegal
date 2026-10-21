@@ -178,7 +178,7 @@ const FacturesTiersManager = ({ dossierId }) => {
                 .ftm-rubrique-dropdown { position: absolute; z-index: 100; top: 100%; left: 0; right: 0; background: white; border: 1px solid var(--border); border-radius: 0.5rem; box-shadow: 0 8px 24px rgba(0,0,0,0.1); max-height: 220px; overflow-y: auto; margin-top: 4px; }
                 .ftm-rubrique-item { padding: 0.6rem 0.85rem; font-size: 12px; cursor: pointer; border-bottom: 1px solid #f1f5f9; display: flex; gap: 0.75rem; align-items: center; }
                 .ftm-rubrique-item:hover { background: #eff6ff; }
-                .ftm-rubrique-code { font-family: monospace; font-weight: 800; color: #6366f1; min-width: 50px; }
+                .ftm-rubrique-code { font-family: monospace; font-weight: 800; color: #3b82f6; min-width: 50px; }
                 .ftm-rubrique-lib { color: var(--slate-700); }
 
                 .ftm-actions { display: flex; gap: 0.75rem; margin-top: 0.5rem; }
@@ -209,7 +209,7 @@ const FacturesTiersManager = ({ dossierId }) => {
                 .ftm-table tr:hover td { background: #f8fafc; }
                 .ftm-table tr.editing td { background: #eff6ff; }
 
-                .ftm-rubr-badge { display: inline-flex; align-items: center; gap: 0.35rem; background: #f5f3ff; color: #7c3aed; padding: 0.2rem 0.5rem; border-radius: 0.35rem; font-family: monospace; font-size: 11px; font-weight: 800; }
+                .ftm-rubr-badge { display: inline-flex; align-items: center; gap: 0.35rem; background: #eff6ff; color: #1d4ed8; padding: 0.2rem 0.5rem; border-radius: 0.35rem; font-family: monospace; font-size: 11px; font-weight: 800; }
                 .ftm-amount { font-weight: 800; color: #0f172a; font-size: 13px; }
                 .ftm-tiers-name { font-weight: 600; color: #334155; }
                 .ftm-no-fact { color: #94a3b8; font-size: 11px; }
@@ -278,7 +278,7 @@ const FacturesTiersManager = ({ dossierId }) => {
                             )}
                         </div>
                         {form.codeRubrique && (
-                            <div style={{ fontSize: 11, color: '#6366f1', marginTop: 4, fontWeight: 700 }}>
+                            <div style={{ fontSize: 11, color: '#3b82f6', marginTop: 4, fontWeight: 700 }}>
                                 ✓ {form.codeRubrique} — {form.libelleRubrique}
                             </div>
                         )}
@@ -344,7 +344,7 @@ const FacturesTiersManager = ({ dossierId }) => {
                         <div className="ftm-recap-title">Récap. par rubrique</div>
                         {totalParRubrique.map(r => (
                             <div key={r.code} className="ftm-recap-row">
-                                <span style={{ fontFamily: 'monospace', color: '#a78bfa', fontWeight: 700 }}>{r.code}</span>
+                                <span style={{ fontFamily: 'monospace', color: '#60a5fa', fontWeight: 700 }}>{r.code}</span>
                                 <span style={{ color: '#94a3b8', fontSize: 11 }}>×{r.nb}</span>
                                 <span style={{ color: 'white', fontWeight: 700 }}>{fmt(r.total)}</span>
                             </div>
@@ -361,7 +361,7 @@ const FacturesTiersManager = ({ dossierId }) => {
             <div className={`ftm-table-panel ${loading ? 'ftm-loading-overlay' : ''}`}>
                 <div className="ftm-table-header">
                     <div className="ftm-table-title">
-                        <Building2 size={18} color="#6366f1" />
+                        <Building2 size={18} color="#3b82f6" />
                         Factures tiers saisies
                         {dossier && <span className="ftm-dossier-badge">{dossier.code || dossierId}</span>}
                         <span style={{ fontSize: 11, color: '#94a3b8', fontWeight: 400 }}>{lignes.length} ligne(s)</span>

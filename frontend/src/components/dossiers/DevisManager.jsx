@@ -246,7 +246,7 @@ const DevisManager = ({ dossierId }) => {
         );
     }
 
-    const mainHeaderBg = isConverting ? '#7c3aed' : '#0f4c81';
+    const mainHeaderBg = isConverting ? '#1d4ed8' : '#0f4c81';
 
     return (
         <div className="dm-container">
@@ -273,8 +273,8 @@ const DevisManager = ({ dossierId }) => {
                 .dm-btn-accept:hover { background: #10b981; color: white; }
                 .dm-btn-refuse { background: rgba(239,68,68,0.1); color: #ef4444; }
                 .dm-btn-refuse:hover { background: #ef4444; color: white; }
-                .dm-btn-convert { background: rgba(139,92,246,0.15); color: #a78bfa; }
-                .dm-btn-convert:hover { background: #7c3aed; color: white; }
+                .dm-btn-convert { background: rgba(59,130,246,0.15); color: #60a5fa; }
+                .dm-btn-convert:hover { background: #1d4ed8; color: white; }
                 .dm-btn-delete { background: rgba(239,68,68,0.1); color: #ef4444; }
                 .dm-btn-delete:hover { background: #ef4444; color: white; }
                 .dm-btn-reset { background: rgba(100,116,139,0.15); color: #94a3b8; }
@@ -320,12 +320,12 @@ const DevisManager = ({ dossierId }) => {
                 .dm-submit-btn { width: 100%; padding: 0.875rem; border: none; border-radius: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; justify-content: center; gap: 0.75rem; font-size: 13px; }
                 .dm-submit-btn.create { background: #0f6cbd; color: white; box-shadow: 0 8px 20px rgba(15,108,189,0.4); }
                 .dm-submit-btn.create:hover:not(:disabled) { background: #0d5ba3; transform: translateY(-2px); }
-                .dm-submit-btn.convert { background: #7c3aed; color: white; box-shadow: 0 8px 20px rgba(124,58,237,0.4); }
-                .dm-submit-btn.convert:hover:not(:disabled) { background: #6d28d9; transform: translateY(-2px); }
+                .dm-submit-btn.convert { background: #1d4ed8; color: white; box-shadow: 0 8px 20px rgba(29,78,216,0.4); }
+                .dm-submit-btn.convert:hover:not(:disabled) { background: #1e40af; transform: translateY(-2px); }
                 .dm-submit-btn:disabled { background: #1e3a5f; color: #4a6080; cursor: not-allowed; box-shadow: none; }
 
                 .dm-empty-state { height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--slate-400); text-align: center; padding: 3rem; }
-                .dm-convert-banner { background: rgba(124,58,237,0.1); border: 1px solid rgba(124,58,237,0.3); border-radius: 0.5rem; padding: 0.6rem 1rem; margin-bottom: 0.75rem; font-size: 11px; color: #a78bfa; display: flex; align-items: center; gap: 0.5rem; font-weight: 700; }
+                .dm-convert-banner { background: rgba(29,78,216,0.1); border: 1px solid rgba(29,78,216,0.3); border-radius: 0.5rem; padding: 0.6rem 1rem; margin-bottom: 0.75rem; font-size: 11px; color: #60a5fa; display: flex; align-items: center; gap: 0.5rem; font-weight: 700; }
             `}</style>
 
             {/* ── SIDEBAR ── */}
