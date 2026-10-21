@@ -1,19 +1,19 @@
-# Blueprint Render — Soft Transit Gabon (backend Express + PostgreSQL)
+# Blueprint Render — Soft Transit Sénégal (backend Express + PostgreSQL)
 # Production actuelle : base et service créés à la main (voir DEPLOY.md), région Virginia.
 # Déploiement : dashboard Render → New → Blueprint → connecter ce dépôt.
 # Les variables marquées `sync: false` sont à saisir manuellement dans le
 # dashboard Render après la création (Environment → Add Environment Variable).
 
 databases:
-  - name: softtransitgabon-db
-    databaseName: softtransitgabon
-    user: softtransitgabon
+  - name: softtransitsenegal-db
+    databaseName: softtransitsenegal
+    user: softtransitsenegal
     region: virginia
     plan: starter # le plan gratuit expire après 30 jours ; à ajuster si besoin
 
 services:
   - type: web
-    name: softtransitgabon-backend
+    name: softtransitsenegal-backend
     runtime: node
     plan: free
     region: virginia
@@ -26,7 +26,7 @@ services:
         value: production
       - key: DATABASE_URL
         fromDatabase:
-          name: softtransitgabon-db
+          name: softtransitsenegal-db
           property: connectionString
 
       # Secrets applicatifs — à générer et saisir manuellement
@@ -59,4 +59,4 @@ services:
       - key: CLOUDFLARE_R2_SECRET_ACCESS_KEY
         sync: false
       - key: CLOUDFLARE_R2_BUCKET_NAME
-        value: r2softtransitgabon
+        value: softtransitsenegal

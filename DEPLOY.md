@@ -1,4 +1,4 @@
-# Déploiement — Soft Transit Gabon
+# Déploiement — Soft Transit Sénégal
 
 Backend + base de données sur **Render.com**, frontend sur **Cloudflare Pages**,
 fichiers sur **Cloudflare R2**. Le dépôt GitHub (privé) sert de source pour les
@@ -10,7 +10,7 @@ Claude peut s'en charger si vous lui donnez les informations demandées.
 
 ## 1. Bucket Cloudflare R2
 
-1. Dashboard Cloudflare → **R2 Object Storage** → **Create bucket** (nom actuel : `r2softtransitgabon`).
+1. Dashboard Cloudflare → **R2 Object Storage** → **Create bucket** (nom actuel : `softtransitsenegal`).
 2. Page d'accueil **R2 Object Storage** → **API → Manage** → **Create Account API token**
    → permission **Object Read & Write**, limité à ce bucket.
 3. Noter les valeurs affichées (elles ne sont montrées qu'une fois) :
@@ -22,7 +22,7 @@ Claude peut s'en charger si vous lui donnez les informations demandées.
 
 1. **Base PostgreSQL** : New → PostgreSQL. Noter l'*Internal Database URL* (pour le backend)
    et l'*External Database URL* (pour la migration). Région : la même que le backend.
-2. **Service web** : New → Web Service → dépôt `mbndiaye232/softtransitgabon`, branche `main`.
+2. **Service web** : New → Web Service → dépôt `mbndiaye232/softtransitsenegal`, branche `main`.
    - Language : **Node** (pas Docker)
    - **Root Directory : `backend`** · Build : `npm install` · Start : `npm start`
    - Health Check Path : `/api/health`
@@ -41,16 +41,16 @@ Claude peut s'en charger si vous lui donnez les informations demandées.
 ## 3. Frontend (Cloudflare Workers)
 
 1. Dashboard Cloudflare → **Workers & Pages** → **Create** → importer le dépôt
-   `mbndiaye232/softtransitgabon`.
+   `mbndiaye232/softtransitsenegal`.
 2. Paramètres de build :
-   - Nom du projet : **`softtransitgabon`** (identique au `name` de `frontend/wrangler.jsonc`)
+   - Nom du projet : **`softtransitsenegal`** (identique au `name` de `frontend/wrangler.jsonc`)
    - **Root directory : `frontend`**
    - Build command : `npm run build`
    - Deploy command : `npx wrangler deploy`
 3. **Build variables** (section Build, pas Runtime) :
    - `VITE_API_URL` = `https://<service>.onrender.com/api` (lu à la compilation :
      relancer un build après toute modification)
-4. L'adresse obtenue ressemble à `https://softtransitgabon.<compte>.workers.dev`.
+4. L'adresse obtenue ressemble à `https://softtransitsenegal.<compte>.workers.dev`.
    `frontend/wrangler.jsonc` renvoie toutes les routes vers `index.html`
    (`single-page-application`), ce qui permet de recharger une page comme `/dossiers`.
 
