@@ -15,7 +15,7 @@ const A3_HEIGHT = 841.89;
 class NoteDetailPDFGenerator {
     constructor(pool) {
         this.pool = pool;
-        this.refSymbol = 'F XAF'; // repli ; écrasé par la devise de référence réelle dans fetchNoteData
+        this.refSymbol = 'F CFA'; // repli ; écrasé par la devise de référence réelle dans fetchNoteData
     }
 
     /**

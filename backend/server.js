@@ -26,13 +26,13 @@ app.use(helmet({
 }));
 
 // Middleware — origines autorisées : localhost (dev) + FRONTEND_URL (prod, Cloudflare Pages)
-// + tout déploiement de prévisualisation Cloudflare Pages (*.softtransitgabon.pages.dev)
+// + tout déploiement de prévisualisation Cloudflare Pages (*.softtransitsenegal.pages.dev)
 const allowedOrigins = [
     'http://localhost:5173',
     'http://localhost:5174',
     process.env.FRONTEND_URL
 ].filter(Boolean);
-const pagesPreviewPattern = /^https:\/\/[a-z0-9-]+\.softtransitgabon\.pages\.dev$/;
+const pagesPreviewPattern = /^https:\/\/[a-z0-9-]+\.softtransitsenegal\.pages\.dev$/;
 
 app.use(cors({
     origin: function (origin, callback) {

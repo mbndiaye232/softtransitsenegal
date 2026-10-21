@@ -1,9 +1,9 @@
-# Soft Transit Gabon (version mono-structure) — Instructions pour Claude Code
+# Soft Transit Sénégal (version mono-structure) — Instructions pour Claude Code
 
 ## Stack technique
 - **Frontend** : React + Vite, en local (http://localhost:5173)
 - **Backend** : Express.js, en local (http://localhost:3001)
-- **Base de données** : PostgreSQL 17 local (port 5433, base `softtransit_gabon`, copie de la base RDC `softtransit` ; ne jamais écrire dans `softtransit`)
+- **Base de données** : PostgreSQL 17 local (port 5433, base `softtransit_senegal`, copie de la structure de `softtransit_gabon` ; ne jamais écrire dans `softtransit` ni `softtransit_gabon`)
 - **Stockage fichiers** : disque local, dossier `backend/uploads`
 - **Auth** : JWT + bcrypt
 - Application **non SaaS** : une seule structure (Soft Services Technologiques, `IDSociete = 1`).
@@ -32,14 +32,27 @@ Règles pour écrire du SQL :
 - Fichiers servis par `express.static` sur `/uploads`
 
 ## Scripts de données (`backend/scripts`)
+- `prepare-db-senegal.js` : crée `PG_DATABASE` (copie de structure de `softtransit_gabon`, données métier vidées, devise de référence « F CFA »)
+- `import-tec-senegal.py` : TEC du Sénégal (produits NTS 10 chiffres, taxes + niveaux, taux, tarifs, compléments de taxes), régimes GAINDE et rubriques,
+  depuis `backup_clean.sql` (sauvegarde Soft Transit SaaS du 2026-05-11, racine du projet). Vide puis remplit les tables.
+- `fix-accents-senegal.py` : à lancer après l'import — restaure les accents abîmés de la source (« ?? », « ? », « { »…) dans les libellés des produits et des régimes (dictionnaire français + libellés du TEC du Gabon) ; `--appliquer` pour modifier la base (simulation par défaut)
 - `migrate-mysql-to-pg.js` : migration initiale depuis `backup_clean.sql` (structure SST uniquement)
-- `import-tec-gabon.py` : produits, taxes, taux, tarifs depuis `TEC/*.xlsx` (tables vides requises)
-- `import-regimes-gabon.py` : régimes SYDONIA depuis `TEC/RégimesOK.xlsx` (vide puis remplit `regimedeclaration`)
-- `import-referentiel.py` : ancien import du référentiel RDC (non utilisé pour le Gabon)
-- `migrations-pg/*.sql` : évolutions du schéma PostgreSQL (004 : colonnes `regime` et `code_additionnel` des régimes)
+- `migrations-pg/*.sql` : évolutions du schéma PostgreSQL (007 : portail client ; 008 : classement des régimes sénégalais — type suspensif/définitif/exonération, qui commande l'accès aux sommiers)
+
+## Calcul des droits et taxes
+- `taxes.niveau` = ordre de calcul ; `taxes_complements` = taxes dont les montants s'ajoutent à la base d'une taxe de niveau > 1
+  (ex. TVA niveau 3 : base = CAF + DD + RS + taxe additionnelle + taxe intérieure cosmétiques + TI). Logique dans `routes/notes.js` (identique à Soft Transit SaaS).
+- Facturation (`FacturationManager.jsx`) : commissions automatiques sur les lignes 4004 (commission sur débours) et 4005 (commission sur droits de douane),
+  taux et choix des rubriques de débours 11xx (« Sur tous les débours » ou sélection) dans la fiche client (`rubriquesdescommissions`).
+  Pas de commission sur une facture douane seule (FD) ; commission douane d'une facture prestations (FP) calculée sur les FD déjà établies du dossier.
+
+## Portail client (lecture seule)
+- Option activée en développement : `PORTAIL_CLIENT_ENABLED=true` (`backend/.env`) et `VITE_PORTAIL_CLIENT=true` (`frontend/.env`) ; migration `migrations-pg/007_portail_client.sql` appliquée.
+- Les clients s'inscrivent sur `/portail` (confirmation de l'adresse e-mail, puis choix du mot de passe), l'équipe valide et rattache à une fiche client dans `/portail-admin`.
+  Le client voit ses dossiers (avancement, arrivée du navire), documents et factures validées. Tests : `e2e-gabon/tests/13-portail-client.spec.js` et `14-…` (dossier `e2e-gabon` hérité du Gabon, base `softtransit_senegal_e2e`).
 
 ## Workflow Git
-Dépôt privé : `mbndiaye232/softtransitgabon`. Ne pas committer ni pousser sans demande explicite.
+Dépôt privé : `mbndiaye232/softtransitsenegal`. Ne pas committer ni pousser sans demande explicite.
 
 ## Soft delete
 Les dossiers supprimés ont `Facturable = -1`. Toutes les requêtes SELECT doivent filtrer :

@@ -7,7 +7,7 @@
  */
 import { fmt } from './format'
 
-let refSymbol = 'F XAF' // repli avant le premier chargement
+let refSymbol = 'F CFA' // repli avant le premier chargement
 
 export function setReferenceCurrency(devises = []) {
     const ref = devises.find(d => d.est_reference)

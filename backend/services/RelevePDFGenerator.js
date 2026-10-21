@@ -5,7 +5,7 @@ const path = require('path');
 class RelevePDFGenerator {
     constructor(pool) {
         this.pool = pool;
-        this.refSymbol = 'F XAF'; // repli ; écrasé par la devise de référence réelle dans fetchReleveData
+        this.refSymbol = 'F CFA'; // repli ; écrasé par la devise de référence réelle dans fetchReleveData
     }
 
     async generatePDF(params) {

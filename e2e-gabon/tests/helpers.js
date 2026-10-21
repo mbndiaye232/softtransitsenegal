@@ -64,7 +64,7 @@ export async function openDossier(page, libelle) {
     return Number(page.url().match(/\/dossiers\/(\d+)/)[1])
 }
 
-// Requête SQL directe sur la base de TEST (softtransit_gabon_e2e, jamais la base de développement) :
+// Requête SQL directe sur la base de TEST (softtransit_senegal_e2e, jamais la base de développement) :
 // pour les données difficiles à créer par l'API (factures, identifiants…).
 export async function sql(texte, params = []) {
     const backend = path.join(process.cwd(), '..', 'backend')
@@ -72,7 +72,7 @@ export async function sql(texte, params = []) {
     const env = Object.fromEntries(lignes.filter(l => l.includes('=') && !l.startsWith('#'))
         .map(l => [l.slice(0, l.indexOf('=')).trim(), l.slice(l.indexOf('=') + 1).trim()]))
     const { Client } = require(path.join(backend, 'node_modules', 'pg'))
-    const c = new Client({ host: env.PG_HOST, port: env.PG_PORT, user: env.PG_USER, password: env.PG_PASSWORD, database: 'softtransit_gabon_e2e' })
+    const c = new Client({ host: env.PG_HOST, port: env.PG_PORT, user: env.PG_USER, password: env.PG_PASSWORD, database: 'softtransit_senegal_e2e' })
     await c.connect()
     try { return (await c.query(texte, params)).rows } finally { await c.end() }
 }

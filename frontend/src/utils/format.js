@@ -13,5 +13,5 @@ export function fmt(n, decimals = 0) {
     });
 }
 
-// Pour un montant suivi de la devise de référence courante ("F XAF" par défaut,
+// Pour un montant suivi de la devise de référence courante ("F CFA" par défaut,
 // modifiable sans toucher au code), voir fmtRef dans ./currency.js

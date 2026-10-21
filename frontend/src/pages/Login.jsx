@@ -179,7 +179,7 @@ export default function Login() {
 
                 <div className="visual-content">
                     <div className="logo-area" style={{ margin: '0 0 2rem 0', background: 'rgba(255,255,255,0.15)', backdropFilter: 'blur(12px)', padding: '1rem', borderRadius: '1rem' }}>
-                        <img src={logoSST} alt="Soft Transit Gabon" style={{ width: '120px', height: '120px', objectFit: 'contain' }} />
+                        <img src={logoSST} alt="Soft Transit Sénégal" style={{ width: '120px', height: '120px', objectFit: 'contain' }} />
                     </div>
                     <h2>Moins de paperasse, plus de transit.</h2>
                     <p>Gérez vos dossiers de transit, vos déclarations douanières et vos cotations en temps réel.</p>
@@ -201,7 +201,7 @@ export default function Login() {
                 </div>
 
                 <div style={{ position: 'absolute', bottom: '3rem', left: '4rem', fontSize: '0.8125rem', opacity: 0.6, fontWeight: 500 }}>
-                    © 2026 Soft Transit Gabon. Tous droits réservés.
+                    © 2026 Soft Transit Sénégal. Tous droits réservés.
                 </div>
             </div>
 

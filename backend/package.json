@@ -1,7 +1,7 @@
 {
-  "name": "softtransitgabon-backend",
+  "name": "softtransitsenegal-backend",
   "version": "1.0.0",
-  "description": "Backend API — Soft Transit Gabon (application mono-structure, PostgreSQL)",
+  "description": "Backend API — Soft Transit Sénégal (application mono-structure, PostgreSQL)",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",

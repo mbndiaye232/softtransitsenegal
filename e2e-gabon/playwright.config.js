@@ -26,7 +26,7 @@ module.exports = defineConfig({
         { name: 'setup', testMatch: /auth\.setup\.js/ },
         { name: 'chromium', testIgnore: /auth\.setup\.js/, dependencies: ['setup'], use: { ...devices['Desktop Chrome'] } },
     ],
-    // Backend et frontend de test, branchés sur la base softtransit_gabon_e2e (jamais la base de développement).
+    // Backend et frontend de test, branchés sur la base softtransit_senegal_e2e (jamais la base de développement).
     webServer: [
         {
             command: 'node server.js',
@@ -36,7 +36,7 @@ module.exports = defineConfig({
             timeout: 60_000,
             env: {
                 PORT: String(API_PORT),
-                PG_DATABASE: 'softtransit_gabon_e2e',
+                PG_DATABASE: 'softtransit_senegal_e2e',
                 FRONTEND_URL: WEB_URL,
                 NODE_ENV: 'test',
                 PORTAIL_CLIENT_ENABLED: 'true', // option testée par tests/13-portail-client.spec.js
