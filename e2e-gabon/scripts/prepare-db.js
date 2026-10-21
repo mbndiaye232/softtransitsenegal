@@ -51,6 +51,9 @@ const run = (cmd, args, input) => {
     const dump = run('pg_dump', [...cli, '-d', SOURCE, '--no-owner', '--no-privileges', '-E', 'UTF8']);
     run('psql', [...cli, '-d', TARGET, '-q', '-v', 'ON_ERROR_STOP=1'], dump);
 
+    // Option « portail client » : tables absentes de la base de développement tant que l'option n'est pas activée
+    run('psql', [...cli, '-d', TARGET, '-q', '-v', 'ON_ERROR_STOP=1', '-f', path.join(backend, 'migrations-pg', '007_portail_client.sql')]);
+
     const db = new Client({ ...conn, database: TARGET });
     await db.connect();
     const perm = async (code) => (await db.query('SELECT id FROM permissions WHERE code = $1', [code])).rows[0].id;

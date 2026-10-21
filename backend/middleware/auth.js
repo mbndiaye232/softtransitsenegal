@@ -16,6 +16,9 @@ const authMiddleware = async (req, res, next) => {
         // M1 : pas de secret de repli — JWT_SECRET est garanti présent au démarrage (server.js).
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
+        // Un jeton du portail client n'ouvre jamais l'API du personnel
+        if (decoded.aud === 'portail') return res.status(401).json({ error: 'Invalid token' });
+
         const userId = decoded.userId || decoded.id;
         const [users] = await pool.query(
             `SELECT a.IDAgents as id, a.NomAgent as name, a.Email as email,

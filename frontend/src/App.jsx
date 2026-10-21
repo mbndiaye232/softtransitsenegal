@@ -52,6 +52,17 @@ import TransportArrivals from './pages/TransportArrivals'
 import SommiersPage from './pages/SommiersPage'
 import EntrepotsPage from './pages/EntrepotsPage'
 import HistoriqueSommiersPage from './pages/HistoriqueSommiersPage'
+import PortailLogin from './portail/PortailLogin'
+import PortailReset from './portail/PortailReset'
+import PortailConfirmer from './portail/PortailConfirmer'
+import PortailLayout from './portail/PortailLayout'
+import PortailDossiers from './portail/PortailDossiers'
+import PortailDossier from './portail/PortailDossier'
+import PortailFactures from './portail/PortailFactures'
+import PortailAdmin from './pages/PortailAdmin'
+
+// Portail client (option) : pages publiques sous /portail, activées par VITE_PORTAIL_CLIENT=true
+const PORTAIL_ACTIF = import.meta.env.VITE_PORTAIL_CLIENT === 'true'
 
 const ProtectedRoute = ({ children }) => {
     const { user, loading } = useAuth()
@@ -106,6 +117,13 @@ function AppRoutes() {
             <Route path="/documents" element={<ProtectedLayout><DocumentManager /></ProtectedLayout>} />
             <Route path="/decision-dashboard" element={<ProtectedLayout><DecisionDashboard /></ProtectedLayout>} />
             <Route path="/backups" element={<ProtectedLayout><BackupManager /></ProtectedLayout>} />
+            {PORTAIL_ACTIF && <Route path="/portail" element={<PortailLogin />} />}
+            {PORTAIL_ACTIF && <Route path="/portail/reinitialiser" element={<PortailReset />} />}
+            {PORTAIL_ACTIF && <Route path="/portail/confirmer" element={<PortailConfirmer />} />}
+            {PORTAIL_ACTIF && <Route path="/portail/dossiers" element={<PortailLayout><PortailDossiers /></PortailLayout>} />}
+            {PORTAIL_ACTIF && <Route path="/portail/dossiers/:id" element={<PortailLayout><PortailDossier /></PortailLayout>} />}
+            {PORTAIL_ACTIF && <Route path="/portail/factures" element={<PortailLayout><PortailFactures /></PortailLayout>} />}
+            {PORTAIL_ACTIF && <Route path="/portail-admin" element={<ProtectedLayout><PortailAdmin /></ProtectedLayout>} />}
             <Route path="/suivi-traitements" element={<ProtectedLayout><SuiviTraitements /></ProtectedLayout>} />
             <Route path="/transport-arrivals" element={<ProtectedLayout><TransportArrivals /></ProtectedLayout>} />
             <Route path="/tarifs" element={<ProtectedLayout><TarifsManager /></ProtectedLayout>} />

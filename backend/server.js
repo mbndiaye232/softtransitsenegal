@@ -43,7 +43,8 @@ app.use(cors({
         }
         return callback(new Error('Not allowed by CORS'));
     },
-    credentials: true
+    credentials: true,
+    exposedHeaders: ['Content-Disposition'] // nom du fichier lu par le portail client lors d'un téléchargement
 }));
 // L4 : limite de taille des corps JSON/urlencoded (les fichiers passent par
 // multer, pas par ces parsers). Borne la consommation mémoire par requête.
@@ -161,6 +162,13 @@ app.use('/api/suivi-traitements', suiviTraitementsRoutes);
 app.use('/api/sommiers', sommiersRoutes);
 app.use('/api/entrepots', entrepotsRoutes);
 app.use('/api/apurements', apurementsRoutes);
+
+// Portail client (option) : activé uniquement avec PORTAIL_CLIENT_ENABLED=true
+if (process.env.PORTAIL_CLIENT_ENABLED === 'true') {
+    app.use('/api/portail', require('./routes/portail'));
+    app.use('/api/portail-admin', require('./routes/portailAdmin'));
+    console.log('✓ Portail client activé');
+}
 
 // Alertes d'échéance sommiers (quotidien à 08h00 UTC)
 require('./services/sommierAlertService').startSommierAlertScheduler();

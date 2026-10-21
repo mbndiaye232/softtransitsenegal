@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import {
     Building2, Users, UserSquare2, Briefcase, ClipboardList,
     BarChart3, FileText, Settings, LogOut, Key,
-    Save, Layers, LayoutDashboard, ChevronRight, ShieldCheck, Folders, Lock, Anchor, Warehouse, History
+    Save, Layers, LayoutDashboard, ChevronRight, ShieldCheck, Folders, Lock, Anchor, Warehouse, History, Globe
 } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 
@@ -31,7 +31,7 @@ const CATS = [
         label: 'Outils & Administration',
         color: '#d97706',
         grad: 'linear-gradient(135deg,#92400e,#d97706)',
-        ids: ['dashboard', 'parametres', 'licence', 'sauvegarder', 'quitter'],
+        ids: ['dashboard', 'parametres', 'portail', 'licence', 'sauvegarder', 'quitter'],
     },
 ]
 
@@ -72,6 +72,9 @@ export default function DashboardMenu() {
         { id: 'dashboard',   label: 'Dashboard',          icon: LayoutDashboard, path: '/decision-dashboard', color: '#ec4899', grad: 'linear-gradient(135deg,#db2777,#ec4899)',  perm: null,       multi: true },
         { id: 'parametres',  label: 'Paramètres',         icon: Settings,        path: '/parameters-hub',     color: '#f59e0b', grad: 'linear-gradient(135deg,#d97706,#f59e0b)',  perm: 'CONFIG',   multi: true },
         { id: 'licence',     label: 'Licence',            icon: Key,             path: '#',                   color: '#10b981', grad: 'linear-gradient(135deg,#059669,#10b981)',  perm: null,       disabled: true },
+        ...(import.meta.env.VITE_PORTAIL_CLIENT === 'true'
+            ? [{ id: 'portail', label: 'Portail client', icon: Globe, path: '/portail-admin', color: '#0891b2', grad: 'linear-gradient(135deg,#0e7490,#0891b2)', perm: 'CONFIG' }]
+            : []),
         { id: 'sauvegarder', label: 'Sauvegarder',        icon: Save,            path: '/backups',            color: '#06b6d4', grad: 'linear-gradient(135deg,#0891b2,#06b6d4)',  perm: 'CONFIG' },
         { id: 'quitter', label: 'Quitter', icon: LogOut, path: null, color: '#ef4444', grad: 'linear-gradient(135deg,#dc2626,#ef4444)', perm: null, onClick: handleLogout },
     ]

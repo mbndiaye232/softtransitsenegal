@@ -102,3 +102,19 @@ du bucket des documents vers un second bucket, sans jamais rien supprimer dans l
    Le code de sortie est 1 si un objet n'a pas pu être copié.
 
 La clé `DOCUMENT_ENCRYPTION_KEY` n'est dans aucune sauvegarde : la conserver à part, sans elle les documents chiffrés sont illisibles.
+
+## Portail client (option)
+
+Accès des clients, en lecture seule, à leurs dossiers, factures et documents (téléchargement). Désactivé par défaut.
+
+1. Appliquer `backend/migrations-pg/007_portail_client.sql` sur la base (idempotent).
+2. Backend : variable `PORTAIL_CLIENT_ENABLED=true` (sinon les routes `/api/portail*` n'existent pas).
+3. Frontend : variable de build `VITE_PORTAIL_CLIENT=true` (sinon les pages `/portail*` et la case « Portail client » du menu n'existent pas).
+4. Les clients demandent un accès sur `/portail` (sans mot de passe). Ils reçoivent un e-mail (Brevo ou SMTP requis) dont le lien
+   **confirme leur adresse et leur fait choisir leur mot de passe** : un tiers ne peut pas imposer un mot de passe sur l'adresse d'autrui.
+   Un administrateur valide ensuite chaque demande depuis la case **Portail client** du tableau de bord
+   (rattachement à la fiche client, suspension, types de documents masqués, journal des téléchargements).
+   Une demande dont l'adresse n'est pas confirmée ne peut pas être validée, et aucune fiche client n'est suggérée pour elle.
+
+Sécurité : jeton du portail distinct de celui du personnel (audience `portail`), chaque requête filtrée par le client du compte ;
+un dossier, document ou facture d'un autre client répond 404. Tests : `e2e-gabon/tests/13-portail-client.spec.js` et `14-portail-client-ui.spec.js`.
