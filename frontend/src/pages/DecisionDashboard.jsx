@@ -13,18 +13,18 @@ import { dashboardsAPI } from '../services/api';
 
 /* ── couleurs par bloc ── */
 const BLOCK = {
-    ca:       { accent: '#2563eb', light: '#eff6ff', border: '#bfdbfe', grad: 'linear-gradient(135deg,#1d4ed8,#3b82f6)', header: '#1e3a8a' },
-    encours:  { accent: '#dc2626', light: '#fef2f2', border: '#fecaca', grad: 'linear-gradient(135deg,#b91c1c,#ef4444)', header: '#7f1d1d' },
-    flux:     { accent: '#059669', light: '#ecfdf5', border: '#a7f3d0', grad: 'linear-gradient(135deg,#047857,#10b981)', header: '#064e3b' },
-    dossiers: { accent: '#7c3aed', light: '#faf5ff', border: '#ddd6fe', grad: 'linear-gradient(135deg,#5b21b6,#8b5cf6)', header: '#2e1065' },
-    perf:     { accent: '#0369a1', light: '#eff6ff', border: '#bae6fd', grad: 'linear-gradient(135deg,#075985,#0ea5e9)', header: '#0c4a6e' },
-    aging:    { accent: '#d97706', light: '#fffbeb', border: '#fde68a', grad: 'linear-gradient(135deg,#b45309,#f59e0b)', header: '#78350f' },
-    trends:   { accent: '#7c3aed', light: '#faf5ff', border: '#ddd6fe', grad: 'linear-gradient(135deg,#5b21b6,#8b5cf6)', header: '#2e1065' },
-    topca:    { accent: '#2563eb', light: '#eff6ff', border: '#bfdbfe', grad: 'linear-gradient(135deg,#1d4ed8,#60a5fa)', header: '#1e3a8a' },
-    topenc:   { accent: '#dc2626', light: '#fef2f2', border: '#fecaca', grad: 'linear-gradient(135deg,#b91c1c,#f87171)', header: '#7f1d1d' },
+    ca:       { accent: '#2563eb', light: '#eff6ff', border: '#bfdbfe', grad: 'var(--hero-gradient)', header: '#1e3a8a' },
+    encours:  { accent: '#dc2626', light: '#fef2f2', border: '#fecaca', grad: 'var(--hero-gradient)', header: '#7f1d1d' },
+    flux:     { accent: '#059669', light: '#ecfdf5', border: '#a7f3d0', grad: 'var(--hero-gradient)', header: '#064e3b' },
+    dossiers: { accent: '#1d4ed8', light: '#faf5ff', border: '#bfdbfe', grad: 'var(--hero-gradient)', header: '#2e1065' },
+    perf:     { accent: '#0369a1', light: '#eff6ff', border: '#bae6fd', grad: 'var(--hero-gradient)', header: '#0c4a6e' },
+    aging:    { accent: '#d97706', light: '#fffbeb', border: '#fde68a', grad: 'var(--hero-gradient)', header: '#78350f' },
+    trends:   { accent: '#1d4ed8', light: '#faf5ff', border: '#bfdbfe', grad: 'var(--hero-gradient)', header: '#2e1065' },
+    topca:    { accent: '#2563eb', light: '#eff6ff', border: '#bfdbfe', grad: 'var(--hero-gradient)', header: '#1e3a8a' },
+    topenc:   { accent: '#dc2626', light: '#fef2f2', border: '#fecaca', grad: 'var(--hero-gradient)', header: '#7f1d1d' },
 };
 
-const PIE_COLORS = ['#2563eb', '#16a34a', '#d97706', '#dc2626', '#8b5cf6', '#06b6d4'];
+const PIE_COLORS = ['#2563eb', '#16a34a', '#d97706', '#dc2626', '#3b82f6', '#06b6d4'];
 
 /* ── sous-composants ── */
 function BlockCard({ colorKey, icon, title, children, style = {} }) {
@@ -229,14 +229,14 @@ const DecisionDashboard = () => {
 
             {/* ── Hero ── */}
             <div style={{
-                background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 55%, #1e3a5f 100%)',
+                background: 'var(--hero-gradient)',
                 padding: '2rem 2rem 5.5rem',
                 position: 'relative', overflow: 'hidden'
             }}>
                 <div style={{
                     position: 'absolute', top: '-80px', right: '-80px',
                     width: '320px', height: '320px', borderRadius: '50%',
-                    background: 'rgba(99,102,241,0.08)', pointerEvents: 'none'
+                    background: 'rgba(59,130,246,0.08)', pointerEvents: 'none'
                 }} />
                 <div style={{
                     position: 'absolute', bottom: '-50px', left: '25%',
@@ -301,7 +301,7 @@ const DecisionDashboard = () => {
                     }}>
                         <div style={{
                             width: '56px', height: '56px', borderRadius: '50%',
-                            background: 'linear-gradient(135deg,#0f172a,#2563eb)',
+                            background: 'var(--hero-gradient)',
                             display: 'flex', alignItems: 'center', justifyContent: 'center',
                             margin: '0 auto 1.25rem',
                             animation: 'spin 1s linear infinite',
@@ -408,9 +408,9 @@ const DecisionDashboard = () => {
                                         <YAxis axisLine={false} tickLine={false} tick={{ fill: '#94a3b8', fontSize: 11 }} />
                                         <Tooltip content={<CustomTooltip />} />
                                         <Line
-                                            type="monotone" dataKey="count" stroke="#7c3aed" strokeWidth={3}
+                                            type="monotone" dataKey="count" stroke="#1d4ed8" strokeWidth={3}
                                             name="Dossiers"
-                                            dot={{ r: 5, fill: '#7c3aed', stroke: 'white', strokeWidth: 2 }}
+                                            dot={{ r: 5, fill: '#1d4ed8', stroke: 'white', strokeWidth: 2 }}
                                             activeDot={{ r: 7 }}
                                         />
                                     </LineChart>

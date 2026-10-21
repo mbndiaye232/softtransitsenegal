@@ -138,7 +138,7 @@ export default function ProductList() {
 
                 .alert { padding: 1rem 1.5rem; border-radius: var(--radius-md); font-size: 0.875rem; font-weight: 600; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.75rem; }
                 .alert-error { background: #fef2f2; color: var(--danger); border: 1px solid #fee2e2; }
-                .alert-info { background: var(--primary-light); color: var(--primary); border: 1px solid #e0e7ff; }
+                .alert-info { background: var(--primary-light); color: var(--primary); border: 1px solid #dbeafe; }
             `}</style>
 
             <div className="products-container">

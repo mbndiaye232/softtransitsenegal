@@ -11,7 +11,7 @@ const ACC = '#0f766e'
 const ACC2 = '#14b8a6'
 const LIGHT = '#f0fdfa'
 const BORDER = '#99f6e4'
-const GRAD = 'linear-gradient(135deg,#134e4a 0%,#0f766e 45%,#14b8a6 100%)'
+const GRAD = 'var(--hero-gradient)'
 
 function getIcon(libelle = '') {
     const l = libelle.toLowerCase()

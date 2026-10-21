@@ -41,7 +41,7 @@ const GROUPS = [
     },
     {
         label: 'Clients & Relations',
-        color: '#7c3aed',
+        color: '#1d4ed8',
         modules: [
             { code: 'CLIENTS', label: 'Gestion des Clients' },
             { code: 'TIERS',   label: 'Gestion des Tiers' },

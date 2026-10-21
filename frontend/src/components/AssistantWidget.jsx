@@ -42,7 +42,7 @@ export default function AssistantWidget() {
                 }}>
                     {/* En-tête */}
                     <div style={{
-                        background: 'linear-gradient(135deg, #0c1a3a 0%, #1e3a8a 100%)',
+                        background: 'var(--hero-gradient)',
                         padding: '12px 16px',
                         display: 'flex',
                         alignItems: 'center',
@@ -113,8 +113,8 @@ export default function AssistantWidget() {
                     height: 54,
                     borderRadius: '50%',
                     background: open
-                        ? 'linear-gradient(135deg, #374151, #1f2937)'
-                        : 'linear-gradient(135deg, #1e3a8a, #1d4ed8)',
+                        ? 'var(--hero-gradient)'
+                        : 'var(--hero-gradient)',
                     border: 'none',
                     cursor: 'pointer',
                     display: 'flex',

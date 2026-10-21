@@ -11,15 +11,15 @@ const C = {
     accent: '#0891b2',
     light:  '#ecfeff',
     border: '#a5f3fc',
-    grad:   'linear-gradient(135deg,#0e7490,#0891b2)',
+    grad:   'var(--hero-gradient)',
 }
 
 /* ── Type styles ── */
 const TYPE_CFG = {
     maritime: { color: '#1d4ed8', bg: '#eff6ff', border: '#bfdbfe', icon: Ship },
     navire:   { color: '#1d4ed8', bg: '#eff6ff', border: '#bfdbfe', icon: Ship },
-    aérien:   { color: '#7c3aed', bg: '#f5f3ff', border: '#ddd6fe', icon: Plane },
-    avion:    { color: '#7c3aed', bg: '#f5f3ff', border: '#ddd6fe', icon: Plane },
+    aérien:   { color: '#1d4ed8', bg: '#eff6ff', border: '#bfdbfe', icon: Plane },
+    avion:    { color: '#1d4ed8', bg: '#eff6ff', border: '#bfdbfe', icon: Plane },
     terrestre:{ color: '#b45309', bg: '#fffbeb', border: '#fde68a', icon: Truck },
     camion:   { color: '#b45309', bg: '#fffbeb', border: '#fde68a', icon: Truck },
     train:    { color: '#059669', bg: '#ecfdf5', border: '#a7f3d0', icon: Train },
@@ -193,12 +193,12 @@ export default function MoyensTransportPage() {
 
             {/* ══════════ HERO ══════════ */}
             <div style={{
-                background: 'linear-gradient(135deg,#0c4a6e 0%,#0e7490 45%,#0891b2 100%)',
+                background: 'var(--hero-gradient)',
                 padding: '2.5rem 2rem 6rem',
                 position: 'relative', overflow: 'hidden',
             }}>
                 <div style={{ position: 'absolute', top: '-60px', right: '5%', width: '300px', height: '300px', borderRadius: '50%', background: 'radial-gradient(circle,rgba(6,182,212,0.35) 0%,transparent 70%)', filter: 'blur(45px)', pointerEvents: 'none' }} />
-                <div style={{ position: 'absolute', bottom: '-80px', left: '10%', width: '240px', height: '240px', borderRadius: '50%', background: 'radial-gradient(circle,rgba(99,102,241,0.2) 0%,transparent 70%)', filter: 'blur(40px)', pointerEvents: 'none' }} />
+                <div style={{ position: 'absolute', bottom: '-80px', left: '10%', width: '240px', height: '240px', borderRadius: '50%', background: 'radial-gradient(circle,rgba(59,130,246,0.2) 0%,transparent 70%)', filter: 'blur(40px)', pointerEvents: 'none' }} />
                 <div style={{ position: 'absolute', inset: 0, backgroundImage: 'linear-gradient(rgba(255,255,255,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.025) 1px,transparent 1px)', backgroundSize: '40px 40px', pointerEvents: 'none' }} />
 
                 <div style={{ position: 'relative', zIndex: 2, maxWidth: '1300px', margin: '0 auto' }}>

@@ -34,7 +34,7 @@ const StatPill = ({ icon, label, value, color, onClick, active }) => (
 const fmt = d => d ? new Date(d).toLocaleDateString('fr-FR') : '-';
 
 const avatarColors = [
-    ['#ede9fe','#6d28d9'],['#dbeafe','#1d4ed8'],['#dcfce7','#15803d'],
+    ['#dbeafe','#1e40af'],['#dbeafe','#1d4ed8'],['#dcfce7','#15803d'],
     ['#ffedd5','#c2410c'],['#fce7f3','#be185d'],['#e0f2fe','#0369a1'],
     ['#fef9c3','#a16207'],['#f1f5f9','#475569'],
 ];
@@ -140,7 +140,7 @@ const SuiviDossiers = () => {
 
             {/* ── Hero ─────────────────────────────────────────────────────── */}
             <div style={{
-                background: 'linear-gradient(135deg, #0f2854 0%, #1e40af 55%, #2563eb 100%)',
+                background: 'var(--hero-gradient)',
                 padding: '32px 40px 72px', position:'relative', overflow:'hidden',
             }}>
                 <div style={{ position:'absolute', top:-60, right:-60, width:240, height:240, background:'rgba(255,255,255,.05)', borderRadius:'50%' }} />

@@ -54,7 +54,7 @@ export default function Login() {
                     position: absolute;
                     width: 600px;
                     height: 600px;
-                    background: radial-gradient(circle, rgba(79, 70, 229, 0.15) 0%, rgba(79, 70, 229, 0) 70%);
+                    background: radial-gradient(circle, rgba(37, 99, 235, 0.15) 0%, rgba(37, 99, 235, 0) 70%);
                     border-radius: 50%;
                     z-index: 0;
                 }
@@ -64,7 +64,7 @@ export default function Login() {
                 /* Left Side - Visual/Marketing */
                 .login-visual {
                     flex: 1.2;
-                    background: linear-gradient(135deg, #4f46e5 0%, #3730a3 100%);
+                    background: var(--hero-gradient);
                     display: flex;
                     flex-direction: column;
                     justify-content: center;
@@ -75,13 +75,24 @@ export default function Login() {
                 }
                 @media (max-width: 1024px) { .login-visual { display: none; } }
                 
-                .visual-content { position: relative; z-index: 10; max-width: 500px; }
-                .visual-content h2 { font-size: 3rem; font-weight: 900; line-height: 1.1; margin-bottom: 2rem; letter-spacing: -0.03em; }
-                .visual-content p { font-size: 1.125rem; opacity: 0.9; line-height: 1.6; margin-bottom: 3rem; }
+                .login-visual::before {
+                    content: ''; position: absolute; inset: 0; pointer-events: none;
+                    background-image: linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
+                    background-size: 48px 48px;
+                    -webkit-mask-image: radial-gradient(ellipse at 30% 40%, black 20%, transparent 75%);
+                    mask-image: radial-gradient(ellipse at 30% 40%, black 20%, transparent 75%);
+                }
+                .brand-chip { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.4rem 1rem; border-radius: 999px; margin: 0.5rem 0 1.75rem;
+                    background: rgba(37, 99, 235, 0.16); border: 1px solid rgba(96, 165, 250, 0.4); color: #93c5fd;
+                    font-size: 0.75rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; }
+                .visual-content { position: relative; z-index: 10; max-width: 540px; }
+                .visual-content h2 { font-size: 3.25rem; font-weight: 900; line-height: 1.06; margin-bottom: 1.75rem; letter-spacing: -0.035em; }
+                .visual-content h2 .accent { color: #60a5fa; }
+                .visual-content p { font-size: 1.125rem; color: rgba(226, 232, 240, 0.82); line-height: 1.65; margin-bottom: 3rem; }
                 
                 .feature-list { display: flex; flex-direction: column; gap: 1.5rem; }
                 .feature-item { display: flex; align-items: center; gap: 1rem; }
-                .feature-icon { background: rgba(255, 255, 255, 0.1); padding: 0.75rem; border-radius: 1rem; backdrop-filter: blur(8px); }
+                .feature-icon { background: rgba(37, 99, 235, 0.22); border: 1px solid rgba(147, 197, 253, 0.25); color: #bfdbfe; padding: 0.75rem; border-radius: 0.875rem; backdrop-filter: blur(8px); }
                 .feature-text { font-weight: 600; font-size: 0.9375rem; }
 
                 /* Right Side - Form */
@@ -93,7 +104,7 @@ export default function Login() {
                     padding: 2rem;
                     position: relative;
                     z-index: 10;
-                    background: #f8fafc;
+                    background: linear-gradient(180deg, #f8fafc 0%, #eef3fb 100%);
                 }
                 
                 .login-card {
@@ -107,7 +118,7 @@ export default function Login() {
                 }
                 
                 .form-header { margin-bottom: 2.5rem; text-align: center; }
-                .logo-area { width: 64px; height: 64px; background: #eef2ff; border-radius: 1.25rem; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; color: #4f46e5; }
+                .logo-area { width: 64px; height: 64px; background: #eff6ff; border-radius: 1.25rem; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; color: #2563eb; }
                 .form-header h1 { font-size: 1.75rem; font-weight: 800; color: #0f172a; margin-bottom: 0.5rem; letter-spacing: -0.02em; }
                 .form-header p { color: #64748b; font-size: 0.9375rem; font-weight: 500; }
 
@@ -127,19 +138,19 @@ export default function Login() {
                     background: #fcfdfe;
                     color: #0f172a;
                 }
-                .premium-input:focus { border-color: #4f46e5; background: white; outline: none; box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1); }
+                .premium-input:focus { border-color: #2563eb; background: white; outline: none; box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1); }
                 
                 .eye-btn { position: absolute; right: 1rem; top: 50%; transform: translateY(-50%); background: none; border: none; color: #94a3b8; cursor: pointer; padding: 0.25rem; }
-                .eye-btn:hover { color: #4f46e5; }
+                .eye-btn:hover { color: #2563eb; }
 
                 .form-options { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; font-size: 0.875rem; }
-                .forgot-link { color: #4f46e5; font-weight: 700; text-decoration: none; transition: color 0.2s; }
-                .forgot-link:hover { color: #3730a3; }
+                .forgot-link { color: #2563eb; font-weight: 700; text-decoration: none; transition: color 0.2s; }
+                .forgot-link:hover { color: #1e40af; }
 
                 .submit-btn {
                     width: 100%;
                     padding: 1rem;
-                    background: #4f46e5;
+                    background: #2563eb;
                     color: white;
                     border: none;
                     border-radius: 1rem;
@@ -151,9 +162,9 @@ export default function Login() {
                     justify-content: center;
                     gap: 0.75rem;
                     transition: all 0.2s;
-                    box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.3);
+                    box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.3);
                 }
-                .submit-btn:hover { background: #4338ca; transform: translateY(-1px); box-shadow: 0 15px 20px -5px rgba(79, 70, 229, 0.4); }
+                .submit-btn:hover { background: #1d4ed8; transform: translateY(-1px); box-shadow: 0 15px 20px -5px rgba(37, 99, 235, 0.4); }
                 .submit-btn:disabled { opacity: 0.7; cursor: not-allowed; transform: none; }
 
                 .alert { 
@@ -181,7 +192,8 @@ export default function Login() {
                     <div className="logo-area" style={{ margin: '0 0 2rem 0', background: 'rgba(255,255,255,0.15)', backdropFilter: 'blur(12px)', padding: '1rem', borderRadius: '1rem' }}>
                         <img src={logoSST} alt="Soft Transit Sénégal" style={{ width: '120px', height: '120px', objectFit: 'contain' }} />
                     </div>
-                    <h2>Moins de paperasse, plus de transit.</h2>
+                    <span className="brand-chip">Soft Services Technologiques</span>
+                    <h2>Moins de paperasse, plus de <span className="accent">transit.</span></h2>
                     <p>Gérez vos dossiers de transit, vos déclarations douanières et vos cotations en temps réel.</p>
 
                     <div className="feature-list">
@@ -259,7 +271,7 @@ export default function Login() {
 
                         <div className="form-options">
                             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                                <input type="checkbox" id="remember" style={{ width: '1rem', height: '1rem', accentColor: '#4f46e5' }} />
+                                <input type="checkbox" id="remember" style={{ width: '1rem', height: '1rem', accentColor: '#2563eb' }} />
                                 <label htmlFor="remember" style={{ color: '#64748b', fontWeight: 600, fontSize: '0.8125rem' }}>Se souvenir de moi</label>
                             </div>
                             <Link to="/forgot-password" size={20} className="forgot-link">Oublié ?</Link>

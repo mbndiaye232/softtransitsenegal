@@ -1,8 +1,23 @@
+/* Charte graphique Soft Services Technologiques (SST) — thème « premium » de Soft Transit
+   Bleu nuit #0f172a / marine #1b3464 (charte SST), bleu vif #2563eb (boutons du site SST), vert #059669, police Inter.
+   Les noms de variables historiques (--primary, --slate-*, …) sont conservés : toute l'interface se met à jour. */
+@import '@fontsource-variable/inter';
+
 :root {
-  /* Colors - Indigo/Slate Palette */
-  --primary: #4f46e5;
-  --primary-hover: #4338ca;
-  --primary-light: #eef2ff;
+  /* Marque */
+  --navy-950: #0b1220;
+  --navy-900: #0f172a;
+  --navy-800: #1b3464;      /* marine de la charte SST */
+  --navy-700: #2d5a9e;      /* bleu de la charte SST */
+  --primary: #2563eb;       /* bleu des boutons du site SST */
+  --primary-hover: #1d4ed8;
+  --primary-dark: #1d4ed8;
+  --primary-light: #eff6ff;
+  --primary-soft: #dbeafe;
+  --accent: #3b82f6;
+  --secondary: #1e293b;
+  --hero-gradient: linear-gradient(135deg, #0f172a 0%, #1b3464 62%, #2563eb 170%);
+  --hero-gradient-soft: linear-gradient(135deg, #1b3464 0%, #2563eb 100%);
 
   --slate-900: #0f172a;
   --slate-800: #1e293b;
@@ -15,25 +30,28 @@
   --slate-100: #f1f5f9;
   --slate-50: #f8fafc;
 
-  --success: #10b981;
-  --danger: #ef4444;
-  --warning: #f59e0b;
+  --success: #059669;
+  --danger: #dc2626;
+  --warning: #d97706;
 
-  --bg: #f8fafc;
+  --text: #0f172a;
+  --text-light: #64748b;
+  --bg: #f4f7fb;
   --surface: #ffffff;
-  --surface-header: #fcfcfd;
+  --surface-header: #fbfcfe;
 
   --border: #e2e8f0;
-  --border-light: #f1f5f9;
-  --radius-xl: 1.5rem;
-  --radius-lg: 1rem;
-  --radius-md: 0.75rem;
+  --border-light: #eef2f7;
+  --radius-xl: 1.25rem;
+  --radius-lg: 0.875rem;
+  --radius-md: 0.625rem;
   --radius-sm: 0.5rem;
 
-  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-  --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-  --shadow-premium: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  --shadow-sm: 0 1px 2px 0 rgb(15 23 42 / 0.05);
+  --shadow: 0 4px 12px -2px rgb(15 23 42 / 0.08), 0 2px 4px -2px rgb(15 23 42 / 0.06);
+  --shadow-lg: 0 12px 24px -6px rgb(15 23 42 / 0.12), 0 4px 8px -4px rgb(15 23 42 / 0.08);
+  --shadow-premium: 0 24px 48px -12px rgb(15 23 42 / 0.22);
+  --ring: 0 0 0 3px rgb(37 99 235 / 0.22);
 }
 
 * {
@@ -42,14 +60,31 @@
   box-sizing: border-box;
 }
 
+html { scroll-behavior: smooth; }
+
 body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: 'Inter Variable', 'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+  font-feature-settings: 'cv11', 'ss01';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background-color: var(--bg);
   color: var(--slate-800);
   line-height: 1.5;
 }
+
+h1, h2, h3, h4 { letter-spacing: -0.02em; }
+
+::selection { background: rgb(37 99 235 / 0.2); color: var(--navy-900); }
+
+/* Accessibilité : anneau de focus homogène au clavier */
+:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+input:focus-visible, select:focus-visible, textarea:focus-visible { outline: none; }
+
+/* Barres de défilement discrètes */
+* { scrollbar-width: thin; scrollbar-color: #cbd5e1 transparent; }
+*::-webkit-scrollbar { width: 10px; height: 10px; }
+*::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 999px; border: 2px solid transparent; background-clip: content-box; }
+*::-webkit-scrollbar-thumb:hover { background: #94a3b8; background-clip: content-box; border: 2px solid transparent; }
 
 /* Premium Utility Classes */
 .premium-card {
@@ -97,7 +132,7 @@ body {
   align-items: center;
   justify-content: center;
   padding: 2rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--hero-gradient);
 }
 
 .auth-card {
@@ -152,7 +187,7 @@ body {
 .form-input:focus {
   outline: none;
   border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+  box-shadow: var(--ring);
 }
 
 .form-input.error {
@@ -169,9 +204,9 @@ body {
 .btn {
   padding: 0.75rem 1.5rem;
   border: none;
-  border-radius: 0.5rem;
-  font-size: 1rem;
-  font-weight: 500;
+  border-radius: var(--radius-md);
+  font-size: 0.95rem;
+  font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
   display: inline-flex;
@@ -189,7 +224,7 @@ body {
 .btn-primary:hover {
   background: var(--primary-dark);
   transform: translateY(-1px);
-  box-shadow: var(--shadow);
+  box-shadow: 0 8px 20px -6px rgb(37 99 235 / 0.55);
 }
 
 .btn-primary:disabled {
@@ -199,9 +234,12 @@ body {
 }
 
 .btn-secondary {
-  background: var(--secondary);
-  color: white;
+  background: var(--slate-100);
+  color: var(--slate-800);
+  border: 1px solid var(--border);
 }
+
+.btn-secondary:hover { background: var(--slate-200); }
 
 .btn-link {
   background: none;
@@ -385,6 +423,7 @@ body {
 
 .menu-item-label {
   font-weight: 600;
+  letter-spacing: -0.01em;
   font-size: 0.95rem;
   color: var(--text);
   text-align: center;
@@ -396,3 +435,32 @@ body {
     gap: 1rem;
   }
 }
+/* ── Bandeau de page unifié (charte SST) ─────────────────────────────────────────────────────────
+   Les pages dont l'en-tête est une « .view-header » (produits, statuts, groupes, société, arrivées…)
+   reprennent le bandeau bleu nuit des autres pages, sans toucher à leur structure. */
+body .view-header {
+  background: var(--hero-gradient);
+  border-radius: var(--radius-xl);
+  padding: 1.75rem 2.25rem;
+  margin-bottom: 1.75rem;
+  box-shadow: var(--shadow-lg);
+  position: relative;
+  overflow: hidden;
+  align-items: center;
+}
+body .view-header::after {
+  content: ''; position: absolute; right: -60px; top: -90px; width: 280px; height: 280px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(59, 130, 246, 0.35) 0%, transparent 70%); pointer-events: none;
+}
+body .view-header > * { position: relative; z-index: 1; }
+body .view-header h1 { color: #fff !important; }
+body .view-header h1 svg { color: #93c5fd !important; stroke: #93c5fd !important; }
+body .view-header p { color: rgba(226, 232, 240, 0.78) !important; }
+body .view-header .back-btn { color: rgba(226, 232, 240, 0.9) !important; background: rgba(255, 255, 255, 0.12) !important; border: 1px solid rgba(255, 255, 255, 0.22) !important; border-radius: 999px; padding: 0.25rem 0.75rem; }
+body .view-header .back-btn:hover { color: #fff !important; }
+body .view-header .nav-actions div { color: #fff !important; }
+body .view-header .nav-actions div + div { color: rgba(226, 232, 240, 0.7) !important; }
+body .view-header .action-btn { background: rgba(255, 255, 255, 0.1); color: #fff; border: 1px solid rgba(255, 255, 255, 0.25); }
+body .view-header .action-btn:hover { background: rgba(255, 255, 255, 0.2); color: #fff; border-color: rgba(255, 255, 255, 0.4); }
+body .view-header .action-btn.primary { background: #fff; color: var(--navy-800); border: none; }
+body .view-header .action-btn.primary:hover { background: var(--primary-soft); color: var(--navy-900); }

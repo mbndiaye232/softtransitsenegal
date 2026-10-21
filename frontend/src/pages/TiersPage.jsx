@@ -7,7 +7,7 @@ const ACCENT_COLORS = [
     { bg: '#f0fdf4', accent: '#16a34a', text: '#15803d' },
     { bg: '#eff6ff', accent: '#2563eb', text: '#1d4ed8' },
     { bg: '#fff7ed', accent: '#ea580c', text: '#c2410c' },
-    { bg: '#f5f3ff', accent: '#7c3aed', text: '#6d28d9' },
+    { bg: '#eff6ff', accent: '#1d4ed8', text: '#1e40af' },
     { bg: '#fdf2f8', accent: '#db2777', text: '#be185d' },
     { bg: '#fefce8', accent: '#ca8a04', text: '#a16207' },
     { bg: '#f0f9ff', accent: '#0284c7', text: '#0369a1' },
@@ -369,7 +369,7 @@ export default function TiersPage() {
 
             {/* ── HERO HEADER ── */}
             <div style={{
-                background: 'linear-gradient(135deg, #14532d 0%, #166534 45%, #16a34a 100%)',
+                background: 'var(--hero-gradient)',
                 padding: '2.5rem 2.5rem 4rem',
                 position: 'relative', overflow: 'hidden',
             }}>

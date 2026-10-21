@@ -223,7 +223,7 @@ export default function DossierReglementsManager({ dossierId }) {
                             </div>
                         </div>
                         <button onClick={handleSubmit} disabled={saving}
-                            style={{ alignSelf: 'flex-end', display: 'flex', alignItems: 'center', gap: 8, padding: '11px 24px', borderRadius: 10, border: 'none', cursor: saving ? 'not-allowed' : 'pointer', fontWeight: 800, fontSize: 14, color: 'white', background: saving ? '#9ca3af' : 'linear-gradient(135deg,#b45309,#f59e0b)', boxShadow: '0 4px 12px rgba(245,158,11,.35)' }}>
+                            style={{ alignSelf: 'flex-end', display: 'flex', alignItems: 'center', gap: 8, padding: '11px 24px', borderRadius: 10, border: 'none', cursor: saving ? 'not-allowed' : 'pointer', fontWeight: 800, fontSize: 14, color: 'white', background: saving ? '#9ca3af' : 'var(--hero-gradient)', boxShadow: '0 4px 12px rgba(245,158,11,.35)' }}>
                             {saving ? <RefreshCw size={16} style={{ animation: 'spin 1s linear infinite' }} /> : <CheckCircle size={16} />}
                             {saving ? 'Enregistrement…' : 'Valider le règlement'}
                         </button>
@@ -236,7 +236,7 @@ export default function DossierReglementsManager({ dossierId }) {
                         <ExternalLink size={14} /> Saisie complète des règlements
                     </button>
                     <button onClick={() => setShowForm(true)} disabled={unpaidFactures.length === 0}
-                        style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '10px 20px', borderRadius: 10, border: 'none', cursor: unpaidFactures.length === 0 ? 'not-allowed' : 'pointer', fontWeight: 800, fontSize: 13, color: 'white', background: unpaidFactures.length === 0 ? '#9ca3af' : 'linear-gradient(135deg,#b45309,#f59e0b)', boxShadow: unpaidFactures.length === 0 ? 'none' : '0 4px 12px rgba(245,158,11,.35)' }}>
+                        style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '10px 20px', borderRadius: 10, border: 'none', cursor: unpaidFactures.length === 0 ? 'not-allowed' : 'pointer', fontWeight: 800, fontSize: 13, color: 'white', background: unpaidFactures.length === 0 ? '#9ca3af' : 'var(--hero-gradient)', boxShadow: unpaidFactures.length === 0 ? 'none' : '0 4px 12px rgba(245,158,11,.35)' }}>
                         <Plus size={15} /> Saisir un règlement
                     </button>
                 </div>

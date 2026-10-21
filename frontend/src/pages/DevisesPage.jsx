@@ -12,7 +12,7 @@ const ACC = '#047857'
 const ACC2 = '#10b981'
 const LIGHT = '#ecfdf5'
 const BORDER = '#a7f3d0'
-const GRAD = 'linear-gradient(135deg,#064e3b 0%,#047857 45%,#10b981 100%)'
+const GRAD = 'var(--hero-gradient)'
 
 function Toast({ toasts }) {
     return (
@@ -37,7 +37,7 @@ function Toast({ toasts }) {
 
 const SYMBOL_PALETTES = [
     { color:'#1d4ed8', bg:'#eff6ff', border:'#bfdbfe' },
-    { color:'#7c3aed', bg:'#f5f3ff', border:'#ddd6fe' },
+    { color:'#1d4ed8', bg:'#eff6ff', border:'#bfdbfe' },
     { color:'#b45309', bg:'#fffbeb', border:'#fde68a' },
     { color:'#047857', bg:'#ecfdf5', border:'#a7f3d0' },
     { color:'#be123c', bg:'#fff1f2', border:'#fecdd3' },

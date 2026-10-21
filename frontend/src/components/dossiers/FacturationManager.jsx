@@ -810,8 +810,8 @@ const FacturationManager = ({ dossierId }) => {
                 .fm-total-row { display: flex; justify-content: space-between; font-size: 11px; border-bottom: 1px solid var(--slate-800); padding-bottom: 0.5rem; }
                 .fm-final-ttc { display: flex; justify-content: space-between; font-weight: 800; font-size: 18px; color: #10b981; margin-top: 0.5rem; }
                 
-                .fm-submit-btn { width: 100%; padding: 1rem; background: var(--primary); color: white; border: none; border-radius: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; justify-content: center; gap: 0.75rem; box-shadow: 0 10px 15px -3px rgba(79, 70, 229, 0.4); }
-                .fm-submit-btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 15px 20px -5px rgba(79, 70, 229, 0.5); }
+                .fm-submit-btn { width: 100%; padding: 1rem; background: var(--primary); color: white; border: none; border-radius: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; justify-content: center; gap: 0.75rem; box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.4); }
+                .fm-submit-btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 15px 20px -5px rgba(37, 99, 235, 0.5); }
                 .fm-submit-btn:disabled { background: var(--slate-800); color: var(--slate-600); cursor: not-allowed; box-shadow: none; }
                 
                 .fm-empty-state { height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--slate-400); text-align: center; padding: 3rem; }
@@ -842,14 +842,14 @@ const FacturationManager = ({ dossierId }) => {
                 .fm-justificatif-name { color: #334155; font-weight: 500; display: flex; align-items: center; gap: 0.5rem; overflow: hidden; text-overflow: ellipsis; }
                 
                 .fm-upload-area { border: 2px dashed #cbd5e1; border-radius: 0.75rem; padding: 1.5rem; text-align: center; background: #fff; transition: all 0.2s; cursor: pointer; position: relative; }
-                .fm-upload-area:hover { border-color: var(--primary); background: #f5f3ff; }
+                .fm-upload-area:hover { border-color: var(--primary); background: #eff6ff; }
                 .fm-upload-area input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
                 
                 .fm-modal-footer { padding: 1.25rem 1.5rem; background: #f8fafc; border-top: 1px solid #e2e8f0; display: flex; justify-content: flex-end; gap: 0.75rem; }
                 .fm-btn-cancel { padding: 0.6rem 1.2rem; border-radius: 0.5rem; font-weight: 600; font-size: 13px; color: #64748b; background: transparent; border: 1px solid #e2e8f0; cursor: pointer; }
                 .fm-btn-cancel:hover { background: #f1f5f9; }
-                .fm-btn-send { padding: 0.6rem 1.2rem; border-radius: 0.5rem; font-weight: 600; font-size: 13px; color: white; background: #6366f1; border: none; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; transition: all 0.2s; }
-                .fm-btn-send:hover:not(:disabled) { background: #4f46e5; transform: translateY(-1px); }
+                .fm-btn-send { padding: 0.6rem 1.2rem; border-radius: 0.5rem; font-weight: 600; font-size: 13px; color: white; background: #3b82f6; border: none; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; transition: all 0.2s; }
+                .fm-btn-send:hover:not(:disabled) { background: #2563eb; transform: translateY(-1px); }
                 .fm-btn-send:disabled { opacity: 0.6; cursor: not-allowed; }
             `}</style>
 
@@ -902,7 +902,7 @@ const FacturationManager = ({ dossierId }) => {
                                             <>
                                                 <button
                                                     className="fm-history-action"
-                                                    style={{ color: '#6366f1' }}
+                                                    style={{ color: '#3b82f6' }}
                                                     onClick={() => handleOpenEmailModal(inv)}
                                                     title="Gérer les justificatifs et envoyer par mail"
                                                 >
@@ -1030,7 +1030,7 @@ const FacturationManager = ({ dossierId }) => {
 
                     {/* Content Panel */}
                     <div className="fm-content-panel">
-                        <div className="fm-content-header" style={{ background: isCopying ? '#4338ca' : 'var(--primary)' }}>
+                        <div className="fm-content-header" style={{ background: isCopying ? '#1d4ed8' : 'var(--primary)' }}>
                             <span style={{ fontSize: '11px', fontWeight: 800, textTransform: 'uppercase' }}>
                                 {isCopying ? 'Copie de Facture - Nouveau Contenu' : 'Contenu de la Facture'}
                             </span>
@@ -1072,9 +1072,9 @@ const FacturationManager = ({ dossierId }) => {
 
                         {/* Destination Selection (Only when copying) */}
                         {isCopying && (
-                            <div style={{ padding: '1rem', background: '#f5f3ff', borderBottom: '1px solid #ddd6fe', display: 'flex', gap: '1rem' }}>
+                            <div style={{ padding: '1rem', background: '#eff6ff', borderBottom: '1px solid #bfdbfe', display: 'flex', gap: '1rem' }}>
                                 <div style={{ flex: 1 }}>
-                                    <label style={{ fontSize: '10px', fontWeight: 800, color: '#4338ca', display: 'block', marginBottom: '0.25rem' }}>CLIENT DE DESTINATION</label>
+                                    <label style={{ fontSize: '10px', fontWeight: 800, color: '#1d4ed8', display: 'block', marginBottom: '0.25rem' }}>CLIENT DE DESTINATION</label>
                                     <select
                                         style={{ width: '100%', padding: '0.4rem', borderRadius: '0.4rem', border: '1px solid #c4b5fd', fontSize: '12px' }}
                                         value={targetClientId}
@@ -1091,7 +1091,7 @@ const FacturationManager = ({ dossierId }) => {
                                     </select>
                                 </div>
                                 <div style={{ flex: 1 }}>
-                                    <label style={{ fontSize: '10px', fontWeight: 800, color: '#4338ca', display: 'block', marginBottom: '0.25rem' }}>DOSSIER DE DESTINATION</label>
+                                    <label style={{ fontSize: '10px', fontWeight: 800, color: '#1d4ed8', display: 'block', marginBottom: '0.25rem' }}>DOSSIER DE DESTINATION</label>
                                     <select
                                         style={{ width: '100%', padding: '0.4rem', borderRadius: '0.4rem', border: '1px solid #c4b5fd', fontSize: '12px' }}
                                         value={targetDossierId}
@@ -1172,13 +1172,13 @@ const FacturationManager = ({ dossierId }) => {
                                     </div>
                                 )}
                                 {commissionConfig.tauxDouane > 0 && totals.commissionDouane > 0 && (
-                                    <div className="fm-total-row" style={{ color: '#4338ca' }}>
+                                    <div className="fm-total-row" style={{ color: '#1d4ed8' }}>
                                         <span>Commission douane ({commissionConfig.tauxDouane}%) — auto</span>
                                         <span>{Math.round(totals.commissionDouane).toLocaleString()} {getReferenceSymbol()}</span>
                                     </div>
                                 )}
                                 {commissionConfig.tauxDebours > 0 && (
-                                    <div className="fm-total-row" style={{ color: '#4338ca' }}>
+                                    <div className="fm-total-row" style={{ color: '#1d4ed8' }}>
                                         <span>
                                             Commission débours ({commissionConfig.tauxDebours}%
                                             {commissionConfig.all ? ', tous les 11xx' : ', rubriques ciblées'}) — auto
@@ -1229,7 +1229,7 @@ const FacturationManager = ({ dossierId }) => {
                                         value={selectedCompteMailId}
                                         onChange={e => setSelectedCompteMailId(e.target.value)}
                                         disabled={emailLoading}
-                                        style={{ width: '100%', padding: '0.6rem 0.9rem', border: '1px solid #c7d2fe', borderRadius: '0.625rem', fontSize: '13px', background: '#f8fafc', outline: 'none' }}
+                                        style={{ width: '100%', padding: '0.6rem 0.9rem', border: '1px solid #bfdbfe', borderRadius: '0.625rem', fontSize: '13px', background: '#f8fafc', outline: 'none' }}
                                     >
                                         {comptesMails.map(c => (
                                             <option key={c.IDComptesMails} value={c.IDComptesMails}>
@@ -1244,7 +1244,7 @@ const FacturationManager = ({ dossierId }) => {
                             <div style={{ marginBottom: '1.25rem' }}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
                                     <label className="fm-section-label" style={{ margin: 0 }}>Destinataire</label>
-                                    <button onClick={() => setIsEditingEmail(true)} style={{ background: 'none', border: 'none', color: '#6366f1', fontSize: '11px', display: 'flex', alignItems: 'center', gap: '4px', cursor: 'pointer' }}>
+                                    <button onClick={() => setIsEditingEmail(true)} style={{ background: 'none', border: 'none', color: '#3b82f6', fontSize: '11px', display: 'flex', alignItems: 'center', gap: '4px', cursor: 'pointer' }}>
                                         <Edit2 size={12}/> Modifier
                                     </button>
                                 </div>
@@ -1253,7 +1253,7 @@ const FacturationManager = ({ dossierId }) => {
                                         type="email"
                                         value={editedEmail}
                                         onChange={e => setEditedEmail(e.target.value)}
-                                        style={{ flex: 1, padding: '0.6rem 0.9rem', borderRadius: '0.625rem', border: '1px solid #c7d2fe', fontSize: '13px', outline: 'none' }}
+                                        style={{ flex: 1, padding: '0.6rem 0.9rem', borderRadius: '0.625rem', border: '1px solid #bfdbfe', fontSize: '13px', outline: 'none' }}
                                         placeholder="email@societe.com"
                                     />
                                 </div>
@@ -1286,7 +1286,7 @@ const FacturationManager = ({ dossierId }) => {
                                             <label key={doc.id} style={{
                                                 display: 'flex', alignItems: 'center', gap: '10px',
                                                 padding: '0.625rem 1rem',
-                                                background: selectedDocIds.includes(doc.id) ? '#f5f3ff' : (i % 2 === 0 ? '#fafafa' : 'white'),
+                                                background: selectedDocIds.includes(doc.id) ? '#eff6ff' : (i % 2 === 0 ? '#fafafa' : 'white'),
                                                 borderBottom: i < dossierDocs.length - 1 ? '1px solid #f1f5f9' : 'none',
                                                 cursor: 'pointer', transition: 'background 0.15s'
                                             }}>
@@ -1297,16 +1297,16 @@ const FacturationManager = ({ dossierId }) => {
                                                         e.target.checked ? [...prev, doc.id] : prev.filter(id => id !== doc.id)
                                                     )}
                                                     disabled={emailLoading}
-                                                    style={{ accentColor: '#6366f1', width: 15, height: 15 }}
+                                                    style={{ accentColor: '#3b82f6', width: 15, height: 15 }}
                                                 />
-                                                <FileText size={13} style={{ color: selectedDocIds.includes(doc.id) ? '#6366f1' : '#94a3b8', flexShrink: 0 }}/>
+                                                <FileText size={13} style={{ color: selectedDocIds.includes(doc.id) ? '#3b82f6' : '#94a3b8', flexShrink: 0 }}/>
                                                 <span style={{ fontSize: '13px', color: '#334155', flex: 1 }}>{doc.title}</span>
                                                 {doc.typeLabel && <span style={{ fontSize: '11px', color: '#94a3b8', background: '#f1f5f9', borderRadius: '4px', padding: '1px 6px' }}>{doc.typeLabel}</span>}
                                             </label>
                                         ))}
                                     </div>
                                     {selectedDocIds.length > 0 && (
-                                        <div style={{ marginTop: '0.4rem', fontSize: '11px', color: '#6366f1', fontWeight: 600 }}>
+                                        <div style={{ marginTop: '0.4rem', fontSize: '11px', color: '#3b82f6', fontWeight: 600 }}>
                                             {selectedDocIds.length} document(s) sélectionné(s)
                                         </div>
                                     )}
@@ -1317,7 +1317,7 @@ const FacturationManager = ({ dossierId }) => {
                             <label className="fm-section-label">Ajouter des justificatifs (PDF/Images)</label>
                             <div className="fm-upload-area">
                                 {uploading ? (
-                                    <RefreshCw className="fm-spin-active" style={{ color: '#6366f1' }} />
+                                    <RefreshCw className="fm-spin-active" style={{ color: '#3b82f6' }} />
                                 ) : (
                                     <>
                                         <UploadCloud size={32} style={{ color: '#94a3b8', marginBottom: '0.5rem' }} />
@@ -1331,9 +1331,9 @@ const FacturationManager = ({ dossierId }) => {
                                 <div style={{ padding: '0.75rem 1rem', background: '#f1f5f9', fontSize: '11px', fontWeight: 700, color: '#475569', borderBottom: '1px solid #e2e8f0' }}>
                                     FICHIERS JOINTS ({justificatifs.length + selectedDocIds.length + 1})
                                 </div>
-                                <div className="fm-justificatif-item" style={{ background: '#f5f3ff', borderLeft: '3px solid #6366f1' }}>
+                                <div className="fm-justificatif-item" style={{ background: '#eff6ff', borderLeft: '3px solid #3b82f6' }}>
                                     <div className="fm-justificatif-name">
-                                        <FileText size={14} style={{ color: '#6366f1' }} />
+                                        <FileText size={14} style={{ color: '#3b82f6' }} />
                                         <span>Facture_{selectedFacture.NumeroFacture.replace(/\//g, '-')}.pdf (Principal)</span>
                                     </div>
                                 </div>

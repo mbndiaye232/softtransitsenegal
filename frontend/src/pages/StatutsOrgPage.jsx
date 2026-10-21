@@ -6,11 +6,11 @@ import {
 import { useNavigate } from 'react-router-dom'
 import { statutsAPI } from '../services/api'
 
-const ACC = '#6d28d9'
-const ACC2 = '#7c3aed'
-const LIGHT = '#f5f3ff'
-const BORDER = '#ddd6fe'
-const GRAD = 'linear-gradient(135deg,#4c1d95 0%,#6d28d9 45%,#7c3aed 100%)'
+const ACC = '#1e40af'
+const ACC2 = '#1d4ed8'
+const LIGHT = '#eff6ff'
+const BORDER = '#bfdbfe'
+const GRAD = 'var(--hero-gradient)'
 
 function Toast({ toasts }) {
     return (
@@ -80,7 +80,7 @@ export default function StatutsOrgPage() {
 
             {/* Hero */}
             <div style={{ background:GRAD, padding:'2.5rem 2.5rem 5rem', position:'relative', overflow:'hidden' }}>
-                {[['25%','20%',260,'rgba(124,58,237,0.35)'],['70%','55%',180,'rgba(109,40,217,0.25)']].map(([l,t,s,c],i)=>(
+                {[['25%','20%',260,'rgba(29,78,216,0.35)'],['70%','55%',180,'rgba(109,40,217,0.25)']].map(([l,t,s,c],i)=>(
                     <div key={i} style={{ position:'absolute', left:l, top:t, width:s, height:s, borderRadius:'50%', background:c, filter:'blur(60px)', pointerEvents:'none' }}/>
                 ))}
                 <div style={{ maxWidth:1000, margin:'0 auto', position:'relative' }}>

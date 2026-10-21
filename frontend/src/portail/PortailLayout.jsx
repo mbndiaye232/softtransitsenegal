@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
 import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom'
 import portailApi, { TOKEN_KEY } from './portailApi'
-import { MARINE, VERT } from './ui'
+import logo from '../assets/icone-soft-transit.svg'
+import { MARINE } from './ui'
 
 // Enveloppe des pages du portail : en-tête, navigation, déconnexion. Sans jeton, retour à la connexion.
 export default function PortailLayout({ children }) {
@@ -30,10 +31,13 @@ export default function PortailLayout({ children }) {
     }
 
     return (
-        <div style={{ minHeight: '100vh', background: '#f1f5f9', fontFamily: "'Segoe UI', system-ui, sans-serif" }}>
-            <header style={{ background: MARINE, color: '#fff', borderBottom: `4px solid ${VERT}` }}>
+        <div style={{ minHeight: '100vh', background: '#f1f5f9', fontFamily: "'Inter Variable', 'Inter', 'Segoe UI', system-ui, sans-serif" }}>
+            <header style={{ background: 'var(--hero-gradient)', color: '#fff', borderBottom: '1px solid rgba(147,197,253,0.25)' }}>
                 <div style={{ maxWidth: 1100, margin: '0 auto', padding: '0.9rem 1rem', display: 'flex', alignItems: 'center', gap: '1.5rem', flexWrap: 'wrap' }}>
-                    <div style={{ fontWeight: 700, fontSize: '1.15rem' }}>Espace client{profil?.client ? ` · ${profil.client}` : ''}</div>
+                    <div style={{ fontWeight: 800, fontSize: '1.1rem', display: 'flex', alignItems: 'center', gap: '0.65rem', letterSpacing: '-0.01em' }}>
+                        <img src={logo} alt="" style={{ width: 34, height: 34, borderRadius: 9 }} />
+                        <span>Espace client{profil?.client ? ` · ${profil.client}` : ''}</span>
+                    </div>
                     <nav style={{ display: 'flex', gap: '0.4rem', flex: 1 }}>
                         {lien('/portail/dossiers', 'Mes dossiers')}
                         {lien('/portail/factures', 'Mes factures')}

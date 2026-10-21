@@ -50,11 +50,13 @@ export default function PortailAdmin() {
     const onglets = [['demandes', `Demandes (${demandes.length})`], ['comptes', 'Comptes'], ['documents', 'Documents visibles'], ['journal', 'Journal']]
 
     return (
-        <div style={{ minHeight: '100vh', background: '#f1f5f9', padding: '1.5rem', fontFamily: "'Segoe UI', system-ui, sans-serif" }}>
+        <div style={{ minHeight: '100vh', background: '#f1f5f9', padding: '1.5rem', fontFamily: "'Inter Variable', 'Inter', 'Segoe UI', system-ui, sans-serif" }}>
             <div style={{ maxWidth: 1100, margin: '0 auto' }}>
-                <button onClick={() => navigate('/dashboard')} style={{ ...btn('#64748b'), marginBottom: '1rem' }}>← Tableau de bord</button>
-                <h1 style={{ margin: '0 0 0.25rem', color: MARINE }}>Portail client</h1>
-                <p style={{ color: '#64748b', marginTop: 0 }}>Adresse du portail : <strong>{window.location.origin}/portail</strong></p>
+                <div style={{ background: 'var(--hero-gradient)', borderRadius: 20, padding: '1.75rem 2.25rem', marginBottom: '1.5rem', boxShadow: 'var(--shadow-lg)', color: '#fff' }}>
+                    <button onClick={() => navigate('/dashboard')} style={{ background: 'none', border: 'none', color: 'rgba(226,232,240,0.85)', cursor: 'pointer', fontWeight: 600, fontSize: '0.85rem', padding: 0, marginBottom: '0.5rem' }}>← Tableau de bord</button>
+                    <h1 style={{ margin: '0 0 0.25rem', color: '#fff', fontSize: '1.75rem', fontWeight: 800, letterSpacing: '-0.02em' }}>Portail client</h1>
+                    <p style={{ color: 'rgba(226,232,240,0.78)', margin: 0 }}>Adresse du portail : <strong style={{ color: '#fff' }}>{window.location.origin}/portail</strong></p>
+                </div>
                 {message && (
                     <div style={{ padding: '0.75rem 1rem', borderRadius: 8, margin: '0.75rem 0', background: message.type === 'ok' ? '#ecfdf5' : '#fef2f2', color: message.type === 'ok' ? '#065f46' : '#991b1b' }}>
                         {message.texte}

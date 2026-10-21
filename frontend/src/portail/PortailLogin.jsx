@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Navigate, useNavigate } from 'react-router-dom'
 import portailApi, { TOKEN_KEY, messageErreur } from './portailApi'
+import logo from '../assets/icone-soft-transit.svg'
 import { MARINE, VERT, alerte, bouton, carte, champ, etiquette } from './ui'
 
 // Connexion, demande d'accès (validée ensuite par l'équipe) et mot de passe oublié
@@ -49,9 +50,10 @@ export default function PortailLogin() {
     )
 
     return (
-        <div style={{ minHeight: '100vh', background: `linear-gradient(135deg, ${MARINE}, #2D5A9E)`, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem', fontFamily: "'Segoe UI', system-ui, sans-serif" }}>
+        <div style={{ minHeight: '100vh', background: 'var(--hero-gradient)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem', fontFamily: "'Inter Variable', 'Inter', 'Segoe UI', system-ui, sans-serif" }}>
             <div style={{ ...carte, width: '100%', maxWidth: 440, padding: '1.75rem', marginBottom: 0 }}>
-                <h1 style={{ margin: '0 0 0.25rem', color: MARINE, fontSize: '1.5rem' }}>Espace client</h1>
+                <img src={logo} alt="Soft Transit" style={{ width: 56, height: 56, borderRadius: 14, marginBottom: '0.75rem' }} />
+                <h1 style={{ margin: '0 0 0.25rem', color: MARINE, fontSize: '1.6rem', fontWeight: 800, letterSpacing: '-0.02em' }}>Espace client</h1>
                 <p style={{ margin: '0 0 1rem', color: '#64748b', fontSize: '0.9rem' }}>Suivez vos dossiers et retrouvez vos documents et factures.</p>
                 <div style={{ display: 'flex', marginBottom: '0.5rem' }}>
                     {onglet('connexion', 'Connexion')}

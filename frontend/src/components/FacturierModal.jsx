@@ -43,7 +43,7 @@ export default function FacturierModal({ dossiers, onClose }) {
             >
                 {/* Header */}
                 <div style={{
-                    background: 'linear-gradient(135deg, #78350f 0%, #d97706 100%)',
+                    background: 'var(--hero-gradient)',
                     padding: '1.25rem 1.5rem',
                     display: 'flex', alignItems: 'center', justifyContent: 'space-between',
                 }}>
@@ -143,7 +143,7 @@ export default function FacturierModal({ dossiers, onClose }) {
                         onClick={() => { onClose(); navigate('/dossiers') }}
                         style={{
                             display: 'flex', alignItems: 'center', gap: '8px',
-                            background: 'linear-gradient(135deg, #78350f 0%, #d97706 100%)',
+                            background: 'var(--hero-gradient)',
                             color: 'white', border: 'none', borderRadius: '10px',
                             padding: '10px 18px', fontWeight: 700, fontSize: '13px',
                             cursor: 'pointer',

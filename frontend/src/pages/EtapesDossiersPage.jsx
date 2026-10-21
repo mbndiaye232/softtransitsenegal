@@ -7,11 +7,11 @@ import {
 import { useNavigate } from 'react-router-dom'
 import { etapesDossiersAPI } from '../services/api'
 
-const ACC = '#4338ca'
-const ACC2 = '#6366f1'
-const LIGHT = '#eef2ff'
-const BORDER = '#c7d2fe'
-const GRAD = 'linear-gradient(135deg,#312e81 0%,#4338ca 45%,#6366f1 100%)'
+const ACC = '#1d4ed8'
+const ACC2 = '#3b82f6'
+const LIGHT = '#eff6ff'
+const BORDER = '#bfdbfe'
+const GRAD = 'var(--hero-gradient)'
 
 /* ─── Tiny Toast ─────────────────────────────────────────── */
 function Toast({ toasts }) {
@@ -39,7 +39,7 @@ function Toast({ toasts }) {
 /* ─── BlockCard ───────────────────────────────────────────── */
 function BlockCard({ grad, icon: Icon, title, action, children, style = {} }) {
     return (
-        <div style={{ background:'white', borderRadius:'1.25rem', border:`1px solid ${BORDER}`, boxShadow:'0 4px 24px rgba(99,102,241,0.08)', overflow:'hidden', ...style }}>
+        <div style={{ background:'white', borderRadius:'1.25rem', border:`1px solid ${BORDER}`, boxShadow:'0 4px 24px rgba(59,130,246,0.08)', overflow:'hidden', ...style }}>
             <div style={{ background: grad || GRAD, padding:'1rem 1.5rem', display:'flex', alignItems:'center', justifyContent:'space-between', gap:'1rem' }}>
                 <div style={{ display:'flex', alignItems:'center', gap:'0.75rem' }}>
                     {Icon && <div style={{ background:'rgba(255,255,255,0.2)', borderRadius:'0.625rem', padding:'0.5rem', display:'flex' }}><Icon size={18} color="white"/></div>}
@@ -151,7 +151,7 @@ export default function EtapesDossiersPage() {
             {/* ── Hero ── */}
             <div style={{ background: GRAD, padding:'2.5rem 2.5rem 5rem', position:'relative', overflow:'hidden' }}>
                 {/* orbs */}
-                {[['30%','20%',300,'rgba(99,102,241,0.3)'],['70%','60%',200,'rgba(167,139,250,0.2)']].map(([l,t,s,c],i)=>(
+                {[['30%','20%',300,'rgba(59,130,246,0.3)'],['70%','60%',200,'rgba(167,139,250,0.2)']].map(([l,t,s,c],i)=>(
                     <div key={i} style={{ position:'absolute', left:l, top:t, width:s, height:s, borderRadius:'50%', background:c, filter:'blur(60px)', pointerEvents:'none' }}/>
                 ))}
                 <div style={{ maxWidth:1440, margin:'0 auto', position:'relative' }}>

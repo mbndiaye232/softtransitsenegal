@@ -10,7 +10,7 @@ const ACC = '#86198f'
 const ACC2 = '#d946ef'
 const LIGHT = '#fdf4ff'
 const BORDER = '#f0abfc'
-const GRAD = 'linear-gradient(135deg,#4a044e 0%,#86198f 45%,#d946ef 100%)'
+const GRAD = 'var(--hero-gradient)'
 
 const rgbToHex = (r, g, b) => '#' + (1<<24|r<<16|g<<8|b).toString(16).slice(1)
 const hexToRgb = (hex) => {
