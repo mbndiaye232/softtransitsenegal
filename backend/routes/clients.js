@@ -14,6 +14,42 @@ router.use(tenantMiddleware);
 // Memory storage — fichiers uploadés vers Cloudflare R2
 const uploader = multer({ storage: multer.memoryStorage(), limits: { fileSize: 5 * 1024 * 1024 } });
 
+const isTruthy = (v) => v === true || v === 1 || v === '1' || v === 'true';
+
+/**
+ * Persiste la sélection des rubriques sur lesquelles s'applique la commission
+ * débours du client (table rubriquesdescommissions).
+ * - « Sur tous les débours » coché  → toutes les rubriques 11xx s'appliquent,
+ *   aucune ligne spécifique n'est conservée (la sélection est vidée).
+ * - Décoché → on enregistre uniquement les rubriques cochées.
+ * @param {*} connection      connexion transactionnelle
+ * @param {number} clientId
+ * @param {*} sappliqueTous   valeur brute (FormData) de sappliqueTousDebours
+ * @param {*} rubriquesRaw    JSON string d'un tableau d'IDRubriques
+ */
+async function saveCommissionRubriques(connection, clientId, sappliqueTous, rubriquesRaw) {
+    await connection.query('DELETE FROM rubriquesdescommissions WHERE IDCLIENTS = ?', [clientId]);
+    if (isTruthy(sappliqueTous)) return; // toutes les rubriques 11xx → pas de sélection spécifique
+
+    let ids = [];
+    try { ids = JSON.parse(rubriquesRaw || '[]'); } catch { ids = []; }
+    ids = [...new Set(ids.map(Number).filter(Boolean))];
+    if (ids.length === 0) return;
+
+    // On ne garde que les rubriques de débours réelles (code 11xx) et on récupère leur code.
+    const [rubs] = await connection.query(
+        "SELECT IDRubriques, CodeRubrique FROM rubriques WHERE IDRubriques IN (?) AND CodeRubrique LIKE '11%'",
+        [ids]
+    );
+    if (rubs.length === 0) return;
+
+    const values = rubs.map(r => [clientId, r.IDRubriques, r.CodeRubrique]);
+    await connection.query(
+        'INSERT INTO rubriquesdescommissions (IDCLIENTS, IDRubriques, CodeRubrique) VALUES ?',
+        [values]
+    );
+}
+
 /**
  * GET /api/clients
  * List all clients for the current company (or all for provider)
@@ -79,6 +115,12 @@ router.get('/:id', checkPermission('CLIENTS', 'can_view'), async (req, res) => {
             return res.status(404).json({ error: 'Client not found' });
         }
 
+        // Rubriques sur lesquelles porte la commission débours (si « Sur tous les débours » décoché)
+        const [commRows] = await pool.query(
+            'SELECT IDRubriques FROM rubriquesdescommissions WHERE IDCLIENTS = ?',
+            [req.params.id]
+        );
+
         // Map database column names to frontend-expected names
         const client = {
             ...clients[0],
@@ -86,7 +128,8 @@ router.get('/:id', checkPermission('CLIENTS', 'can_view'), async (req, res) => {
             Adresse: clients[0].adresseClient,
             Tel1: clients[0].TelClient,
             Tel2: clients[0].CelClient,
-            Email: clients[0].EmailClient
+            Email: clients[0].EmailClient,
+            commissionRubriques: commRows.map(r => r.IDRubriques)
         };
 
         res.json(client);
@@ -168,6 +211,9 @@ router.post('/', checkPermission('CLIENTS', 'can_create'), uploader.single('Chem
         );
 
         const clientId = result.insertId;
+
+        // Rubriques de commission débours (si « Sur tous les débours » décoché)
+        await saveCommissionRubriques(connection, clientId, sappliqueTousDebours, req.body.commissionRubriques);
 
         // Create Account (ComptesClients)
         await connection.query(
@@ -299,6 +345,9 @@ router.put('/:id', checkPermission('CLIENTS', 'can_edit'), uploader.single('Chem
 
         await connection.query(updateQuery, updateParams);
 
+        // Rubriques de commission débours (si « Sur tous les débours » décoché)
+        await saveCommissionRubriques(connection, clientId, sappliqueTousDebours, req.body.commissionRubriques);
+
         await auditService.log({
             agent_id: req.user.id,
             structur_id: req.user.structur_id,
@@ -397,6 +446,9 @@ router.delete('/:id', checkPermission('CLIENTS', 'can_delete'), async (req, res)
         }
 
         await connection.beginTransaction();
+
+        // La sélection des rubriques de commission est rattachée au client
+        await connection.query('DELETE FROM rubriquesdescommissions WHERE IDCLIENTS = ?', [clientId]);
 
         // Le compte client est créé avec le client : on le retire avec lui (il est sans mouvement)
         await connection.query('DELETE FROM comptesclients WHERE IDCLIENTS = ?', [clientId]);

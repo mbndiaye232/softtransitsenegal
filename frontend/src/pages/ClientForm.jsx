@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { getReferenceSymbol } from '../utils/currency'
 import { useNavigate, useParams } from 'react-router-dom'
-import { clientsAPI, statutsAPI } from '../services/api'
+import { clientsAPI, statutsAPI, rubriquesAPI } from '../services/api'
 import {
     Save,
     X,
@@ -35,6 +35,9 @@ export default function ClientForm() {
     const [error, setError] = useState('')
     const [success, setSuccess] = useState('')
     const [statuts, setStatuts] = useState([])
+    const [deboursRubriques, setDeboursRubriques] = useState([]) // rubriques 11xx
+    const [commissionRubriques, setCommissionRubriques] = useState([]) // IDRubriques cochées
+    const [rubriqueSearch, setRubriqueSearch] = useState('')
 
     // Form Data
     const [formData, setFormData] = useState({
@@ -62,7 +65,7 @@ export default function ClientForm() {
         Observations: '',
         TauxCommissionDDouane: '0.00',
         TauxCommissionDebours: '0.00',
-        sappliqueTousDebours: false,
+        sappliqueTousDebours: true, // par défaut, la commission porte sur l'ensemble des débours (11xx)
         Alerte_Suspension: false
     })
 
@@ -75,6 +78,7 @@ export default function ClientForm() {
             loadClient()
         }
         loadStatuts()
+        loadDeboursRubriques()
     }, [id])
 
     const loadStatuts = async () => {
@@ -84,6 +88,22 @@ export default function ClientForm() {
         } catch (err) {
             console.error('Erreur chargement statuts:', err)
         }
+    }
+
+    const loadDeboursRubriques = async () => {
+        try {
+            const response = await rubriquesAPI.getAll()
+            const debours = (response.data || []).filter(r => String(r.CodeRubrique || '').startsWith('11'))
+            setDeboursRubriques(debours)
+        } catch (err) {
+            console.error('Erreur chargement rubriques débours:', err)
+        }
+    }
+
+    const toggleCommissionRubrique = (idRubrique) => {
+        setCommissionRubriques(prev =>
+            prev.includes(idRubrique) ? prev.filter(x => x !== idRubrique) : [...prev, idRubrique]
+        )
     }
 
     const loadClient = async () => {
@@ -119,6 +139,8 @@ export default function ClientForm() {
                 sappliqueTousDebours: !!data.sappliqueTousDebours,
                 Alerte_Suspension: !!data.Alerte_Suspension
             })
+
+            setCommissionRubriques(Array.isArray(data.commissionRubriques) ? data.commissionRubriques : [])
 
             if (data.CheminLettreEXO) {
                 const baseUrl = import.meta.env.VITE_API_URL.replace('/api', '')
@@ -181,6 +203,10 @@ export default function ClientForm() {
             if (file) {
                 formDataObj.append('CheminLettreEXO', file)
             }
+
+            // Rubriques sur lesquelles s'applique la commission débours
+            // (ignoré côté backend si « Sur tous les débours » est coché)
+            formDataObj.append('commissionRubriques', JSON.stringify(formData.sappliqueTousDebours ? [] : commissionRubriques))
 
             if (isEdit) {
                 await clientsAPI.update(id, formDataObj)
@@ -439,6 +465,53 @@ export default function ClientForm() {
                                         <span className="checkbox-label" style={{ color: '#4338ca' }}>🔔 Alertes échéances suspensifs</span>
                                     </label>
                                 </div>
+
+                                {/* Sélection des rubriques de débours — visible si « Sur tous les débours » est décochée */}
+                                {!formData.sappliqueTousDebours && (
+                                    <div className="col-12" style={{ border: '1.5px solid #e2e8f0', borderRadius: 12, padding: '1rem 1.25rem', background: '#f9fafb' }}>
+                                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.75rem', marginBottom: '0.75rem' }}>
+                                            <span style={{ fontSize: '0.8rem', fontWeight: 800, color: '#4f46e5', textTransform: 'uppercase', letterSpacing: '.04em' }}>
+                                                Rubriques débours (commission appliquée) — {commissionRubriques.length} sélectionnée(s)
+                                            </span>
+                                            <div style={{ display: 'flex', gap: '0.5rem' }}>
+                                                <button type="button" className="btn btn-secondary" style={{ padding: '0.35rem 0.75rem', fontSize: '0.75rem' }}
+                                                    onClick={() => setCommissionRubriques(deboursRubriques.map(r => r.IDRubriques))}>Tout cocher</button>
+                                                <button type="button" className="btn btn-secondary" style={{ padding: '0.35rem 0.75rem', fontSize: '0.75rem' }}
+                                                    onClick={() => setCommissionRubriques([])}>Tout décocher</button>
+                                            </div>
+                                        </div>
+                                        <input
+                                            type="text"
+                                            className="premium-input"
+                                            placeholder="🔍 Rechercher une rubrique (code ou libellé)…"
+                                            value={rubriqueSearch}
+                                            onChange={(e) => setRubriqueSearch(e.target.value)}
+                                            style={{ marginBottom: '0.75rem' }}
+                                        />
+                                        <div style={{ maxHeight: 260, overflowY: 'auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '0.25rem' }}>
+                                            {deboursRubriques
+                                                .filter(r => {
+                                                    const q = rubriqueSearch.toLowerCase()
+                                                    return !q || String(r.CodeRubrique).toLowerCase().includes(q) || String(r.libelleRubrique || '').toLowerCase().includes(q)
+                                                })
+                                                .map(r => (
+                                                    <label key={r.IDRubriques} className="checkbox-group" style={{ padding: '0.4rem 0.6rem' }}>
+                                                        <input
+                                                            type="checkbox"
+                                                            checked={commissionRubriques.includes(r.IDRubriques)}
+                                                            onChange={() => toggleCommissionRubrique(r.IDRubriques)}
+                                                        />
+                                                        <span className="checkbox-label" style={{ fontSize: '0.8rem', fontWeight: 500 }}>
+                                                            <strong>{r.CodeRubrique}</strong> — {r.libelleRubrique}
+                                                        </span>
+                                                    </label>
+                                                ))}
+                                            {deboursRubriques.length === 0 && (
+                                                <span style={{ fontSize: '0.8rem', color: '#94a3b8' }}>Aucune rubrique de débours (11xx) trouvée.</span>
+                                            )}
+                                        </div>
+                                    </div>
+                                )}
                             </div>
                         </div>
 

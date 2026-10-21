@@ -41,6 +41,8 @@ const FacturationManager = ({ dossierId }) => {
     const [error, setError] = useState(null);
     const [searchQuery, setSearchQuery] = useState('');
     const [availableDebours, setAvailableDebours] = useState([]);
+    // Config commission du client : tauxDebours/tauxDouane (%), all=sur tous les débours, ids=rubriques ciblées
+    const [commissionConfig, setCommissionConfig] = useState({ tauxDebours: 0, tauxDouane: 0, all: true, ids: [] });
 
     // --- COPY STATES ---
     const [isCopying, setIsCopying] = useState(false);
@@ -85,6 +87,20 @@ const FacturationManager = ({ dossierId }) => {
             setDossier(dosRes.data);
             setInvoices(Array.isArray(invRes.data) ? invRes.data : []);
             setAvailableDebours(Array.isArray(debRes.data) ? debRes.data : []);
+
+            // Config commission débours du client rattaché au dossier
+            const clientId = dosRes.data?.clientId || dosRes.data?.IDCLIENTS;
+            if (clientId) {
+                try {
+                    const cRes = await clientsAPI.getOne(clientId);
+                    setCommissionConfig({
+                        tauxDebours: parseFloat(cRes.data?.TauxCommissionDebours) || 0,
+                        tauxDouane: parseFloat(cRes.data?.TauxCommissionDDouane) || 0,
+                        all: !!cRes.data?.sappliqueTousDebours,
+                        ids: Array.isArray(cRes.data?.commissionRubriques) ? cRes.data.commissionRubriques : []
+                    });
+                } catch (e) { console.error('Erreur chargement config commission débours:', e); }
+            }
 
             setLoading(false);
         } catch (err) {
@@ -146,27 +162,71 @@ const FacturationManager = ({ dossierId }) => {
         });
     }, [rubriques, searchQuery]);
 
+    // Montant douane déjà facturé pour ce dossier = somme HT des factures douane (FD-…).
+    // Sert de base à la commission douane d'une facture prestations (FP) séparée.
+    const fdDouaneTotal = useMemo(() => {
+        return (invoices || [])
+            .filter(f => String(f.NumeroFacture || '').toUpperCase().startsWith('FD'))
+            .reduce((s, f) => s + (Number(f.MontantHTFacture) || 0), 0);
+    }, [invoices]);
+
     const totals = useMemo(() => {
         const cats = { douane: 0, debours: 0, prestations: 0 };
         let has10 = false;
         let hasOthers = false;
+        // Type « de base » = sans les lignes de commission auto (4004/4005),
+        // pour savoir si la facture est une douane pure (FD) → pas de commission.
+        let baseHas10 = false;
+        let baseHasOthers = false;
 
         selectedRubriques.forEach(r => {
             const amount = Number(r.montant) || 0;
             const code = (r.CodeRubrique || '').toString();
+            const isCommissionLine = code === '4004' || code === '4005';
             if (code.startsWith('10')) {
                 cats.douane += amount;
                 has10 = true;
+                baseHas10 = true;
             } else {
                 hasOthers = true;
+                if (!isCommissionLine) baseHasOthers = true;
                 if (code.startsWith('11')) cats.debours += amount;
                 else if (code.startsWith('40')) cats.prestations += amount;
             }
         });
 
+        // Facture douane pure (uniquement 10xx) → aucune commission ne s'applique.
+        const isFactureDouane = baseHas10 && !baseHasOthers;
+
         const ht = Object.values(cats).reduce((a, b) => a + b, 0);
         const tva = cats.prestations * 0.18;
         const ttc = ht + tva;
+
+        // Bases de commission. Les lignes de commission elles-mêmes (4004/4005)
+        // sont des prestations 40xx → exclues des bases 10xx/11xx (pas de double comptage).
+        // Débours éligibles = tous les 11xx si « sur tous les débours », sinon
+        // uniquement les rubriques ciblées dans la fiche client.
+        let deboursEligible = 0;
+        selectedRubriques.forEach(r => {
+            const code = (r.CodeRubrique || '').toString();
+            if (code.startsWith('11') && (commissionConfig.all || commissionConfig.ids.includes(r.IDRubriques))) {
+                deboursEligible += Number(r.montant) || 0;
+            }
+        });
+        // Type « de base » : douane pure (FD), prestations (FP, pas de 10xx), ou globale (FG).
+        const isFacturePrestations = !baseHas10 && baseHasOthers;
+
+        // Base de la commission douane :
+        //   - FD → aucune commission
+        //   - FG → douane de la facture en cours (cats.douane)
+        //   - FP → montant des factures douane (FD-…) déjà établies pour le dossier
+        const commissionDouaneBase = isFactureDouane ? 0 : (isFacturePrestations ? fdDouaneTotal : cats.douane);
+
+        const commissionDebours = isFactureDouane ? 0 : deboursEligible * (commissionConfig.tauxDebours / 100);
+        const commissionDouane = isFactureDouane ? 0 : commissionDouaneBase * (commissionConfig.tauxDouane / 100);
+
+        // Avertissement : FP avec taux douane > 0 mais aucune FD établie → établir la FD d'abord.
+        const needFdWarning = isFacturePrestations && commissionConfig.tauxDouane > 0 && fdDouaneTotal === 0;
 
         let prefix = 'FG';
         let typeName = 'GLOBALE';
@@ -178,8 +238,8 @@ const FacturationManager = ({ dossierId }) => {
             typeName = 'PRESTATIONS';
         }
 
-        return { ...cats, ht, tva, ttc, prefix, typeName };
-    }, [selectedRubriques]);
+        return { ...cats, ht, tva, ttc, prefix, typeName, deboursEligible, commissionDebours, commissionDouane, needFdWarning };
+    }, [selectedRubriques, commissionConfig, fdDouaneTotal]);
 
     // --- ACTIONS ---
     const handleAddRubrique = (rub) => {
@@ -202,6 +262,67 @@ const FacturationManager = ({ dossierId }) => {
             r.IDRubriques === id ? { ...r, complement: val } : r
         ));
     };
+
+    // Intégration AUTOMATIQUE des commissions comme lignes facturables dès qu'un
+    // taux est > 0 :
+    //   - Commission débours → rubrique 4004 (base = débours éligibles 11xx)
+    //   - Commission douane   → rubrique 4005 (base = droits de douane 10xx)
+    // Les lignes sont créées / actualisées / supprimées selon les montants calculés.
+    useEffect(() => {
+        if (!rubriques.length) return;
+        const rub4004 = rubriques.find(r => String(r.CodeRubrique) === '4004'); // commission débours
+        const rub4005 = rubriques.find(r => String(r.CodeRubrique) === '4005'); // commission douane
+
+        // Bases recalculées ici (hors lignes de commission), pour rester stable.
+        // On suit aussi le type « de base » : une facture douane pure (uniquement
+        // 10xx) ne reçoit aucune commission (uniquement FP et FG).
+        let baseDebours = 0, baseDouane = 0;
+        let baseHas10 = false, baseHasOthers = false;
+        selectedRubriques.forEach(r => {
+            const code = String(r.CodeRubrique || '');
+            if (code === '4004' || code === '4005') return;
+            if (code.startsWith('10')) {
+                baseHas10 = true;
+                baseDouane += Number(r.montant) || 0;
+            } else {
+                baseHasOthers = true;
+                if (code.startsWith('11') && (commissionConfig.all || commissionConfig.ids.includes(r.IDRubriques))) {
+                    baseDebours += Number(r.montant) || 0;
+                }
+            }
+        });
+        const isFactureDouane = baseHas10 && !baseHasOthers;
+        const isFacturePrestations = !baseHas10 && baseHasOthers;
+        // FP → la commission douane porte sur les FD déjà établies du dossier ;
+        // FG → sur la douane de la facture en cours.
+        const douaneBase = isFacturePrestations ? fdDouaneTotal : baseDouane;
+        const wantDebours = (!isFactureDouane && commissionConfig.tauxDebours > 0) ? Math.round(baseDebours * commissionConfig.tauxDebours / 100) : 0;
+        const wantDouane = (!isFactureDouane && commissionConfig.tauxDouane > 0) ? Math.round(douaneBase * commissionConfig.tauxDouane / 100) : 0;
+
+        setSelectedRubriques(prev => {
+            let next = prev;
+            let changed = false;
+            const sync = (rub, want, complement) => {
+                if (!rub) return;
+                const idx = next.findIndex(r => r.IDRubriques === rub.IDRubriques);
+                if (want > 0) {
+                    if (idx === -1) {
+                        next = [...next, { ...rub, montant: want, complement }];
+                        changed = true;
+                    } else if ((Number(next[idx].montant) || 0) !== want) {
+                        next = next.map((r, i) => i === idx ? { ...r, montant: want } : r);
+                        changed = true;
+                    }
+                } else if (idx !== -1) {
+                    next = next.filter((_, i) => i !== idx);
+                    changed = true;
+                }
+            };
+            sync(rub4004, wantDebours, 'Commission sur débours');
+            sync(rub4005, wantDouane, 'Commission sur droits de douane');
+            return changed ? next : prev;
+        });
+    }, [selectedRubriques, commissionConfig, rubriques, fdDouaneTotal]);
 
     const handleFetchNoteDetail = async () => {
         try {
@@ -1043,6 +1164,28 @@ const FacturationManager = ({ dossierId }) => {
                             <div className="fm-totals-grid">
                                 <div className="fm-total-row"><span>TOTAL HT</span> <span>{totals.ht.toLocaleString()} {getReferenceSymbol()}</span></div>
                                 <div className="fm-total-row"><span>TVA (18%)</span> <span>{totals.tva.toLocaleString()} {getReferenceSymbol()}</span></div>
+                                {totals.needFdWarning && (
+                                    <div className="fm-total-row" style={{ color: '#b91c1c', fontWeight: 700 }}>
+                                        <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                                            <AlertCircle size={14} /> Établissez d'abord la facture douane (commission douane = 0)
+                                        </span>
+                                    </div>
+                                )}
+                                {commissionConfig.tauxDouane > 0 && totals.commissionDouane > 0 && (
+                                    <div className="fm-total-row" style={{ color: '#4338ca' }}>
+                                        <span>Commission douane ({commissionConfig.tauxDouane}%) — auto</span>
+                                        <span>{Math.round(totals.commissionDouane).toLocaleString()} {getReferenceSymbol()}</span>
+                                    </div>
+                                )}
+                                {commissionConfig.tauxDebours > 0 && (
+                                    <div className="fm-total-row" style={{ color: '#4338ca' }}>
+                                        <span>
+                                            Commission débours ({commissionConfig.tauxDebours}%
+                                            {commissionConfig.all ? ', tous les 11xx' : ', rubriques ciblées'}) — auto
+                                        </span>
+                                        <span>{Math.round(totals.commissionDebours).toLocaleString()} {getReferenceSymbol()}</span>
+                                    </div>
+                                )}
                             </div>
                             <div className="fm-final-ttc">
                                 <span>TOTAL TTC</span>
