@@ -330,7 +330,7 @@ router.post('/:id/convertir', checkPermission('FACTURES', 'can_create'), async (
             r.montant || 0,
             r.code || r.CodeRubrique,
             r.libelle || r.libelleRubrique,
-            r.complement || ''
+            String(r.complement || '').slice(0, 30)  // colonne complement de la facture : 30 caractères au plus
         ]);
         await connection.query(
             `INSERT INTO liaisonfacturesrubriques

@@ -150,7 +150,10 @@ test.describe.serial('Portail client', () => {
         expect(refus.status()).toBe(400)
         expect((await refus.json()).error).toMatch(/pas confirmée/)
         expect((await connecter(MAIL_A)).status).toBe(401)
-        expect((await admin.post(`/api/portail-admin/comptes/${a.id}/renvoyer-confirmation`)).status()).toBe(200)
+        // aucun service d'e-mail dans l'environnement de test : le renvoi doit signaler l'échec (502 explicite), pas un faux succès
+        const renvoi = await admin.post(`/api/portail-admin/comptes/${a.id}/renvoyer-confirmation`)
+        expect(renvoi.status()).toBe(502)
+        expect((await renvoi.json()).error).toMatch(/n'a pas pu être envoyé/)
 
         // confirmation par le titulaire de l'adresse : mauvais lien refusé, bon lien accepté une seule fois
         expect(await confirmerEmail(MAIL_A, 'x')).toBe(200)
