@@ -319,7 +319,8 @@ const FacturationManager = ({ dossierId }) => {
                 }
             };
             sync(rub4004, wantDebours, 'Commission sur débours');
-            sync(rub4005, wantDouane, 'Commission sur droits de douane');
+            // la colonne complement de la base est limitée à 30 caractères (« Commission sur droits de douane » en fait 31)
+            sync(rub4005, wantDouane, 'Commission droits de douane');
             return changed ? next : prev;
         });
     }, [selectedRubriques, commissionConfig, rubriques, fdDouaneTotal]);
@@ -1135,6 +1136,7 @@ const FacturationManager = ({ dossierId }) => {
                                                 <td>
                                                     <input
                                                         className="fm-input-complement"
+                                                        maxLength={30}
                                                         value={r.complement}
                                                         onChange={e => handleUpdateComplement(r.IDRubriques, e.target.value)}
                                                         placeholder="Détails..."

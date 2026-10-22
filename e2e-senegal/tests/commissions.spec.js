@@ -61,4 +61,14 @@ test('commissions : fiche client puis facturation', async ({ page }) => {
     expect(norm).toMatch(/14 400/)
     expect(norm).toMatch(/1 394 400/)
     await page.screenshot({ path: 'resultats/facturation-commissions.png' })
+
+    // 4. Validation de la facture : une ligne dont le texte dépasse la colonne « complement » (30 caractères) faisait échouer l'enregistrement
+    const alertes = []
+    page.on('dialog', (d) => { alertes.push(d.message()); d.accept() })
+    await page.getByRole('button', { name: /terminer & imprimer la facture/i }).click()
+    await expect(page.getByText(/FACTURE|FG-|FP-|FD-/).first()).toBeVisible({ timeout: 20_000 }).catch(() => {})
+    await page.waitForTimeout(2500)
+    expect(alertes.filter((m) => /erreur/i.test(m)), `alertes : ${alertes.join(' | ')}`).toEqual([])
+    const factures = await (await api.get(`factures/dossier/${dossier.id}`)).json()
+    expect(Array.isArray(factures) ? factures.length : 0, 'facture enregistrée').toBeGreaterThan(0)
 })

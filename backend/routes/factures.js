@@ -131,7 +131,7 @@ router.post('/', checkPermission('FACTURES', 'can_create'), async (req, res) => 
             r.montant || 0,
             r.code || r.CodeRubrique,
             r.libelle || r.libelleRubrique,
-            r.complement || ''
+            String(r.complement || '').slice(0, 30)  // colonne complement : 30 caractères au plus (PostgreSQL refuse sinon la facture entière)
         ]);
 
         await connection.query(
