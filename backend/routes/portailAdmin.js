@@ -75,9 +75,15 @@ router.post('/comptes/:id/valider', async (req, res) => {
 
 router.post('/comptes/:id/renvoyer-confirmation', async (req, res) => {
     try {
-        if (!(await emettreConfirmation(req.params.id))) return res.status(404).json({ error: 'Compte introuvable ou adresse déjà confirmée.' });
+        if (!(await emettreConfirmation(req.params.id, { strict: true }))) return res.status(404).json({ error: 'Compte introuvable ou adresse déjà confirmée.' });
         res.json({ message: 'E-mail de confirmation renvoyé.' });
     } catch (e) {
+        if (e.code === 'MAIL') {
+            // Le nouveau lien est enregistré mais le message n'est pas parti : l'équipe doit le savoir et pouvoir agir
+            const cause = /BREVO_API_KEY|SMTP_HOST/.test(e.message) ? "aucun service d'envoi d'e-mails n'est configuré sur le serveur" : e.message;
+            console.error('Portail admin renvoi confirmation (e-mail non envoyé) :', e.message);
+            return res.status(502).json({ error: `L'e-mail n'a pas pu être envoyé : ${cause}. Faites vérifier la configuration d'envoi des e-mails du serveur (BREVO_API_KEY).` });
+        }
         console.error('Portail admin renvoi confirmation :', e);
         res.status(500).json({ error: 'Erreur serveur' });
     }

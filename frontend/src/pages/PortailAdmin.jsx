@@ -33,6 +33,8 @@ export default function PortailAdmin() {
     }, [])
 
     const agir = async (requete, ok) => {
+        setMessage({ type: 'ok', texte: 'Traitement en cours…' })  // retour immédiat : l'envoi d'un e-mail peut prendre plusieurs secondes
+        window.scrollTo({ top: 0, behavior: 'smooth' })
         try {
             const r = await requete()
             setMessage({ type: 'ok', texte: r.data?.message || ok })

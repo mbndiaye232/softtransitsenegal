@@ -10,7 +10,7 @@ const sha256 = (v) => crypto.createHash('sha256').update(v).digest('hex');
  * Tant que l'adresse n'est pas confirmée, l'équipe ne peut pas valider le compte : l'inscription ne prouve
  * pas que la personne possède l'adresse qu'elle a saisie.
  */
-async function emettreConfirmation(clientUserId) {
+async function emettreConfirmation(clientUserId, { strict = false } = {}) {
     const [rows] = await pool.query('SELECT nom, email, societe_declaree FROM client_users WHERE id = ? AND email_verified_at IS NULL', [clientUserId]);
     if (!rows.length) return false;
     const token = crypto.randomBytes(32).toString('hex');
@@ -27,7 +27,11 @@ async function emettreConfirmation(clientUserId) {
                   `<p><a href="${lien}">${lien}</a></p>` +
                   `<p><strong>Si vous n'êtes pas à l'origine de cette demande, ne cliquez pas</strong> et ignorez ce message.</p>`,
         });
-    } catch (mailErr) { console.error('Mail de confirmation portail :', mailErr.message); }
+    } catch (mailErr) {
+        console.error('Mail de confirmation portail :', mailErr.message);
+        // Inscription publique : on ne révèle rien au visiteur. Renvoi par l'équipe (strict) : l'échec doit se voir à l'écran.
+        if (strict) throw Object.assign(new Error(mailErr.message), { code: 'MAIL' });
+    }
     return true;
 }
 

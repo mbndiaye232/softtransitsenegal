@@ -51,6 +51,9 @@ test.describe.serial('Portail client (interface)', () => {
         const ligne = admin.locator('tr', { hasText: MAIL })
         await expect(ligne.getByText(/adresse e-mail non confirmée/i)).toBeVisible()
         await expect(ligne.getByRole('button', { name: 'Valider' })).toBeDisabled()
+        // renvoi du lien : ici aucun service d'e-mail n'est configuré, l'échec doit se voir à l'écran (et non un faux succès)
+        await ligne.getByRole('button', { name: /renvoyer/i }).click()
+        await expect(admin.getByText(/l'e-mail n'a pas pu être envoyé/i)).toBeVisible()
         await equipe.close()
 
         // le titulaire de l'adresse clique sur le lien reçu par e-mail
