@@ -50,7 +50,9 @@ export const structureAPI = {
             'Content-Type': 'multipart/form-data'
         }
     }),
-    getCountries: () => api.get('/pays')
+    getCountries: () => api.get('/pays'),
+    // champ : logo | cachet_facture | cachet_livraison | cachet_autre (image lue avec le jeton, affichée via URL.createObjectURL)
+    getFichier: (champ) => api.get(`/structures/me/fichier/${champ}`, { responseType: 'blob' })
 }
 
 export const clientsAPI = {

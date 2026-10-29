@@ -100,13 +100,23 @@ export default function CompanySettings() {
                 }
             }
 
-            const baseUrl = import.meta.env.VITE_API_URL.replace('/api', '')
-            setPreviews({
-                logo: data.cheminlogo ? `${baseUrl}/${data.cheminlogo}` : null,
-                cachet_facture: data.chemin_cachet_facture ? `${baseUrl}/${data.chemin_cachet_facture}` : null,
-                cachet_livraison: data.chemin_cachet_livraison ? `${baseUrl}/${data.chemin_cachet_livraison}` : null,
-                cachet_autre: data.chemin_cachet_autre ? `${baseUrl}/${data.chemin_cachet_autre}` : null
-            })
+            // Les fichiers sont dans R2 (pas d'adresse publique) : on les lit avec le jeton, puis on les affiche
+            const chemins = {
+                logo: data.cheminlogo,
+                cachet_facture: data.chemin_cachet_facture,
+                cachet_livraison: data.chemin_cachet_livraison,
+                cachet_autre: data.chemin_cachet_autre
+            }
+            const apercus = {}
+            await Promise.all(Object.entries(chemins).map(async ([nom, chemin]) => {
+                if (!chemin) return
+                try {
+                    apercus[nom] = URL.createObjectURL((await structureAPI.getFichier(nom)).data)
+                } catch (err) {
+                    console.error(`Aperçu indisponible (${nom})`, err)
+                }
+            }))
+            setPreviews(prev => ({ ...prev, ...apercus }))
 
         } catch (err) {
             setError('Impossible de charger les informations')

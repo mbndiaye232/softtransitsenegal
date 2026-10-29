@@ -5,7 +5,7 @@ const { authMiddleware, tenantMiddleware, requireRole, checkPermission } = requi
 const upload = require('../middleware/upload');
 const path = require('path');
 const auditService = require('../services/auditService');
-const { uploadFile } = require('../utils/storage');
+const { uploadFile, downloadFile } = require('../utils/storage');
 
 /* ── Helper : upload un fichier multer (memory) vers R2 ─────────────────── */
 async function uploadFileToR2(file, folder) {
@@ -41,6 +41,37 @@ router.get('/me', authMiddleware, tenantMiddleware, checkPermission('STRUCTURES'
     } catch (error) {
         console.error('Get company error:', error);
         res.status(500).json({ error: 'Failed to fetch company details' });
+    }
+});
+
+/**
+ * GET /api/structures/me/fichier/:champ   (champ : logo | cachet_facture | cachet_livraison | cachet_autre)
+ * Renvoie le logo ou un cachet de la société, lu dans R2 (production) ou sur le disque (local).
+ * Les fichiers n'ont pas d'adresse publique : la page les lit avec le jeton de l'utilisateur (voir CompanySettings.jsx).
+ */
+const COLONNES_FICHIER = {
+    logo: 'cheminlogo',
+    cachet_facture: 'chemin_cachet_facture',
+    cachet_livraison: 'chemin_cachet_livraison',
+    cachet_autre: 'chemin_cachet_autre',
+};
+const TYPES_IMAGE = { '.png': 'image/png', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.gif': 'image/gif' };
+
+router.get('/me/fichier/:champ', authMiddleware, tenantMiddleware, checkPermission('STRUCTURES', 'can_view'), async (req, res) => {
+    const colonne = COLONNES_FICHIER[req.params.champ]; // liste fermée : le nom de colonne ne vient jamais de l'utilisateur
+    if (!colonne) return res.status(404).json({ error: 'Fichier inconnu' });
+    try {
+        const [rows] = await pool.query(`SELECT ${colonne} AS chemin FROM structur WHERE IDSociete = ?`, [req.structur_id]);
+        let cle = rows[0] && rows[0].chemin;
+        if (!cle) return res.status(404).json({ error: 'Aucun fichier enregistré' });
+        if (cle.startsWith('uploads/')) cle = cle.slice(8); // anciennes valeurs, comme dans les générateurs de PDF
+        const contenu = await downloadFile(cle);
+        res.set('Content-Type', TYPES_IMAGE[path.extname(cle).toLowerCase()] || 'application/octet-stream');
+        res.set('Cache-Control', 'private, max-age=300');
+        res.send(contenu);
+    } catch (error) {
+        console.error('Get company file error:', error);
+        res.status(404).json({ error: 'Fichier introuvable' });
     }
 });
 
