@@ -65,6 +65,8 @@ export const clientsAPI = {
         headers: { 'Content-Type': 'multipart/form-data' }
     }),
     updateEmail: (id, email) => api.patch(`/clients/${id}/email`, { email }),
+    // lettre d'exonération (PDF ou image) lue avec le jeton, ouverte via URL.createObjectURL
+    getLettreExo: (id) => api.get(`/clients/${id}/lettre-exo`, { responseType: 'blob' }),
     delete: (id) => api.delete(`/clients/${id}`)
 }
 
