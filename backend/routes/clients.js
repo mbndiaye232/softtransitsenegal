@@ -5,7 +5,7 @@ const { authMiddleware, tenantMiddleware, checkPermission } = require('../middle
 const multer = require('multer');
 const path = require('path');
 const auditService = require('../services/auditService');
-const { uploadFile } = require('../utils/storage');
+const { uploadFile, downloadFile } = require('../utils/storage');
 
 // Apply middleware to all routes
 router.use(authMiddleware);
@@ -136,6 +136,37 @@ router.get('/:id', checkPermission('CLIENTS', 'can_view'), async (req, res) => {
     } catch (error) {
         console.error('Error fetching client:', error);
         res.status(500).json({ error: 'Failed to fetch client' });
+    }
+});
+
+/**
+ * GET /api/clients/:id/lettre-exo
+ * Renvoie la lettre d'exonération du client, lue dans R2 (production) ou sur le disque (local).
+ * Le fichier n'a pas d'adresse publique : la page le lit avec le jeton de l'utilisateur (voir ClientForm.jsx).
+ */
+const TYPES_LETTRE = {
+    '.pdf': 'application/pdf', '.png': 'image/png', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.gif': 'image/gif'
+};
+
+router.get('/:id/lettre-exo', checkPermission('CLIENTS', 'can_view'), async (req, res) => {
+    try {
+        let query = 'SELECT CheminLettreEXO AS chemin FROM clients WHERE IDCLIENTS = ?';
+        const params = [req.params.id];
+        if (!req.user.is_provider) {
+            query += ' AND structur_id = ?';
+            params.push(req.structur_id);
+        }
+        const [rows] = await pool.query(query, params);
+        let cle = rows[0] && rows[0].chemin;
+        if (!cle) return res.status(404).json({ error: 'Aucune lettre d\'exonération enregistrée' });
+        if (cle.startsWith('uploads/')) cle = cle.slice(8); // anciennes valeurs
+        const contenu = await downloadFile(cle);
+        res.set('Content-Type', TYPES_LETTRE[path.extname(cle).toLowerCase()] || 'application/octet-stream');
+        res.set('Cache-Control', 'private, max-age=300');
+        res.send(contenu);
+    } catch (error) {
+        console.error('Get exoneration letter error:', error);
+        res.status(404).json({ error: 'Fichier introuvable' });
     }
 });
 

@@ -71,6 +71,7 @@ export default function ClientForm() {
 
     const [file, setFile] = useState(null)
     const [filePreview, setFilePreview] = useState(null)
+    const [lettreEnregistree, setLettreEnregistree] = useState(false) // lettre déjà stockée côté serveur (R2 : pas d'adresse publique)
     const [compte, setCompte] = useState(null) // { solde, credit, debit } — null si compte pas encore créé
 
     useEffect(() => {
@@ -142,10 +143,7 @@ export default function ClientForm() {
 
             setCommissionRubriques(Array.isArray(data.commissionRubriques) ? data.commissionRubriques : [])
 
-            if (data.CheminLettreEXO) {
-                const baseUrl = import.meta.env.VITE_API_URL.replace('/api', '')
-                setFilePreview(`${baseUrl}/${data.CheminLettreEXO}`)
-            }
+            setLettreEnregistree(!!data.CheminLettreEXO)
 
             if (data.IDComptesClients) {
                 setCompte({
@@ -179,13 +177,23 @@ export default function ClientForm() {
         }
     }
 
+    const ouvrirLettreEnregistree = async () => {
+        try {
+            const res = await clientsAPI.getLettreExo(id)
+            window.open(URL.createObjectURL(res.data), '_blank', 'noopener')
+        } catch (err) {
+            setError("Impossible d'ouvrir la lettre d'exonération")
+            console.error(err)
+        }
+    }
+
     const handleSubmit = async (e) => {
         e.preventDefault()
         setError('')
         setSuccess('')
 
         let dataToSend = { ...formData }
-        if (formData.ExonereTVA && !file && !filePreview) {
+        if (formData.ExonereTVA && !file && !filePreview && !lettreEnregistree) {
             if (!window.confirm("Si vous n'associez pas de lettre d'exonération au client, le système va considérer qu'il ne bénéficie pas d'exonération.\nVoulez-vous continuer ?")) {
                 return
             }
@@ -541,8 +549,13 @@ export default function ClientForm() {
                                         <input type="file" onChange={handleFileChange} className="premium-input" style={{ padding: '0.5rem' }} />
                                         {filePreview && (
                                             <a href={filePreview} target="_blank" rel="noopener noreferrer" style={{ fontSize: '0.75rem', color: 'var(--primary)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.25rem', marginTop: '0.25rem' }}>
-                                                <FileText size={12} /> Voir le document actuel
+                                                <FileText size={12} /> Voir le document sélectionné
                                             </a>
+                                        )}
+                                        {!filePreview && lettreEnregistree && (
+                                            <button type="button" onClick={ouvrirLettreEnregistree} style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', fontSize: '0.75rem', color: 'var(--primary)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.25rem', marginTop: '0.25rem' }}>
+                                                <FileText size={12} /> Voir le document actuel
+                                            </button>
                                         )}
                                     </div>
                                 )}
